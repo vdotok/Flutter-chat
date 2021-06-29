@@ -1,4 +1,11 @@
-# VDOTOK Flutter Connect 
+
+# vdotok_stream_example
+
+
+## Installation
+
+======================
+
 
 ## Preparations  
 
@@ -50,151 +57,51 @@ Ensure the following permission is present in your Android Manifest file, locate
 
  
 ```
- 
 
-## Create Client Instance: 
 
-First we need to create an instance of emitter client.  
 
-```
-Emitter emitter = Emitter.instance; 
-```
+ Follow the link below and Select the operating system on which you are installing Flutter.
 
-## Add listeners: 
+ https://flutter.dev/docs/get-started/install
 
-Below described main helpful callbacks and listeners: 
+Note: 
+now run "flutter doctor"
+Before move farword make sure all the ticks are green. 
 
-```
+## Repo Clone:	
+Copy and Paste Github URL “https://github.com/vdotok/Flutter-chat”
+	Click on “Code” button
+	From HTTPS section copy repo URL
+	Open terminal and go to that directory where you want to clone project.
+	Paste copied URL and press Enter.
+	Hurrraaaa you Just configure the project
 
-emitter.onConnect = (res) { 
 
-}; 
+## VS code installation 
 
-emitter.onPresence = (res) { 
+Download Vs code by using following link. 
+https://code.visualstudio.com/download
 
-}; 
 
-emitter.onsubscribe = (value) { 
+## project run steps
+1. open project in vs code. 
+2. Open terminal and go to project directory and run "flutter pub get"
 
-}; 
 
-emitter.onMessage = (msg) async { 
+## Device Setting
 
-};
 
-```
+	
+In order to connect you device  you need to enable developer mode
+	For enabling developer mode and usb debug you may follow the device specific steps
+	you can follow the step described in link below to enable developer options and usb debugging
+	https://developer.android.com/studio/debug/dev-options
 
- 
 
-class used in ReadReceiptModel class to inform status of the message 
 
-```
 
-class ReceiptType { 
+## Build Project 
 
-static var sent = 1; 
+After connecting phone run following command in project directory. 
 
-static var delivered = 2; 
-
-static var seen = 3; 
-
-} 
-
- ```
-
-Class to identify the type of file 
- 
-
-```
-class MediaType { 
-
-static int image = 0; 
-
-static int audio = 1; 
-
-static int video = 2; 
-
-static int file = 3; 
-
-} 
-```
-
- 
-Class to identify the type of Message 
-```
-
-class MessageType { 
-
-static const String text = "text"; 
-
-static const String media = "media"; 
-
-static const String file = "file"; 
-
-static const String thumbnail = "thumbnail"; 
-
-static const String path = "path"; 
-
-static const String typing = "typing"; 
-
-} 
-```
-
-## SDK Methods: 
-
- 
-
-## Connection: 
-
- 
-
-Use this method to connect socket. 
-```
-
-emitter.connect( 
-
-String lientId, 
-
-Bool reconnectivity, 
-
-String refID, 
-
-String authorization_token 
-
-); 
-```
-
- 
-
-## Subscription: 
-
- 
-
-// Use this method to subscribe to a chat or group 
-```
-
-emitter.subscribePresence(String channelKey, String channelName, bool changes, bool status); 
-
- ```
-
-## SubscribePresence: 
-
- 
-
-//Use this method to acknowledge the availability of the user.  
-```
-
-emitter.subscribePresence(String channelKey, String channelName, bool changes, bool status); 
-
- ```
-
-## Publish: 
-
- 
-
-// Use this method to publish message of object type which can be of any type i-e text ,audio,video,document or images type. 
-```
-
-Emitter.publish(String channelKey, String channelName, Map<String, dynamic> send_message); 
-
- ```
+"flutter run"
