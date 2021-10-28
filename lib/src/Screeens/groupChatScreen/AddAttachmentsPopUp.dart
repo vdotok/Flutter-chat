@@ -169,7 +169,8 @@ class AddAttachmentPopUp extends StatelessWidget {
                                         'assets/Album.svg'),
                                 onPressed:
                                     () {
-                                   getImage("Gallery");
+                                     filePIcker("ImageAndVideo");
+                                 // getImage("Gallery");
                                 //    Navigator.pop(
                                 // context);
                                 }),

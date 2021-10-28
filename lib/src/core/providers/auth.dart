@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:device_info/device_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:vdkFlutterChat/src/core/config/config.dart';
 import '../models/user.dart';
 import '../services/server.dart';
 import '../../shared_preference/shared_preference.dart';
@@ -36,6 +37,12 @@ class AuthProvider with ChangeNotifier {
 
   String _registerErrorMsg;
   String get registerErrorMsg => _registerErrorMsg;
+
+  String _host;
+  String get host => _host;
+
+  String _port;
+  String get port => _port;
 
   Future<bool> register(String username, password, email) async {
     _registeredInStatus = Status.Loading;
@@ -73,7 +80,8 @@ class AuthProvider with ChangeNotifier {
               : "ios",
       "device_model": model,
       "device_os_ver": version,
-      "app_version": "1.1.5"
+      "app_version": "1.1.5",
+      "project_id": project_id
     };
 
     final response = await callAPI(jsonData, "SignUp", null);
@@ -84,6 +92,8 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
       return false;
     } else {
+        _host = response["messaging_server_map"]["host"];
+      _port = response["messaging_server_map"]["port"];
       SharedPref sharedPref = SharedPref();
       sharedPref.save("authUser", response);
       _registeredInStatus = Status.Registered;
@@ -98,15 +108,18 @@ class AuthProvider with ChangeNotifier {
     _loggedInStatus = Status.Loading;
     notifyListeners();
 
-    Map<String, dynamic> jsonData = {"email": email, "password": password};
+    Map<String, dynamic> jsonData = {"email": email, "password": password,  "project_id": project_id};
 
     final response = await callAPI(jsonData, "Login", null);
-    print("this is response $response");
+    print("this is response of login api $response");
     if (response['status'] != 200) {
       _loggedInStatus = Status.Failure;
       _loginErrorMsg = response['message'];
       notifyListeners();
     } else {
+      _host = response["messaging_server_map"]["host"];
+      _port = response["messaging_server_map"]["port"];
+      print("this is host ${_host}");
       SharedPref sharedPref = SharedPref();
       sharedPref.save("authUser", response);
       _loggedInStatus = Status.LoggedIn;
@@ -125,12 +138,17 @@ class AuthProvider with ChangeNotifier {
 
   isUserLogedIn() async {
     final authUser = await _sharedPref.read("authUser");
-    print("this is authUser $authUser");
+    // print(
+    //     "this is authUser ${jsonDecode(authUser)["messaging_server_map"]["host"]}");
+    //print("this is authUser port ${jsonDecode(authUser)}");
     if (authUser == null) {
       _loggedInStatus = Status.NotLoggedIn;
       notifyListeners();
     } else {
       _loggedInStatus = Status.LoggedIn;
+      _host = jsonDecode(authUser)["messaging_server_map"]["host"];
+      _port = jsonDecode(authUser)["messaging_server_map"]["port"];
+      print("host is $_host $_port");
       _user = User.fromJson(jsonDecode(authUser));
       notifyListeners();
     }

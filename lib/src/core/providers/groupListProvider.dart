@@ -382,7 +382,7 @@ class GroupListProvider with ChangeNotifier {
     var groupindex = _groupList.groups
         .indexWhere((element) => element.channel_key == msg["key"]);
 
-    print("this is msg ${_groupList.groups[groupindex].chatList.length}");
+    // print("this is msg ${_groupList.groups[groupindex].chatList.length}");
     if (groupindex != -1) {
       var msgindex = _groupList.groups[groupindex].chatList
           .indexWhere((element) => element.id == msg["id"]);

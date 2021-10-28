@@ -1,5 +1,5 @@
 
-# vdotok_stream_example
+# vdotok_connect
 
 
 ## Installation
@@ -60,48 +60,44 @@ Ensure the following permission is present in your Android Manifest file, locate
 
 
 
- Follow the link below and Select the operating system on which you are installing Flutter.
+Open the below link, and select “Operating System” for the installation of Flutter:  
 
  https://flutter.dev/docs/get-started/install
 
-Note: 
-now run "flutter doctor"
-Before move farword make sure all the ticks are green. 
+**Note:** *Now run "flutter doctor" and make sure all the tick-marks appear green.*
 
 ## Repo Clone:	
-Copy and Paste Github URL “https://github.com/vdotok/Flutter-chat”
-	Click on “Code” button
-	From HTTPS section copy repo URL
-	Open terminal and go to that directory where you want to clone project.
-	Paste copied URL and press Enter.
-	Hurrraaaa you Just configure the project
+* Open Github URL of VdoTok’s Flutter Chat 
+
+* Click on **Code** button, appearing on R.H.S  
+
+* A toast for **Clone** will appear, containing HTTPS, SSH, and GitHub CLI information  
+
+* On HTTPS section, copy repository **URL** 
+
+* Open **Terminal / Command Prompt** and go to the **Directory** where you want to clone the project  
+
+* Paste copied repository URL and press **Enter** 
+
+Bravo! You’ve successfully configured the project. 
+
+## VS Code Installation:
+
+Download Vs code by using following link : https://code.visualstudio.com/download
 
 
-## VS code installation 
+## Project Run Steps:
 
-Download Vs code by using following link. 
-https://code.visualstudio.com/download
-
-
-## project run steps
-1. open project in vs code. 
-2. Open terminal and go to project directory and run "flutter pub get"
+1. Open **Project** in VS Code. 
+2. Open **Terminal** and go to **Project Directory** and run **"flutter pub get"**
 
 
-## Device Setting
-
-
+## Device Setting:
 	
-In order to connect you device  you need to enable developer mode
-	For enabling developer mode and usb debug you may follow the device specific steps
-	you can follow the step described in link below to enable developer options and usb debugging
-	https://developer.android.com/studio/debug/dev-options
-
-
+To connect a device, enable **“developer mode”** and **“USB debug”** by following the device-specific steps given on the below link:
+https://developer.android.com/studio/debug/dev-options
 
 
 ## Build Project 
 
-After connecting phone run following command in project directory. 
-
-"flutter run"
+After connecting phone run following command in **Project Directory:** "flutter run"

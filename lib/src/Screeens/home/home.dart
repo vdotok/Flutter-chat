@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:vdkFlutterChat/src/Screeens/CreateGroupScreen/CreateGroupPopUp.dart';
+import 'package:vdkFlutterChat/src/core/config/config.dart';
+import 'package:vdkFlutterChat/src/shared_preference/shared_preference.dart';
 import 'package:vdotok_connect/vdotok_connect.dart';
 import '../home/CustomAppBar.dart';
 import '../splash/splash.dart';
@@ -28,11 +30,21 @@ class _HomeState extends State<Home> {
   AuthProvider authProvider;
   GroupListProvider groupListProvider;
   Emitter emitter;
-  bool isConnect = false;
+  bool isConnect = true;
   Uint8List _image;
   List<Uint8List> listOfChunks = [];
   Map<String, dynamic> header;
   bool scrollUp = false;
+  // var response;
+  // var port;
+  // var host;
+  // SharedPref sharedPref = SharedPref();
+  // readFromSharedPref() async {
+  //   response = await sharedPref.read("authUser");
+  //   print("This is response of login api from shared pref $response");
+  //   port = response["messaging_server_map"]["port"];
+  //   host = response["messaging_server_map"]["host"];
+  // }
 
   @override
   void initState() {
@@ -40,38 +52,44 @@ class _HomeState extends State<Home> {
     emitter = Emitter.instance;
     authProvider = Provider.of<AuthProvider>(context, listen: false);
     groupListProvider = Provider.of<GroupListProvider>(context, listen: false);
-
+    // readFromSharedPref();
+    //print("This is response of login api from shared pref $response");
+    //print("this is  ${authProvider.host}");
     emitter.connect(
         clientId: authProvider.getUser.user_id.toString(),
         reconnectivity: true,
         refID: authProvider.getUser.ref_id,
-        authorization_token: authProvider.getUser.authorization_token);
- 
-      emitter.onConnect = (res) {
-        print('this is response on connect $res');
-        if (res) {
-          groupListProvider.getGroupList(authProvider.getUser.auth_token);
-          print("Connected Successfully $res");
-          setState(() {
-            isConnect = res;
-          });
-          print("this is  connectttttttttttt before $isConnect");
-        } else {
-          print("connection error $res");
-          setState(() {
-            isConnect = res;
-          });
-          print("this is  connectttttttttttt  after $isConnect");
-        }
-      };
-   
+        authorization_token: authProvider.getUser.authorization_token,
+        project_id: project_id,
+        host: authProvider.host,
+        port: authProvider.port
+        //response: sharedPref.read("authUser");
+        );
+
+    emitter.onConnect = (res) {
+      print('this is response on connect $res');
+      if (res) {
+        groupListProvider.getGroupList(authProvider.getUser.auth_token);
+        print("Connected Successfully $res");
+        setState(() {
+          isConnect = true;
+        });
+        print("this is  connectttttttttttt before $isConnect");
+      } else {
+        print("connection error $res");
+        setState(() {
+          isConnect = false;
+        });
+        print("this is  connectttttttttttt  after $isConnect");
+      }
+    };
+
     emitter.onPresence = (res) {
       print("Presence  $res");
 
       groupListProvider.handlePresence(json.decode(res));
     };
-    
-    
+
     emitter.onsubscribe = (value) {
       print(("subscription homee $value"));
       if (value ==
@@ -81,12 +99,14 @@ class _HomeState extends State<Home> {
         groupListProvider.changeState();
       }
     };
-   
 
     emitter.onMessage = (msg) async {
       print("this is msg on receive $msg");
       var message = json.decode(msg);
+      print("this is msg on receive ${message["content"].toString()}");
 
+      // print(
+      //     "message after receiving ${utf8.decode(message["content"].toString().codeUnits)}");
       switch (message["type"]) {
         case MessageType.text:
           {
@@ -103,7 +123,8 @@ class _HomeState extends State<Home> {
                     "key": message["key"],
                     "messageId": message["id"],
                     "receiptType": ReceiptType.seen,
-                    "to": message["to"]
+                    "to": message["to"],
+                    // "content": utf8.decode((message["content"].toString().codeUnits))
                   };
 
                   groupListProvider.recevieMsg(receiptMsg);
@@ -315,6 +336,7 @@ class _HomeState extends State<Home> {
   }
 
   publishMessage(channelKey, channelName, send_message) {
+    print("chat screen message");
     emitter.publish(channelKey, channelName, send_message);
   }
 
@@ -350,6 +372,28 @@ class _HomeState extends State<Home> {
       statusBarBrightness: Brightness.light, //status bar brigtness
       statusBarIconBrightness: Brightness.dark, //status barIcon Brightness
     ));
+     if (widget.state == true && !isConnect) {
+       print("this is widget state ${widget.state} and this is onConnect ${isConnect}");
+      emitter.connect(
+        clientId: authProvider.getUser.user_id.toString(),
+        reconnectivity: true,
+        refID: authProvider.getUser.ref_id,
+        authorization_token: authProvider.getUser.authorization_token,
+        project_id: project_id,
+        host: authProvider.host,
+        port: authProvider.port
+      );
+      //if(widget.state==true)
+      emitter.onConnect = (res) {
+        print("onConnect widget build $res");
+        setState(() {
+          isConnect = true;
+          print("this is onconnect socket widget build$isConnect");
+        });
+        //emitter.register(auth.getUser.toJson());
+        // signal
+      };
+    }
     print("fbdfbdgfbdgbdb ${widget.state}");
     showSnakbar(msg) {
       final snackBar = SnackBar(
@@ -436,8 +480,8 @@ class _HomeState extends State<Home> {
           //Screen when there is no group or chat in Chat Room//
           if (listProvider.groupList.groups.length == 0)
             return NoChatScreen(
-              isConnect:isConnect,
-              state:widget.state,
+              isConnect: isConnect,
+              state: widget.state,
               groupListProvider: groupListProvider,
               emitter: emitter,
               refreshList: refreshList,
@@ -458,7 +502,6 @@ class _HomeState extends State<Home> {
                 lead: false,
                 succeedingIcon: 'assets/plus.svg',
               ),
-
               body: RefreshIndicator(
                 onRefresh: refreshList,
                 child: SafeArea(
@@ -467,13 +510,15 @@ class _HomeState extends State<Home> {
                       SizedBox(
                         height: 20,
                       ),
-
                       Expanded(
                           child: ListView.separated(
                         scrollDirection: Axis.vertical,
                         shrinkWrap: true,
                         itemCount: listProvider.groupList.groups.length,
                         itemBuilder: (context, index) {
+                          // print("this is yess"
+                          //     "${listProvider.groupList.groups[index].participants[listProvider.groupList.groups[index].participants.indexWhere((element) => element.ref_id != authProvider.getUser.ref_id)].full_name}");
+
                           String _presenceStatus = "";
                           int _count = 0;
                           if (listProvider.groupList.groups[index].participants
@@ -569,6 +614,7 @@ class _HomeState extends State<Home> {
                                                               .length ==
                                                           1
                                                       ? Text(
+                                                          //personal chat
                                                           "${listProvider.groupList.groups[index].participants[0].full_name}",
                                                           //  maxLines: 2,
 
@@ -608,6 +654,7 @@ class _HomeState extends State<Home> {
                                                                         .w500,
                                                               ))
                                                           : Text(
+                                                              //group chat
                                                               "${listProvider.groupList.groups[index].group_title}",
                                                               //  maxLines: 2,
 
@@ -902,6 +949,13 @@ class _HomeState extends State<Home> {
                                                             )),
                                                       ],
                                               onSelected: (menu) {
+                                                //                                                                    var content =
+                                                //     listProvider.groupList.groups[index].chatList.last.content;
+                                                // //.toString().codeUnits;
+                                                // var decode = utf8.decode(content.toString().codeUnits);
+                                                // print("Decode is $decode");
+                                                // print(
+                                                //     " this is content of receiving mesgs${listProvider.groupList.groups[index].chatList.last.content}");
                                                 if (menu == 1) {
                                                   showDialog(
                                                       context: context,
@@ -936,30 +990,12 @@ class _HomeState extends State<Home> {
                                                             ));
                                                       });
                                                   print("i am after here");
-                                                  // if (groupListProvider
-                                                  //         .editGroupNameStatus ==
-                                                  //     EditGroupNameStatus
-                                                  //         .Success) {
-                                                  //   showSnakbar(groupListProvider
-                                                  //       .successMsg);
-                                                  // } else if (groupListProvider
-                                                  //         .editGroupNameStatus ==
-                                                  //     EditGroupNameStatus
-                                                  //         .Failure) {
-                                                  //   showSnakbar(groupListProvider
-                                                  //       .errorMsg);
-                                                  // } else {}
-                                                  //  if(groupListProvider.editGroupNameStatus)
-
                                                 } else if (menu == 2) {
                                                   _showDialog(
                                                       listProvider.groupList
                                                           .groups[index].id,
                                                       listProvider.groupList
                                                           .groups[index]);
-                                                  // groupListProvider.deleteGroup(
-                                                  //     listProvider.groupList
-                                                  //         .groups[index].id);
                                                 }
                                               }),
 //]),
@@ -981,11 +1017,7 @@ class _HomeState extends State<Home> {
                                                     color: messageStatusColor,
                                                     fontSize: 14,
                                                   ))
-                                              : (listProvider
-                                                                  .groupList
-                                                                  .groups[index]
-                                                                  .counter ==
-                                                              null ||
+                                              : (listProvider.groupList.groups[index].counter == null ||
                                                           listProvider
                                                                   .groupList
                                                                   .groups[index]
@@ -1006,7 +1038,23 @@ class _HomeState extends State<Home> {
                                                                   .last
                                                                   .type ==
                                                               "text"
-                                                          ? "${listProvider.groupList.groups[index].chatList.last.content}"
+                                                          ? (listProvider
+                                                                      .groupList
+                                                                      .groups[
+                                                                          index]
+                                                                      .chatList
+                                                                      .last
+                                                                      .from ==
+                                                                  authProvider
+                                                                      .getUser
+                                                                      .ref_id)
+                                                              //(listProvider.groupList.groups[index].chatList.last.content
+                                                              // (listProvider.groupList.groups[index].chatList[listProvider.groupList.groups[index].participants.indexWhere((element) => element.ref_id != authProvider.getUser.ref_id)].content)
+                                                              //  listProvider.groupList.groups[index].participants[listProvider.groupList.groups[index].participants.indexWhere((element) => element.ref_id != authProvider.getUser.ref_id)].full_name?
+                                                              //?
+                                                              ? "${listProvider.groupList.groups[index].chatList.last.content}"
+                                                              : "${listProvider.groupList.groups[index].chatList.last.content}"
+                                                          // :
                                                           : "",
                                                       maxLines: 1,
                                                       overflow:
@@ -1029,47 +1077,6 @@ class _HomeState extends State<Home> {
                                                                 messageStatusColor,
                                                             fontSize: 14,
                                                           ))
-                                                      // :
-                                                      // listProvider
-                                                      //         .groupList
-                                                      //         .groups[index]
-                                                      //         .chatList
-                                                      //         .last
-                                                      //         .type ==
-                                                      //     1
-                                                      // ? Text("Audio",
-                                                      //     style: TextStyle(
-                                                      //       color:
-                                                      //           messageStatusColor,
-                                                      //       fontSize: 14,
-                                                      //     )):
-                                                      //     listProvider
-                                                      //         .groupList
-                                                      //         .groups[index]
-                                                      //         .chatList
-                                                      //         .last
-                                                      //         .type ==
-                                                      //     2
-                                                      // ? Text("Video",
-                                                      //     style: TextStyle(
-                                                      //       color:
-                                                      //           messageStatusColor,
-                                                      //       fontSize: 14,
-                                                      //     )):
-                                                      //     listProvider
-                                                      //         .groupList
-                                                      //         .groups[index]
-                                                      //         .chatList
-                                                      //         .last
-                                                      //         .type ==
-                                                      //     3
-                                                      // ? Text("File",
-                                                      //     style: TextStyle(
-                                                      //       color:
-                                                      //           messageStatusColor,
-                                                      //       fontSize: 14,
-                                                      //     )):
-
                                                       : Text("Misread Messages",
                                                           style: TextStyle(
                                                             color:
@@ -1178,198 +1185,10 @@ class _HomeState extends State<Home> {
                                   child: Text(authProvider.getUser.full_name))
                             ],
                           )),
-
-                      //Previous Code// NOW CHAGING
-                      // Expanded(
-                      //     child: ListView.separated(
-                      //   scrollDirection: Axis.vertical,
-                      //   shrinkWrap: true,
-                      //   itemCount: listProvider.groupList.groups.length,
-                      //   itemBuilder: (context, index) {
-                      // String _presenceStatus = "";
-                      // int _count = 0;
-                      // if (listProvider.groupList.groups[index].participants
-                      //         .length ==
-                      //     1) {
-                      //   if (listProvider.presenceList.indexOf(listProvider
-                      //           .groupList
-                      //           .groups[index]
-                      //           .participants[0]
-                      //           .ref_id) !=
-                      //       -1)
-                      //     _presenceStatus = "online";
-                      //   else
-                      //     _presenceStatus = "offline";
-                      // } else if (listProvider.groupList.groups[index]
-                      //         .participants.length ==
-                      //     2) {
-                      //   listProvider.groupList.groups[index].participants
-                      //       .forEach((element) {
-                      //     if (listProvider.presenceList
-                      //             .indexOf(element.ref_id) !=
-                      //         -1) _count++;
-                      //   });
-                      //   if (_count < 2)
-                      //     _presenceStatus = "offline";
-                      //   else
-                      //     _presenceStatus = "online";
-                      // } else {
-                      //   listProvider.groupList.groups[index].participants
-                      //       .forEach((element) {
-                      //     if (listProvider.presenceList
-                      //             .indexOf(element.ref_id) !=
-                      //         -1) _count++;
-                      //   });
-                      //   _presenceStatus = "(" +
-                      //       _count.toString() +
-                      //       "/" +
-                      //       listProvider
-                      //           .groupList.groups[index].participants.length
-                      //           .toString() +
-                      //       ") online";
-                      // }
-
-                      //     return Padding(
-                      //       padding: const EdgeInsets.only(left: 5, right: 5),
-                      //       child: Card(
-                      //         shape: RoundedRectangleBorder(
-                      //             borderRadius: BorderRadius.circular(10)),
-                      //         child: Padding(
-                      //           padding: EdgeInsets.only(
-                      //             left: 10,
-                      //           ),
-                      //           child: Container(
-                      //             child: ListTile(
-                      //               onTap: () {
-                      //                 listProvider.setCountZero(index);
-                      //                 Navigator.pushNamed(
-                      //                     context, "/chatScreen",
-                      //                     arguments: {
-                      //                       "index": index,
-                      //                       "publishMessage": publishMessage,
-                      //                       "groupListProvider":
-                      //                           groupListProvider
-                      //                     });
-
-                      //                 handleSeenStatus(index);
-                      //               },
-                      //               leading: Icon(
-                      //                 Icons.person,
-                      //                 size: 30,
-                      //               ),
-                      //               title:
-                      //                   //name of user if participants count is 1
-                      //                   listProvider.groupList.groups[index]
-                      //                               .participants.length ==
-                      //                           1
-                      //                       ? Padding(
-                      //                           padding: const EdgeInsets.only(
-                      //                               top: 20),
-                      //                           child: Text(
-                      //                               "${listProvider.groupList.groups[index].participants[0].full_name}"),
-                      //                         )
-                      //                       : //name of user if participants count is 2
-                      //                       listProvider.groupList.groups[index]
-                      //                                   .participants.length ==
-                      //                               2
-                      //                           ? Padding(
-                      //                               padding:
-                      //                                   const EdgeInsets.only(
-                      //                                       top: 20),
-                      //                               child: Text(
-                      //                                   "${listProvider.groupList.groups[index].participants[listProvider.groupList.groups[index].participants.indexWhere((element) => element.ref_id != authProvider.getUser.ref_id)].full_name}"),
-                      //                             )
-                      //                           :
-                      //                           //name of user if participants count is more than 2
-                      //                           Padding(
-                      //                               padding:
-                      //                                   const EdgeInsets.only(
-                      //                                       top: 20),
-                      //                               child: Text(
-                      //                                   "${listProvider.groupList.groups[index].group_title}"),
-                      //                             ),
-
-                      //               //status for typing
-                      //               // subtitle: Text(""),
-                      //               subtitle: listProvider
-                      //                               .groupList
-                      //                               .groups[index]
-                      //                               .typingstatus ==
-                      //                           null ||
-                      //                       listProvider.groupList.groups[index]
-                      //                               .typingstatus ==
-                      //                           false
-                      //                   ? Text("")
-                      //                   : Text(
-                      //                       "typing...",
-                      //                       style: TextStyle(fontSize: 10),
-                      //                     ),
-                      //               trailing: listProvider.groupList
-                      //                               .groups[index].counter ==
-                      //                           null ||
-                      //                       listProvider.groupList.groups[index]
-                      //                               .counter ==
-                      //                           0
-                      //                   ? //if count is zero
-                      //                   Text(
-                      //                       _presenceStatus,
-                      //                       style: TextStyle(
-                      //                           color:
-                      //                               _presenceStatus != "offline"
-                      //                                   ? Colors.green
-                      //                                   : Colors.red),
-                      //                     )
-                      //                   :
-                      //                   // if count is not zero
-                      //                   Padding(
-                      //                       padding: EdgeInsets.all(1),
-                      //                       child: Column(
-                      //                         children: [
-                      //                           Text(
-                      //                             _presenceStatus,
-                      //                             style: TextStyle(
-                      //                                 color: _presenceStatus !=
-                      //                                         "offline"
-                      //                                     ? Colors.green
-                      //                                     : Colors.red),
-                      //                           ),
-                      //                           Text(
-                      //                             "${listProvider.groupList.groups[index].counter}",
-                      //                             style: TextStyle(
-                      //                                 color: Colors.blue,
-                      //                                 fontSize: 16,
-                      //                                 fontWeight:
-                      //                                     FontWeight.bold),
-                      //                           ),
-                      //                         ],
-                      //                       )),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     );
-                      //   },
-                      //   separatorBuilder: (BuildContext context, int index) {
-                      //     return SizedBox(
-                      //       height: 1,
-                      //     );
-                      //   },
-                      // )),
                     ],
                   ),
                 ),
               ),
-              // floatingActionButton: Padding(
-              //   padding: EdgeInsets.only(bottom: 40),
-              //   child: FloatingActionButton(
-              //       heroTag: Text("btn2"),
-              //       mini: true,
-              //       child: Icon(Icons.add),
-              //       onPressed: () async {
-              //         Navigator.pushNamed(context, '/creategroup',
-              //             arguments: groupListProvider);
-              //       }),
-              // ),
             );
         }
 

@@ -221,87 +221,26 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future getImage(String src) async {
     print('yes im here');
-    // print("this is message");
-    // for (int i = 0; i < 10; i++) {
-    //   await Future.delayed(Duration(milliseconds: 5), () {
-    //     print("publish message in loop $i");
-    //   });
-    // }
-    // return;
     PickedFile pickedFile;
     if (src == "Gallery") {
       pickedFile = await picker.getImage(source: ImageSource.gallery);
-      Navigator.pop(context);
+      // pickedFile = await picker.getVideo(source: ImageSource.gallery);
+      // Navigator.pop(context);
     }
     if (src == "Camera") {
       pickedFile = await picker.getImage(source: ImageSource.camera);
       Navigator.pop(context);
     }
-    // else
-    // final pickedFile = await picker.getImage(source: ImageSource.gallery);
-    // Navigator.pop(context);
+
     if (pickedFile != null) {
       image = File(pickedFile.path);
-      // Uint8List bytes = (await pickedFile.readAsBytes()).lengthInBytes as Uint8List;
-      //   print('hello $bytes');
-      //   final kb = bytes / 1024;
-      //   print('size in kb $kb');
-      //   final mb = kb / 1024;
-      //   if(mb>6){
-      //      buildShowDialog(context, "File size should be less than 6 MB!!");
-      //  return;
-      //   }
+
       Uint8List bytes = await pickedFile.readAsBytes();
       print("bytes are $bytes");
       if (bytes.length > 6000000) {
         buildShowDialog(context, "File size should be less than 6 MB!!");
         return;
       }
-
-      // print("these are bytes array ${listofChunks.length}, ");
-      // List<Uint8List> listofChunks = byteToPortions(bytes);
-
-//chunks to file or Unit8List
-      // List<int> fromchunks = listofChunks.expand((element) => element).toList();
-      // Uint8List listFromChunks = Uint8List.fromList(fromchunks);
-      // print("these are bytes array ${listFromChunks.length}, ");
-      // setState(() {
-      //   _fromChunks = listFromChunks;
-      // });
-
-      // Map<String, dynamic> header = {
-      //   "headerId": authProvider.getUser.client_id + DateTime.now().toString(),
-      //   "totalPacket": listofChunks.length,
-      //   "size": bytes.length,
-      //   "fileExtension": p.extension(_image.path),
-      //   "topic": _groupListProvider.groupList.groups[index].channel_name,
-      //   "key": _groupListProvider.groupList.groups[index].channel_key,
-      //   "from": authProvider.getUser.username,
-      //   "type": 0,
-      // };
-      // print("this is headeer json $header ${base64.encode(listofChunks.last)}");
-      // widget.publishMessage(
-      //     _groupListProvider.groupList.groups[index].channel_key,
-      //     _groupListProvider.groupList.groups[index].channel_name,
-      //     header);
-      // for (int i = 1; i <= listofChunks.length; i++) {
-      //   Map<String, dynamic> filePacket = {
-      //     "headerId": header["headerId"],
-      //     "messageId":
-      //         authProvider.getUser.client_id + DateTime.now().toString(),
-      //     "packetNo": i,
-      //     "topic": _groupListProvider.groupList.groups[index].channel_name,
-      //     "key": _groupListProvider.groupList.groups[index].channel_key,
-      //     "from": authProvider.getUser.username,
-      //     "type": 0,
-      //     "content": base64.encode(listofChunks[i - 1]),
-      //   };
-      //   widget.publishMessage(
-      //       _groupListProvider.groupList.groups[index].channel_key,
-      //       _groupListProvider.groupList.groups[index].channel_name,
-      //       filePacket);
-      // }
-
       Map<String, dynamic> filePacket = {
         "id":
             generateMd5(_groupListProvider.groupList.groups[index].channel_key),
@@ -316,10 +255,7 @@ class _ChatScreenState extends State<ChatScreen> {
         "size": 0,
         "date": ((DateTime.now()).millisecondsSinceEpoch).round(),
         "status": ReceiptType.sent,
-        // "subtype": MediaType.image
       };
-
-      // _groupListProvider.sendMsg(index, filePacket);
       widget.publishMessage(
           _groupListProvider.groupList.groups[index].channel_key,
           _groupListProvider.groupList.groups[index].channel_name,
@@ -336,6 +272,9 @@ class _ChatScreenState extends State<ChatScreen> {
     if (fileType == "file")
       result = await FilePicker.platform
           .pickFiles(allowMultiple: false, type: FileType.any);
+    else if (fileType == "ImageAndVideo")
+      result = await FilePicker.platform
+          .pickFiles(allowMultiple: false, type: FileType.media);
     else
       result = await FilePicker.platform
           .pickFiles(allowMultiple: false, type: FileType.audio);
@@ -642,7 +581,13 @@ class _ChatScreenState extends State<ChatScreen> {
             element.ref_id ==
             groupListProvider.groupList.groups[index].chatList[chatindex].from);
     print("chat index is $chatindex");
-
+    var content =
+        groupListProvider.groupList.groups[index].chatList[chatindex].content;
+    //.toString().codeUnits;
+    // var decode = utf8.decode(content.toString().codeUnits);
+    // print("Decode is $decode");
+    print(
+        " this is content of receiving mesgs${groupListProvider.groupList.groups[index].chatList[chatindex].content}");
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -699,7 +644,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                         padding: EdgeInsets.all(8),
                                         // color: receiverMessagecolor,
                                         child: Text(
-                                          "${groupListProvider.groupList.groups[index].chatList[chatindex].content}",
+                                          "${content.toString()}",
                                           textAlign: TextAlign.left,
                                           style: TextStyle(
                                             color: Colors.white,
@@ -1421,7 +1366,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             "key": groupListProvider
                                 .groupList.groups[index].channel_key,
                             "from": authProvider.getUser.ref_id,
-                            "type": MessageType.typing,
+                            //"type": MessageType.text,
                             "content": "0",
                             "size": 0,
                             "isGroupMessage": false,
