@@ -78,7 +78,7 @@ class _ChatScreenState extends State<ChatScreen> {
     super.dispose();
   }
 
-  Future buildShowDialog(BuildContext context, String errorMessage) {
+  Future buildShowDialog(BuildContext context, String mesg,String errorMessage) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -89,7 +89,7 @@ class _ChatScreenState extends State<ChatScreen> {
             return AlertDialog(
                 title: Center(
                     child: Text(
-                  "Error Message",
+                  "$mesg",
                   style: TextStyle(color: counterColor),
                 )),
                 content: Text("$errorMessage"),
@@ -238,7 +238,7 @@ class _ChatScreenState extends State<ChatScreen> {
       Uint8List bytes = await pickedFile.readAsBytes();
       print("bytes are $bytes");
       if (bytes.length > 6000000) {
-        buildShowDialog(context, "File size should be less than 6 MB!!");
+        buildShowDialog(context, "Error Message", "File size should be less than 6 MB!!");
         return;
       }
       Map<String, dynamic> filePacket = {
@@ -392,7 +392,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
       print("bytes length ${bytes.length}");
       if (bytes.length > 6000000) {
-        buildShowDialog(context, "File size should be less than 6 MB!!");
+        buildShowDialog(context,  "Error Message","File size should be less than 6 MB!!");
         return;
       }
       print("this is file ${(file.path.split('.').last)}");

@@ -70,7 +70,7 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
     emitter.publish(key, channelname, sendmessage);
   }
 
-  Future buildShowDialog(BuildContext context, String errorMessage) {
+  Future buildShowDialog(BuildContext context,String mesg, String errorMessage) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -81,7 +81,7 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
             return AlertDialog(
                 title: Center(
                     child: Text(
-                  "Error Message",
+                  "$mesg",
                   style: TextStyle(color: counterColor),
                 )),
                 content: Text("$errorMessage"),
@@ -178,19 +178,26 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                       GroupModel.fromJson(res["group"]);
                                   // print(
                                   //     "this is response of createGroup ${groupModel.channel_key}, ${groupModel.channel_name}");
+                                  if (res["is_already_created"]) {
+                                    print("here in already created grouup");
+                                    buildShowDialog(context,  "Error Message",
+                                      "You already have a group with this user");
+                                    //   Navigator.pop(context, true);
+                                    // Navigator.pop(context, true);
+                                  } else {
+                                    groupListProvider.addGroup(groupModel);
+                                    groupListProvider.subscribeChannel(
+                                        groupModel.channel_key,
+                                        groupModel.channel_name);
+                                    groupListProvider.subscribePresence(
+                                        groupModel.channel_key,
+                                        groupModel.channel_name,
+                                        true,
+                                        true);
 
-                                  groupListProvider.addGroup(groupModel);
-                                  groupListProvider.subscribeChannel(
-                                      groupModel.channel_key,
-                                      groupModel.channel_name);
-                                  groupListProvider.subscribePresence(
-                                      groupModel.channel_key,
-                                      groupModel.channel_name,
-                                      true,
-                                      true);
-
-                                  Navigator.pop(context, true);
-                                  Navigator.pop(context, true);
+                                    Navigator.pop(context, true);
+                                    Navigator.pop(context, true);
+                                  }
                                 }
                               : _selectedContacts.length > 1
                                   ? _selectedContacts.length <= 4
@@ -219,11 +226,11 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                               });
                                         }
                                       : () {
-                                          buildShowDialog(context,
+                                          buildShowDialog(context,  "Error Message",
                                               "Contacts should not be greater than 5!!!");
                                         }
                                   : () {
-                                      buildShowDialog(context,
+                                      buildShowDialog(context,  "Error Message",
                                           "Please Select At least one contact to proceed!!!");
                                     },
                         ),
