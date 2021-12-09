@@ -1,4 +1,4 @@
-package com.norgic.vdkFlutterChat
+package com.vdotok.flutterchat
 
 import io.flutter.embedding.android.FlutterActivity
 

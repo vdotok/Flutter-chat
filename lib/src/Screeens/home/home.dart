@@ -17,7 +17,7 @@ import '../../core/providers/auth.dart';
 import '../../core/providers/groupListProvider.dart';
 import '../../jsManager/jsManager.dart';
 import '../../Screeens/home/NoChatScreen.dart';
-
+Emitter emitter = Emitter.instance..checkConnectivity();
 class Home extends StatefulWidget {
   bool state;
   Home(this.state);
@@ -25,12 +25,13 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends State<Home> with WidgetsBindingObserver{
   final _groupNameController = TextEditingController();
   AuthProvider authProvider;
   GroupListProvider groupListProvider;
-  Emitter emitter;
-  bool isConnect = true;
+ // Emitter emitter;
+  bool isSocketConnect = true;
+  bool isInternetConnect=true;
   Uint8List _image;
   List<Uint8List> listOfChunks = [];
   Map<String, dynamic> header;
@@ -49,7 +50,8 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    emitter = Emitter.instance;
+    //emitter = Emitter.instance;
+    WidgetsBinding.instance.addObserver(this);
     authProvider = Provider.of<AuthProvider>(context, listen: false);
     groupListProvider = Provider.of<GroupListProvider>(context, listen: false);
     // readFromSharedPref();
@@ -72,20 +74,55 @@ class _HomeState extends State<Home> {
         groupListProvider.getGroupList(authProvider.getUser.auth_token);
         print("Connected Successfully $res");
         setState(() {
-          isConnect = true;
+         isSocketConnect  = true;
         });
-        print("this is  connectttttttttttt before $isConnect");
+        print("this is  connectttttttttttt before $isSocketConnect");
       } else {
         print("connection error $res");
         setState(() {
-          isConnect = false;
+          isSocketConnect = false;
         });
-        print("this is  connectttttttttttt  after $isConnect");
+        if(isInternetConnect==true){
+           emitter.connect(
+        clientId: authProvider.getUser.user_id.toString(),
+        reconnectivity: true,
+        refID: authProvider.getUser.ref_id,
+        authorization_token: authProvider.getUser.authorization_token,
+        project_id: project_id,
+        host: authProvider.host,
+        port: authProvider.port
+        //response: sharedPref.read("authUser");
+        );
+        }
+        print("this is  connectttttttttttt  after $isSocketConnect");
       }
     };
 
+emitter.internetConnectivityCallBack=(mesg){
+   print("this is sockett internet casll back $mesg");
+   if(mesg=="Disconnected"){
+    setState(() {
+       isInternetConnect=false;
+       isSocketConnect=false;
+    });
+   }
+   if(mesg=="Connected" && isSocketConnect==false){
+     isInternetConnect=true;
+     print("i am here in reconnected and socket false");
+      // emitter.connect(
+      //   clientId: authProvider.getUser.user_id.toString(),
+      //   reconnectivity: true,
+      //   refID: authProvider.getUser.ref_id,
+      //   authorization_token: authProvider.getUser.authorization_token,
+      //   project_id: project_id,
+      //   host: authProvider.host,
+      //   port: authProvider.port
+      //   //response: sharedPref.read("authUser");
+      //   );
+   }
+};
     emitter.onPresence = (res) {
-      print("Presence  $res");
+      print("This is emitter onPresence  in hoome  $res");
 
       groupListProvider.handlePresence(json.decode(res));
     };
@@ -339,7 +376,7 @@ class _HomeState extends State<Home> {
     print("chat screen message");
     emitter.publish(channelKey, channelName, send_message);
   }
-
+  
   handleSeenStatus(index) {
     if (groupListProvider.groupList.groups[index].chatList != null) {
       groupListProvider.groupList.groups[index].chatList.forEach((element) {
@@ -364,6 +401,66 @@ class _HomeState extends State<Home> {
     }
   }
 
+void didChangeAppLifecycleState(AppLifecycleState appLifecycleState) {
+   print("this is changeapplifecyclestate");
+
+switch (appLifecycleState) {
+
+case AppLifecycleState.resumed:
+
+print("app in resumed");
+if (authProvider.loggedInStatus == Status.LoggedOut) {
+
+} else if (isSocketConnect == true) {
+
+} else if (isInternetConnect && isSocketConnect == false) {
+
+print("here in resume");
+
+ emitter.connect(
+        clientId: authProvider.getUser.user_id.toString(),
+        reconnectivity: true,
+        refID: authProvider.getUser.ref_id,
+        authorization_token: authProvider.getUser.authorization_token,
+        project_id: project_id,
+        host: authProvider.host,
+        port: authProvider.port
+        //response: sharedPref.read("authUser");
+        );
+
+}
+// signalingClient.sendPing();
+
+break;
+
+case AppLifecycleState.inactive:
+
+print("app in inactive");
+
+break;
+
+case AppLifecycleState.paused:
+
+print("app in paused");
+
+// signalingClient.socketDrop();
+
+break;
+
+case AppLifecycleState.detached:
+ //signalingClient.unRegister(registerRes["mcToken"]);
+
+print("app in detached");
+
+break;
+
+}
+
+ //super.didChangeAppLifecycleState(appLifecycleState);
+
+// _isInForeground = state == AppLifecycleState.resumed;
+  }
+
   String _presenceStatus = "";
   @override
   Widget build(BuildContext context) {
@@ -372,28 +469,28 @@ class _HomeState extends State<Home> {
       statusBarBrightness: Brightness.light, //status bar brigtness
       statusBarIconBrightness: Brightness.dark, //status barIcon Brightness
     ));
-     if (widget.state == true && !isConnect) {
-       print("this is widget state ${widget.state} and this is onConnect ${isConnect}");
-      emitter.connect(
-        clientId: authProvider.getUser.user_id.toString(),
-        reconnectivity: true,
-        refID: authProvider.getUser.ref_id,
-        authorization_token: authProvider.getUser.authorization_token,
-        project_id: project_id,
-        host: authProvider.host,
-        port: authProvider.port
-      );
-      //if(widget.state==true)
-      emitter.onConnect = (res) {
-        print("onConnect widget build $res");
-        setState(() {
-          isConnect = true;
-          print("this is onconnect socket widget build$isConnect");
-        });
-        //emitter.register(auth.getUser.toJson());
-        // signal
-      };
-    }
+    //  if (widget.state == true && !isConnect) {
+    //    print("this is widget state ${widget.state} and this is onConnect ${isConnect}");
+    //   emitter.connect(
+    //     clientId: authProvider.getUser.user_id.toString(),
+    //     reconnectivity: true,
+    //     refID: authProvider.getUser.ref_id,
+    //     authorization_token: authProvider.getUser.authorization_token,
+    //     project_id: project_id,
+    //     host: authProvider.host,
+    //     port: authProvider.port
+    //   );
+    //   //if(widget.state==true)
+    //   emitter.onConnect = (res) {
+    //     print("onConnect widget build $res");
+    //     setState(() {
+    //       isConnect = true;
+    //       print("this is onconnect socket widget build$isConnect");
+    //     });
+    //     //emitter.register(auth.getUser.toJson());
+    //     // signal
+    //   };
+    // }
     print("fbdfbdgfbdgbdb ${widget.state}");
     showSnakbar(msg) {
       final snackBar = SnackBar(
@@ -480,7 +577,7 @@ class _HomeState extends State<Home> {
           //Screen when there is no group or chat in Chat Room//
           if (listProvider.groupList.groups.length == 0)
             return NoChatScreen(
-              isConnect: isConnect,
+              isConnect: isSocketConnect,
               state: widget.state,
               groupListProvider: groupListProvider,
               emitter: emitter,
@@ -1173,7 +1270,7 @@ class _HomeState extends State<Home> {
                                     height: 10,
                                     width: 10,
                                     decoration: BoxDecoration(
-                                        color: isConnect && widget.state
+                                        color: isSocketConnect && widget.state
                                             ? Colors.green
                                             : Colors.red,
                                         shape: BoxShape.circle),

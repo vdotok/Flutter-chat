@@ -46,7 +46,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
     checkStatus();
-    checkConnectivity();
+   // checkConnectivity();
   }
 
   @override
@@ -72,34 +72,34 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-  void checkConnectivity() async {
-     isDeviceConnected = false;
-    if (!kIsWeb) {
-      DataConnectionChecker().onStatusChange.listen((status) async {
-        print("this on listener");
-        isDeviceConnected = await DataConnectionChecker().hasConnection;
-        print("this is is connected $isDeviceConnected");
-        if (isDeviceConnected == true) {
+  // void checkConnectivity() async {
+  //    isDeviceConnected = false;
+  //   if (!kIsWeb) {
+  //     DataConnectionChecker().onStatusChange.listen((status) async {
+  //       print("this on listener");
+  //       isDeviceConnected = await DataConnectionChecker().hasConnection;
+  //       print("this is is connected $isDeviceConnected");
+  //       if (isDeviceConnected == true) {
         
-          if (state == true)
-            state = false;
-          else{
-          setState(() {
-            isdev=true;
-          });
-            showSnackbar("Internet Connected", whiteColor, Colors.green, false);}
-        } else {
-          {
-            setState(() {
-              isdev=false;
-            });
-          showSnackbar(
-              "No Internet Connection", whiteColor, primaryColor, true);
-          }
-        }
-      });
-    }
-  }
+  //         if (state == true)
+  //           state = false;
+  //         else{
+  //         setState(() {
+  //           isdev=true;
+  //         });
+  //           showSnackbar("Internet Connected", whiteColor, Colors.green, false);}
+  //       } else {
+  //         {
+  //           setState(() {
+  //             isdev=false;
+  //           });
+  //         showSnackbar(
+  //             "No Internet Connection", whiteColor, primaryColor, true);
+  //         }
+  //       }
+  //     });
+  //   }
+  // }
 
   showSnackbar(text, Color color, Color backgroundColor, bool check) {
     if (check == false) {
