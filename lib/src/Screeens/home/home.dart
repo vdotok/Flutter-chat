@@ -8,8 +8,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:vdkFlutterChat/src/Screeens/CreateGroupScreen/CreateGroupPopUp.dart';
 import 'package:vdkFlutterChat/src/core/config/config.dart';
-import 'package:vdkFlutterChat/src/shared_preference/shared_preference.dart';
 import 'package:vdotok_connect/vdotok_connect.dart';
+import '../../../main.dart';
 import '../home/CustomAppBar.dart';
 import '../splash/splash.dart';
 import '../../constants/constant.dart';
@@ -17,46 +17,30 @@ import '../../core/providers/auth.dart';
 import '../../core/providers/groupListProvider.dart';
 import '../../jsManager/jsManager.dart';
 import '../../Screeens/home/NoChatScreen.dart';
+
 Emitter emitter = Emitter.instance..checkConnectivity();
+
 class Home extends StatefulWidget {
-  bool state;
-  Home(this.state);
   @override
   _HomeState createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> with WidgetsBindingObserver{
+class _HomeState extends State<Home> with WidgetsBindingObserver {
   final _groupNameController = TextEditingController();
   AuthProvider authProvider;
   GroupListProvider groupListProvider;
- // Emitter emitter;
   bool isSocketConnect = true;
-  bool isInternetConnect=true;
-  Uint8List _image;
+  bool isInternetConnect = true;
   List<Uint8List> listOfChunks = [];
   Map<String, dynamic> header;
   bool scrollUp = false;
-  // var response;
-  // var port;
-  // var host;
-  // SharedPref sharedPref = SharedPref();
-  // readFromSharedPref() async {
-  //   response = await sharedPref.read("authUser");
-  //   print("This is response of login api from shared pref $response");
-  //   port = response["messaging_server_map"]["port"];
-  //   host = response["messaging_server_map"]["host"];
-  // }
 
   @override
   void initState() {
     super.initState();
-    //emitter = Emitter.instance;
     WidgetsBinding.instance.addObserver(this);
     authProvider = Provider.of<AuthProvider>(context, listen: false);
     groupListProvider = Provider.of<GroupListProvider>(context, listen: false);
-    // readFromSharedPref();
-    //print("This is response of login api from shared pref $response");
-    //print("this is  ${authProvider.host}");
     emitter.connect(
         clientId: authProvider.getUser.user_id.toString(),
         reconnectivity: true,
@@ -64,9 +48,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver{
         authorization_token: authProvider.getUser.authorization_token,
         project_id: project_id,
         host: authProvider.host,
-        port: authProvider.port
-        //response: sharedPref.read("authUser");
-        );
+        port: authProvider.port);
 
     emitter.onConnect = (res) {
       print('this is response on connect $res');
@@ -74,7 +56,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver{
         groupListProvider.getGroupList(authProvider.getUser.auth_token);
         print("Connected Successfully $res");
         setState(() {
-         isSocketConnect  = true;
+          isSocketConnect = true;
         });
         print("this is  connectttttttttttt before $isSocketConnect");
       } else {
@@ -82,45 +64,38 @@ class _HomeState extends State<Home> with WidgetsBindingObserver{
         setState(() {
           isSocketConnect = false;
         });
-        if(isInternetConnect==true){
-           emitter.connect(
-        clientId: authProvider.getUser.user_id.toString(),
-        reconnectivity: true,
-        refID: authProvider.getUser.ref_id,
-        authorization_token: authProvider.getUser.authorization_token,
-        project_id: project_id,
-        host: authProvider.host,
-        port: authProvider.port
-        //response: sharedPref.read("authUser");
-        );
+        if (isInternetConnect == true) {
+          emitter.connect(
+              clientId: authProvider.getUser.user_id.toString(),
+              reconnectivity: true,
+              refID: authProvider.getUser.ref_id,
+              authorization_token: authProvider.getUser.authorization_token,
+              project_id: project_id,
+              host: authProvider.host,
+              port: authProvider.port
+              //response: sharedPref.read("authUser");
+              );
         }
         print("this is  connectttttttttttt  after $isSocketConnect");
       }
     };
 
-emitter.internetConnectivityCallBack=(mesg){
-   print("this is sockett internet casll back $mesg");
-   if(mesg=="Disconnected"){
-    setState(() {
-       isInternetConnect=false;
-       isSocketConnect=false;
-    });
-   }
-   if(mesg=="Connected" && isSocketConnect==false){
-     isInternetConnect=true;
-     print("i am here in reconnected and socket false");
-      // emitter.connect(
-      //   clientId: authProvider.getUser.user_id.toString(),
-      //   reconnectivity: true,
-      //   refID: authProvider.getUser.ref_id,
-      //   authorization_token: authProvider.getUser.authorization_token,
-      //   project_id: project_id,
-      //   host: authProvider.host,
-      //   port: authProvider.port
-      //   //response: sharedPref.read("authUser");
-      //   );
-   }
-};
+    emitter.internetConnectivityCallBack = (mesg) {
+      print("this is sockett internet casll back $mesg");
+      if (mesg == "Connected" && isSocketConnect == false) {
+        setState(() {
+          isInternetConnect = true;
+        });
+        showSnackbar("Internet Connected", whiteColor, Colors.green, false);
+      } else {
+        setState(() {
+          isInternetConnect = false;
+          isSocketConnect = false;
+        });
+        showSnackbar("No Internet Connection", whiteColor, primaryColor, true);
+      }
+     
+    };
     emitter.onPresence = (res) {
       print("This is emitter onPresence  in hoome  $res");
 
@@ -202,21 +177,7 @@ emitter.internetConnectivityCallBack=(mesg){
             }
           }
           break;
-        // case "1":
-        //   {
-        //     print("this is on file packet");
 
-        //     // if (authProvider.getUser.username != message["from"]) {
-        //     //   groupListProvider.updateTypingStatus(msg);
-        //     // }
-        //   }
-        //   break;
-        // case "RECEIPTS":
-        //   {
-        //     print("this is seen notify");
-        //     groupListProvider.changeMsgStatus(msg, 3);
-        //   }
-        //   break;
         default:
           {
             if (message["receiptType"] == ReceiptType.seen)
@@ -325,34 +286,33 @@ emitter.internetConnectivityCallBack=(mesg){
               message, ReceiptType.delivered);
         }
       }
-
-      // {
-      //   print("this is on file packet");
-      //   if (message["totalPacket"] != null) {
-      //     header = message;
-      //   } else {
-      //     print(
-      //         "this is listofchunks ${listOfChunks.length},   ${header["totalPacket"]}");
-      //     if (header["totalPacket"] - 1 == listOfChunks.length) {
-      //       listOfChunks.insert(
-      //           --message["packetNo"], base64.decode(message["content"]));
-
-      //       print("this is listofchunks ${listOfChunks.length}");
-      //       List<int> fromchunks =
-      //           listOfChunks.expand((element) => element).toList();
-      //       Uint8List listFromChunks = Uint8List.fromList(fromchunks);
-      //       print("this is listofchunks ${listFromChunks.length}");
-
-      //       setState(() {
-      //         _image = listFromChunks;
-      //       });
-      //     } else {
-      //       listOfChunks.insert(
-      //           --message["packetNo"], base64.decode(message["content"]));
-      //     }
-      //   }
-      // }
     };
+  }
+
+  showSnackbar(text, Color color, Color backgroundColor, bool check) {
+    if (check == false) {
+      rootScaffoldMessengerKey.currentState
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(
+          content: Text(
+            '$text',
+            style: TextStyle(color: color),
+          ),
+          backgroundColor: backgroundColor,
+          duration: Duration(seconds: 2),
+        ));
+    } else if (check == true) {
+      rootScaffoldMessengerKey.currentState
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(
+          content: Text(
+            '$text',
+            style: TextStyle(color: color),
+          ),
+          backgroundColor: backgroundColor,
+          duration: Duration(seconds: 2),
+        ));
+    }
   }
 
   Future<Null> refreshList() async {
@@ -376,7 +336,7 @@ emitter.internetConnectivityCallBack=(mesg){
     print("chat screen message");
     emitter.publish(channelKey, channelName, send_message);
   }
-  
+
   handleSeenStatus(index) {
     if (groupListProvider.groupList.groups[index].chatList != null) {
       groupListProvider.groupList.groups[index].chatList.forEach((element) {
@@ -401,62 +361,53 @@ emitter.internetConnectivityCallBack=(mesg){
     }
   }
 
-void didChangeAppLifecycleState(AppLifecycleState appLifecycleState) {
-   print("this is changeapplifecyclestate");
+  void didChangeAppLifecycleState(AppLifecycleState appLifecycleState) {
+    print("this is changeapplifecyclestate");
 
-switch (appLifecycleState) {
+    switch (appLifecycleState) {
+      case AppLifecycleState.resumed:
+        print("app in resumed");
+        if (authProvider.loggedInStatus == Status.LoggedOut) {
+        } else if (isSocketConnect == true) {
+        } else if (isInternetConnect && isSocketConnect == false) {
+          print("here in resume");
 
-case AppLifecycleState.resumed:
-
-print("app in resumed");
-if (authProvider.loggedInStatus == Status.LoggedOut) {
-
-} else if (isSocketConnect == true) {
-
-} else if (isInternetConnect && isSocketConnect == false) {
-
-print("here in resume");
-
- emitter.connect(
-        clientId: authProvider.getUser.user_id.toString(),
-        reconnectivity: true,
-        refID: authProvider.getUser.ref_id,
-        authorization_token: authProvider.getUser.authorization_token,
-        project_id: project_id,
-        host: authProvider.host,
-        port: authProvider.port
-        //response: sharedPref.read("authUser");
-        );
-
-}
+          emitter.connect(
+              clientId: authProvider.getUser.user_id.toString(),
+              reconnectivity: true,
+              refID: authProvider.getUser.ref_id,
+              authorization_token: authProvider.getUser.authorization_token,
+              project_id: project_id,
+              host: authProvider.host,
+              port: authProvider.port
+              //response: sharedPref.read("authUser");
+              );
+        }
 // signalingClient.sendPing();
 
-break;
+        break;
 
-case AppLifecycleState.inactive:
+      case AppLifecycleState.inactive:
+        print("app in inactive");
 
-print("app in inactive");
+        break;
 
-break;
-
-case AppLifecycleState.paused:
-
-print("app in paused");
+      case AppLifecycleState.paused:
+        print("app in paused");
 
 // signalingClient.socketDrop();
 
-break;
+        break;
 
-case AppLifecycleState.detached:
- //signalingClient.unRegister(registerRes["mcToken"]);
+      case AppLifecycleState.detached:
+        //signalingClient.unRegister(registerRes["mcToken"]);
 
-print("app in detached");
+        print("app in detached");
 
-break;
+        break;
+    }
 
-}
-
- //super.didChangeAppLifecycleState(appLifecycleState);
+    //super.didChangeAppLifecycleState(appLifecycleState);
 
 // _isInForeground = state == AppLifecycleState.resumed;
   }
@@ -491,7 +442,7 @@ break;
     //     // signal
     //   };
     // }
-    print("fbdfbdgfbdgbdb ${widget.state}");
+
     showSnakbar(msg) {
       final snackBar = SnackBar(
         content: Text(
@@ -578,7 +529,7 @@ break;
           if (listProvider.groupList.groups.length == 0)
             return NoChatScreen(
               isConnect: isSocketConnect,
-              state: widget.state,
+              state: isInternetConnect,
               groupListProvider: groupListProvider,
               emitter: emitter,
               refreshList: refreshList,
@@ -1270,7 +1221,8 @@ break;
                                     height: 10,
                                     width: 10,
                                     decoration: BoxDecoration(
-                                        color: isSocketConnect && widget.state
+                                        color: isInternetConnect &&
+                                                isSocketConnect == true
                                             ? Colors.green
                                             : Colors.red,
                                         shape: BoxShape.circle),

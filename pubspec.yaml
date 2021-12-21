@@ -28,7 +28,6 @@ dependencies:
   json_annotation: ^3.1.1
   provider: ^5.0.0
   device_info: ^2.0.0
-  # crypto: ^3.0.0
   flutter_icons: ^1.1.0
   image_picker: ^0.7.5+3
   path: ^1.8.0
@@ -38,8 +37,6 @@ dependencies:
   email_validator: ^2.0.1
   flutter_svg: ^0.22.0
   intl: ^0.17.0
-  # flutter_audio_recorder: ^0.5.5
-  # microphone: ^0.1.0
   file_picker: ^3.0.2+2
   video_player: ^1.0.1
   chewie: ^0.12.2

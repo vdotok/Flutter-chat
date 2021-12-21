@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:data_connection_checker/data_connection_checker.dart';
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:vdkFlutterChat/src/Screeens/home/homeIndex.dart';
@@ -12,6 +11,7 @@ import 'package:vdkFlutterChat/src/core/providers/auth.dart';
 import 'package:vdkFlutterChat/src/routing/routes.dart';
 import 'src/constants/constant.dart';
 
+GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey;
 class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext context) {
@@ -33,20 +33,15 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool state = true;
-  bool connectionState = false;
-  bool keepShowing = false;
-  bool isDeviceConnected = false;
-  bool isdev=true;
+ 
   StreamSubscription subscription;
-  GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey;
+  
 
   @override
   void initState() {
     super.initState();
     rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
-    checkStatus();
-   // checkConnectivity();
+   
   }
 
   @override
@@ -55,78 +50,7 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
   }
 
-  checkStatus() async {
-    if (!kIsWeb) {
-      bool connectivity = await DataConnectionChecker().hasConnection;
-      print("this is for web $connectivity");
-      if (connectivity == true) {
-        setState(() {
-          state = true;
-          print("here in state circle");
-        });
-      } else {
-        setState(() {
-          state = false;
-        });
-      }
-    }
-  }
-
-  // void checkConnectivity() async {
-  //    isDeviceConnected = false;
-  //   if (!kIsWeb) {
-  //     DataConnectionChecker().onStatusChange.listen((status) async {
-  //       print("this on listener");
-  //       isDeviceConnected = await DataConnectionChecker().hasConnection;
-  //       print("this is is connected $isDeviceConnected");
-  //       if (isDeviceConnected == true) {
-        
-  //         if (state == true)
-  //           state = false;
-  //         else{
-  //         setState(() {
-  //           isdev=true;
-  //         });
-  //           showSnackbar("Internet Connected", whiteColor, Colors.green, false);}
-  //       } else {
-  //         {
-  //           setState(() {
-  //             isdev=false;
-  //           });
-  //         showSnackbar(
-  //             "No Internet Connection", whiteColor, primaryColor, true);
-  //         }
-  //       }
-  //     });
-  //   }
-  // }
-
-  showSnackbar(text, Color color, Color backgroundColor, bool check) {
-    if (check == false) {
-      rootScaffoldMessengerKey.currentState
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(
-          content: Text(
-            '$text',
-            style: TextStyle(color: color),
-          ),
-          backgroundColor: backgroundColor,
-          duration: Duration(seconds: 2),
-        ));
-    } else if (check == true) {
-      rootScaffoldMessengerKey.currentState
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(
-          content: Text(
-            '$text',
-            style: TextStyle(color: color),
-          ),
-          backgroundColor: backgroundColor,
-          duration: Duration(days: 1),
-        ));
-    }
-  }
-
+  
   @override
   Widget build(BuildContext context) {
      //  SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
@@ -154,8 +78,8 @@ class _MyAppState extends State<MyApp> {
               if (auth.loggedInStatus == Status.Authenticating)
                 return SplashScreen();
               else if (auth.loggedInStatus == Status.LoggedIn) {
-                print("thiddfdfbkdfkbndfkn $isdev");
-                return HomeIndex(state:isdev);
+               
+                return HomeIndex();
               } else
                 return SignInScreen();
             },

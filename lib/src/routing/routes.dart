@@ -28,7 +28,7 @@ class Routers {
       case '/home':
         return PageTransition(
             child: HomeIndex(
-                 state: args,
+               
                 ),
             type: PageTransitionType.rightToLeft);
         break;
