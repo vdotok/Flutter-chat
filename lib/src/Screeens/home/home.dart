@@ -82,9 +82,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
     emitter.internetConnectivityCallBack = (mesg) {
       print("this is sockett internet casll back $mesg");
-      if (mesg == "Connected" && isSocketConnect == false) {
+      if (mesg == "Connected") {
         setState(() {
           isInternetConnect = true;
+          isSocketConnect=true;
         });
         showSnackbar("Internet Connected", whiteColor, Colors.green, false);
       } else {
