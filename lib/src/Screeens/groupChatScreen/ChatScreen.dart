@@ -16,7 +16,6 @@ import 'package:provider/provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:crypto/crypto.dart' as crypto;
 import 'package:intl/intl.dart';
-import 'package:video_player/video_player.dart';
 import '../groupChatScreen/AddAttachmentsPopUp.dart';
 import '../home/CustomAppBar.dart';
 import '../../constants/constant.dart';

@@ -54,7 +54,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           //color: screenbackgroundColor,
           child: Form(
             key: _registerformkey,
-            autovalidate: _autoValidate,
+            autovalidateMode: AutovalidateMode.always,
             child: Column(
               children: <Widget>[
                 SizedBox(height: 20),

@@ -87,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
           //color: screenbackgroundColor,
           child: Form(
             key: _loginformkey,
-            autovalidate: _autoValidate,
+           autovalidateMode: AutovalidateMode.always,
             child: Column(
               children: <Widget>[
                 SizedBox(height: 100),

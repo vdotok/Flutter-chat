@@ -98,7 +98,7 @@ Navigator.pushNamed(context, "/register");
                     //    Expanded(
                     Form(
                       key: _loginformkey,
-                      autovalidate: _autoValidate,
+                   autovalidateMode: AutovalidateMode.always,
                       child: Container(
                         width: 290,
                         height: 510,

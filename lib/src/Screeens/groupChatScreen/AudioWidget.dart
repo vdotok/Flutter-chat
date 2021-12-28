@@ -20,7 +20,7 @@ class AudioWidget extends StatefulWidget {
 class _AudioWidgetState extends State<AudioWidget> {
   AudioPlayer _audioPlayer = AudioPlayer();
 
-  AudioPlayerState _audioPlayerState;
+ PlayerState _audioPlayerState;
   bool isPlaying = false;
   var currentTime = "00:00";
   var completeTime = "00:00";
@@ -57,11 +57,11 @@ class _AudioWidgetState extends State<AudioWidget> {
       });
     });
 
-    _audioPlayer.onPlayerStateChanged.listen((AudioPlayerState s) {
+    _audioPlayer.onPlayerStateChanged.listen((PlayerState s) {
       print('Current player state: $s');
       setState(() {
         _audioPlayerState = s;
-        if (_audioPlayerState == AudioPlayerState.COMPLETED) {
+        if (_audioPlayerState == PlayerState.COMPLETED) {
           setState(() {
             isPlaying = false;
             _currentDuration = new Duration();

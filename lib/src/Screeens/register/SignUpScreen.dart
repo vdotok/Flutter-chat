@@ -91,7 +91,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Logo(),
                           SizedBox(height: 39.64),
                           Form(
-                            autovalidate: _autoValidate,
+                             autovalidateMode: AutovalidateMode.always,
                             key: _registerformkey,
                             child: Container(
                               width: 290,
