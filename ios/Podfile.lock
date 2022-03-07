@@ -3,7 +3,7 @@ PODS:
     - Flutter
   - connectivity_plus (0.0.1):
     - Flutter
-    - Reachability
+    - ReachabilitySwift
   - device_info (0.0.1):
     - Flutter
   - DKImagePickerController/Core (4.3.2):
@@ -48,9 +48,9 @@ PODS:
     - Flutter
   - open_file (0.0.1):
     - Flutter
-  - path_provider (0.0.1):
+  - path_provider_ios (0.0.1):
     - Flutter
-  - Reachability (3.2)
+  - ReachabilitySwift (5.0.0)
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
   - SDWebImage/Core (5.11.1)
@@ -59,10 +59,6 @@ PODS:
   - SwiftyGif (5.4.0)
   - Toast (4.0.0)
   - vdotok_connect (0.0.1):
-    - Flutter
-  - video_player (0.0.1):
-    - Flutter
-  - wakelock (0.0.1):
     - Flutter
 
 DEPENDENCIES:
@@ -74,17 +70,15 @@ DEPENDENCIES:
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - open_file (from `.symlinks/plugins/open_file/ios`)
-  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - vdotok_connect (from `.symlinks/plugins/vdotok_connect/ios`)
-  - video_player (from `.symlinks/plugins/video_player/ios`)
-  - wakelock (from `.symlinks/plugins/wakelock/ios`)
 
 SPEC REPOS:
   trunk:
     - DKImagePickerController
     - DKPhotoGallery
-    - Reachability
+    - ReachabilitySwift
     - SDWebImage
     - SwiftyGif
     - Toast
@@ -106,38 +100,32 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_picker/ios"
   open_file:
     :path: ".symlinks/plugins/open_file/ios"
-  path_provider:
-    :path: ".symlinks/plugins/path_provider/ios"
+  path_provider_ios:
+    :path: ".symlinks/plugins/path_provider_ios/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
   vdotok_connect:
     :path: ".symlinks/plugins/vdotok_connect/ios"
-  video_player:
-    :path: ".symlinks/plugins/video_player/ios"
-  wakelock:
-    :path: ".symlinks/plugins/wakelock/ios"
 
 SPEC CHECKSUMS:
-  audioplayers: 53f0f30789b10ab2009771c6c79def00980945e4
-  connectivity_plus: 5f0eb61093bec56935f21a1699dd2758bc895587
+  audioplayers: 455322b54050b30ea4b1af7cd9e9d105f74efa8c
+  connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   DKImagePickerController: b5eb7f7a388e4643264105d648d01f727110fc3d
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
   file_picker: 3e6c3790de664ccf9b882732d9db5eaf6b8d4eb1
-  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
   image_picker: 50e7c7ff960e5f58faa4d1f4af84a771c671bc4a
   open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
-  path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
-  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
+  path_provider_ios: 7d7ce634493af4477d156294792024ec3485acd5
+  ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   SwiftyGif: 5d4af95df24caf1c570dbbcb32a3b8a0763bc6d7
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   vdotok_connect: 5ab811d5d2bb898613e45221af58378c6ecc8cf9
-  video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
-  wakelock: bfc7955c418d0db797614075aabbc58a39ab5107
 
 PODFILE CHECKSUM: a75497545d4391e2d394c3668e20cfb1c2bbd4aa
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.10.2
