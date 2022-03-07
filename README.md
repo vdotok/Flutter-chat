@@ -10,7 +10,7 @@ Open the below link, and select “Operating System” for the installation of F
 https://flutter.dev/docs/get-started/install 
 
 #### Note: 
-Now run "flutter doctor" in terminal/command prompt, and make sure all tick-marks appear green, as shown in the below screenshot. 
+Now run "flutter doctor" in <b>Terminal/Command Prompt</b>, and make sure all tick-marks appear green, as shown in the below screenshot. 
 
 <img width="603" alt="MicrosoftTeams-image" src="https://user-images.githubusercontent.com/86484384/139054351-32baf182-20d3-476a-b73e-df1927210ffe.png">
 
@@ -20,16 +20,16 @@ Now run "flutter doctor" in terminal/command prompt, and make sure all tick-mark
 3. A toast for <b>Clone</b> will appear, containing HTTPS, SSH, and GitHub CLI  information
 4. On HTTPS section, copy repository <b>URL</b> 
 5. Open <b>Terminal / Command Prompt</b> and go to the <b>Directory</b> where you want to clone the project
-6. <b>Paste</b> copied repository URL and press <b>Enter</b>.  
+6. <b>Paste</b> copied repository URL and press <b>Enter</b> 
 
 ## VS Code Installation: 
 
-1. Install the latest version of <b>VS Code</b>. 
-2. Open your <b>Project</b> in VS Code. 
+1. Install the latest version of <b>VS Code</b>
+2. Open your <b>Project</b> in <b>VS Code</b>
 
-## project run steps
-1. open project in vs code. 
-2. Open terminal and go to project directory and run "flutter pub get"
+## Project Run Steps
+1. Open Project in <b>VS Code</b>
+2. Open <b>Terminal</b> and go to <b>Project Directory</b> and run "flutter pub get"
 
 
 ## SDK Authentication: 
@@ -44,12 +44,12 @@ Now run "flutter doctor" in terminal/command prompt, and make sure all tick-mark
 
 * This will navigate to Sign Up page, where the User is required to enter the following information: <b>First Name > Last Name > Email ID > Password </b>
 
-2. Select Sign Up Today 
+2. Select <b>Sign Up Today</b> button
 
 ![3](https://user-images.githubusercontent.com/86484384/139064711-bea2bf70-7f02-4655-a98c-94a40d8d712b.jpg)
 
-3. To create your first project, choose <b>Name of Project</b>
-4. Select <b>Continue</b>
+3. To create your first Project, choose <b>Name of Project</b>
+4. Select <b>Continue</b> button
 
 ![4](https://user-images.githubusercontent.com/86484384/139066181-f60b1870-b2cd-4506-9a36-cf8989c7d4df.jpg)
 
@@ -57,10 +57,8 @@ Now run "flutter doctor" in terminal/command prompt, and make sure all tick-mark
 
 ![5](https://user-images.githubusercontent.com/86484384/139066525-c88c03fe-ec5a-413d-9294-1f38fb28edfa.jpg)
 
-6. Open <b>Project</b> in VS Code
-7. Go to <b>lib</b> folder > <b> src > core > config > </b> open <b>config.dart</b> file, and 
-
-paste <b>Project ID</b> against project_id String in config.dart file
+6. Open Project in <b>VS Code</b>
+7. Go to <b>lib</b> folder > <b> src > core > config > </b> open <b>config.dart</b> file, and paste <b>Project ID</b> against project_id String in config.dart file
 
 ![6](https://user-images.githubusercontent.com/86484384/139203408-9bee3cf8-73c1-4297-8f2f-224aaabba3bb.jpg)
 
@@ -80,7 +78,7 @@ paste <b>Project ID</b> against project_id String in config.dart file
 
 * <b>To Open a Project in Xcode: </b>
 1. Go to your <b>Project Folder</b>
-2. Go to <b>iOS folder</b> in your project 
+2. Go to <b>iOS folder</b> in your Project 
 3. Double click on the <b>Runner.xcworkspace </b>
 
 ![8](https://user-images.githubusercontent.com/86484384/139203776-bf1fe5fd-2530-4d4b-b30e-199468429449.jpg)
@@ -119,21 +117,21 @@ paste <b>Project ID</b> against project_id String in config.dart file
 
 ![15](https://user-images.githubusercontent.com/86484384/139233996-d47eee74-33f8-42fc-96f2-b157da018e67.jpg)
 
-3. Select <b>Run</b> Buton
+3. Select <b>Run</b> Button
 ![16](https://user-images.githubusercontent.com/86484384/139234426-e5a54b59-b050-4038-83d2-592b0dbc3343.jpg)
 
 ## Android Setup: 
 
 ### Project Run Steps: 
 
-1. Open <b>Project</b> in VS Code 
-2. Open <b>Terminal / Command Prompt</b> and go to <b>Project Directory</b> and run <b>“flutter pub get”. </b>
+1. Open Project in <b>VS Code</b>
+2. Open <b>Terminal / Command Prompt</b> and go to <b>Project Directory</b> and run <b>“flutter pub get”</b>
 
 ### Device Setting: 
 
-To connect a device, enable <b>“developer mode”</b> and <b>“USB debug”</b> by following the device-specific steps given on the below link:  
+To connect a device, enable <b>“Developer Mode”</b> and <b>“USB debug”</b> by following the device-specific steps given on the below link:  
 https://developer.android.com/studio/debug/dev-options 
 
 ## Build Project 
 
-After connecting phone run following command in project directory. <b>"flutter run"</b>
+After connecting your phone, run the following command in <b>Project Directory -> "flutter run"</b>

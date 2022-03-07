@@ -41,8 +41,8 @@ dependencies:
   #video_player: ^1.0.1
   # chewie: ^0.12.2
   open_file: ^3.2.1
-  vdotok_connect: "0.0.7"
-  # path: ../flutter-sdk-connect/
+  vdotok_connect: 
+   path: ../flutter-sdk-connect/
   
 dev_dependencies:
   flutter_test:
