@@ -10,26 +10,28 @@ Open the below link, and select “Operating System” for the installation of F
 https://flutter.dev/docs/get-started/install 
 
 #### Note: 
-Now run "flutter doctor" in <b>Terminal/Command Prompt</b>, and make sure all tick-marks appear green, as shown in the below screenshot. 
+Now run <b>"flutter doctor"</b> in <b>Terminal/Command Prompt</b>, and make sure all tick-marks appear green, as shown in the below screenshot. 
 
 <img width="603" alt="MicrosoftTeams-image" src="https://user-images.githubusercontent.com/86484384/139054351-32baf182-20d3-476a-b73e-df1927210ffe.png">
 
-## Repo Clone:	
+## Repo Clone:
+
 1. Open Github URL of VdoTok’s Flutter Chat  " https://github.com/vdotok/Flutter-chat "
 2. Click on <b>Code</b> button, appearing on R.H.S
 3. A toast for <b>Clone</b> will appear, containing HTTPS, SSH, and GitHub CLI  information
 4. On HTTPS section, copy repository <b>URL</b> 
-5. Open <b>Terminal / Command Prompt</b> and go to the <b>Directory</b> where you want to clone the project
+5. Open <b>Terminal/Command Prompt</b> and go to the <b>Directory</b> where you want to clone the project
 6. <b>Paste</b> copied repository URL and press <b>Enter</b> 
 
 ## VS Code Installation: 
 
 1. Install the latest version of <b>VS Code</b>
-2. Open your <b>Project</b> in <b>VS Code</b>
+2. Open your Project in <b>VS Code</b>
 
-## Project Run Steps
+## Project Run Steps:
+
 1. Open Project in <b>VS Code</b>
-2. Open <b>Terminal</b> and go to <b>Project Directory</b> and run "flutter pub get"
+2. Open <b>Terminal</b> and go to <b>Project Directory</b> and run <b>“flutter pub get”</b>
 
 
 ## SDK Authentication: 
@@ -38,7 +40,7 @@ Now run "flutter doctor" in <b>Terminal/Command Prompt</b>, and make sure all ti
 * When a User connects with an application using SDK, the application will require a Project_ID. (A Project_ID is a string that uniquely identifies a project). 
 * To generate a Project_ID, perform the following steps: 
 
-1. Run this link -> https://userpanel.vdotok.com/ in Chrome. A “Sign in” screen will appear. Please click on the Sign Up link, as shown below: 
+1. Run this link -> https://userpanel.vdotok.com/ in Chrome. A Sign in screen will appear. Please click on the Sign Up link, as shown below: 
 
 ![2](https://user-images.githubusercontent.com/86484384/139055385-c14b148c-b056-4065-9482-249c134f5651.jpg)
 
@@ -76,14 +78,15 @@ Now run "flutter doctor" in <b>Terminal/Command Prompt</b>, and make sure all ti
 
 ![MicrosoftTeams-image (1)](https://user-images.githubusercontent.com/86484384/139202518-daeb9b97-fa18-476b-bc5f-d48020131d92.jpg)
 
-* <b>To Open a Project in Xcode: </b>
+* <b>To Open a Project in Xcode:</b>
+
 1. Go to your <b>Project Folder</b>
 2. Go to <b>iOS folder</b> in your Project 
-3. Double click on the <b>Runner.xcworkspace </b>
+3. Double click on the <b>Runner.xcworkspace</b>
 
 ![8](https://user-images.githubusercontent.com/86484384/139203776-bf1fe5fd-2530-4d4b-b30e-199468429449.jpg)
 
-* <b>To Configure “Developer Account” After Opening a Project in Xcode: </b>
+* <b>To Configure Developer Account after Opening a Project in Xcode:</b>
 
 1. Select <b>File Folder</b> icon, appearing on top LHS in blue color 
 2. Select <b>Runner</b> of Xcode 
@@ -94,23 +97,25 @@ Now run "flutter doctor" in <b>Terminal/Command Prompt</b>, and make sure all ti
 7. Select <b>Add an Account</b> option 
 ![9](https://user-images.githubusercontent.com/86484384/139213606-e091c899-d631-44d2-95d7-a41542a17d61.jpg)
 
-* <b>To Add “Apple Account”: </b>
-1. Enter <b>Apple ID </b>
-2. Select <b>Next </b>
+* <b>To Add Apple Account:</b>
+
+1. Enter <b>Apple ID</b>
+2. Select <b>Next</b>
 ![MicrosoftTeams-image (5)](https://user-images.githubusercontent.com/86484384/139230893-a99c0476-ea9d-4df3-bcf2-ee163bf702d7.jpg)
 
-3. Enter <b>Password </b>
-4. Select <b>Next </b>
+3. Enter <b>Password</b>
+4. Select <b>Next</b> button
 ![MicrosoftTeams-image (2)](https://user-images.githubusercontent.com/86484384/139231712-f94b1e76-fda8-435a-9284-ccc09e4d9d96.jpg)
 
 5. Enter <b>Verification Code</b>
-6. Select <b>Continue </b>
+6. Select <b>Continue</b> button
 <img width="442" alt="MicrosoftTeams-image (3)" src="https://user-images.githubusercontent.com/86484384/139232081-ba1d8eed-2075-4cac-84f0-b1c3083e3079.png">
 
 7. The end-product will look like below screenshot. Make sure it contains no error box 
 ![MicrosoftTeams-image (4)](https://user-images.githubusercontent.com/86484384/139232686-8c872744-db54-4785-bc1b-b22ae0691dd3.jpg)
 
-* <b>To Run Code on a Physical Device</b>
+* <b>To Run Code on a Physical Device:</b>
+
 1. Attach iOS device with your machine 
 2. Select your <b>device</b> from Xcode 
 ![14](https://user-images.githubusercontent.com/86484384/139233823-ea67475a-d919-4945-88da-5a205a86bac0.jpg)
@@ -125,11 +130,11 @@ Now run "flutter doctor" in <b>Terminal/Command Prompt</b>, and make sure all ti
 ### Project Run Steps: 
 
 1. Open Project in <b>VS Code</b>
-2. Open <b>Terminal / Command Prompt</b> and go to <b>Project Directory</b> and run <b>“flutter pub get”</b>
+2. Open <b>Terminal/Command Prompt</b> and go to <b>Project Directory</b> and run <b>“flutter pub get”</b>
 
 ### Device Setting: 
 
-To connect a device, enable <b>“Developer Mode”</b> and <b>“USB debug”</b> by following the device-specific steps given on the below link:  
+To connect a device, enable <b>Developer Mode</b> and <b>USB Debug</b> by following the device-specific steps given on the below link:  
 https://developer.android.com/studio/debug/dev-options 
 
 ## Build Project 
