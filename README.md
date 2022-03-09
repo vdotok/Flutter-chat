@@ -10,13 +10,14 @@ Open the below link, and select “Operating System” for the installation of F
 https://flutter.dev/docs/get-started/install 
 
 #### Note: 
+
 Now run <b>"flutter doctor"</b> in <b>Terminal/Command Prompt</b>, and make sure all tick-marks appear green, as shown in the below screenshot. 
 
 <img width="603" alt="MicrosoftTeams-image" src="https://user-images.githubusercontent.com/86484384/139054351-32baf182-20d3-476a-b73e-df1927210ffe.png">
 
 ## Repo Clone:
 
-1. Open Github URL of VdoTok’s Flutter Chat  " https://github.com/vdotok/Flutter-chat "
+1. Open Github URL of VdoTok’s Flutter Chat " https://github.com/vdotok/Flutter-chat "
 2. Click on <b>Code</b> button, appearing on R.H.S
 3. A toast for <b>Clone</b> will appear, containing HTTPS, SSH, and GitHub CLI  information
 4. On HTTPS section, copy repository <b>URL</b> 
@@ -100,7 +101,7 @@ Now run <b>"flutter doctor"</b> in <b>Terminal/Command Prompt</b>, and make sure
 * <b>To Add Apple Account:</b>
 
 1. Enter <b>Apple ID</b>
-2. Select <b>Next</b>
+2. Select <b>Next</b> button
 ![MicrosoftTeams-image (5)](https://user-images.githubusercontent.com/86484384/139230893-a99c0476-ea9d-4df3-bcf2-ee163bf702d7.jpg)
 
 3. Enter <b>Password</b>
@@ -137,6 +138,6 @@ Now run <b>"flutter doctor"</b> in <b>Terminal/Command Prompt</b>, and make sure
 To connect a device, enable <b>Developer Mode</b> and <b>USB Debug</b> by following the device-specific steps given on the below link:  
 https://developer.android.com/studio/debug/dev-options 
 
-## Build Project 
+## Build Project: 
 
 After connecting your phone, run the following command in <b>Project Directory -> "flutter run"</b>
