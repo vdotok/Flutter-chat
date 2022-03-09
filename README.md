@@ -123,7 +123,7 @@ Now run <b>"flutter doctor"</b> in <b>Terminal/Command Prompt</b>, and make sure
 
 ![15](https://user-images.githubusercontent.com/86484384/139233996-d47eee74-33f8-42fc-96f2-b157da018e67.jpg)
 
-3. Select <b>Run</b> Button
+3. Select <b>Run</b> button
 ![16](https://user-images.githubusercontent.com/86484384/139234426-e5a54b59-b050-4038-83d2-592b0dbc3343.jpg)
 
 ## Android Setup: 
