@@ -56,9 +56,9 @@ Now run <b>"flutter doctor"</b> in <b>Terminal/Command Prompt</b>, and make sure
 
 ![4](https://user-images.githubusercontent.com/86484384/139066181-f60b1870-b2cd-4506-9a36-cf8989c7d4df.jpg)
 
-5. Copy <b>Project ID</b>
+5. Copy <b>API Service URL</b> and <b>Project ID</b>
 
-![5](https://user-images.githubusercontent.com/86484384/139066525-c88c03fe-ec5a-413d-9294-1f38fb28edfa.jpg)
+![5](https://user-images.githubusercontent.com/87179594/158431176-7c314d77-db7d-4fd0-91cc-2477386ee926.jpg)
 
 6. Open Project in <b>VS Code</b>
 7. Go to <b>lib</b> folder > <b> src > core > config > </b> open <b>config.dart</b> file, and paste <b>Project ID</b> against project_id String in config.dart file
