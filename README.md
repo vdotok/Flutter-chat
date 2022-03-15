@@ -61,7 +61,7 @@ Now run <b>"flutter doctor"</b> in <b>Terminal/Command Prompt</b>, and make sure
 ![5](https://user-images.githubusercontent.com/87179594/158431176-7c314d77-db7d-4fd0-91cc-2477386ee926.jpg)
 
 6. Open Project in <b>VS Code</b>
-7. Go to <b>lib</b> folder > <b> src > core > config > </b> open <b>config.dart</b> file, add <b>API Service URL</b> in const URL (For Example: <b>http:// Paste Url Here Which You Copied/API/</b>) and <b>Project ID</b> against project_id String in config.dart file
+7. Go to <b>lib</b> folder > <b> src > core > config > </b> open <b>config.dart</b> file, add <b>API Service URL</b> in const URL as <b>http:// Paste Url Here Which You Copied/API/</b> and <b>Project ID</b> against project_id String in config.dart file
 
 ![6](https://user-images.githubusercontent.com/87179594/158434303-53a0a655-607d-402d-bc9b-7e8dd0242b5f.jpg)
 
