@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vdkFlutterChat/src/core/providers/groupListProvider.dart';
+import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
 import '../CreateGroupScreen/CreateGroupChatScreen.dart';
 import '../../core/providers/contact_provider.dart';
 
 class CreateGroupChatIndex extends StatefulWidget {
-  const CreateGroupChatIndex({Key key}) : super(key: key);
+  final ContactProvider contactProvider;
+  final MainProvider mainProvider;
+  final GroupListProvider groupListProvider;
+  final refreshList;
+  final handlePress;
+  const CreateGroupChatIndex({Key key, this.contactProvider, this.mainProvider, this.groupListProvider, this.refreshList, this.handlePress}) : super(key: key);
 
   @override
   _CreateGroupChatIndexState createState() => _CreateGroupChatIndexState();
@@ -17,6 +24,12 @@ class _CreateGroupChatIndexState extends State<CreateGroupChatIndex> {
       ChangeNotifierProvider<ContactProvider>(
         create: (context) => ContactProvider(),
       ),
-    ], child: CreateGroupChatScreen());
+    ], child: CreateGroupChatScreen(
+       contactProvider: widget.contactProvider,
+            refreshList: widget.refreshList,
+            handlePress: widget.handlePress,
+            mainProvider: widget.mainProvider,
+            groupListProvider: widget.groupListProvider
+    ));
   }
 }

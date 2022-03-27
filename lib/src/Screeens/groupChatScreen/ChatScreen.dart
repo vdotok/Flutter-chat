@@ -9,6 +9,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:vdkFlutterChat/src/core/providers/contact_provider.dart';
+import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
 import 'package:vdotok_connect/vdotok_connect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,8 +29,10 @@ import '../groupChatScreen/videoPlayer.dart';
 class ChatScreen extends StatefulWidget {
   final int index;
   final publishMessage;
+  final MainProvider mainProvider;
+  final ContactProvider contactProvider;
 
-  const ChatScreen({Key key, this.index, this.publishMessage})
+  const ChatScreen({Key key, this.index, this.publishMessage, this.mainProvider, this.contactProvider})
       : super(key: key);
 
   @override
@@ -77,7 +81,8 @@ class _ChatScreenState extends State<ChatScreen> {
     super.dispose();
   }
 
-  Future buildShowDialog(BuildContext context, String mesg,String errorMessage) {
+  Future buildShowDialog(
+      BuildContext context, String mesg, String errorMessage) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -237,7 +242,8 @@ class _ChatScreenState extends State<ChatScreen> {
       Uint8List bytes = await pickedFile.readAsBytes();
       print("bytes are $bytes");
       if (bytes.length > 6000000) {
-        buildShowDialog(context, "Error Message", "File size should be less than 6 MB!!");
+        buildShowDialog(
+            context, "Error Message", "File size should be less than 6 MB!!");
         return;
       }
       Map<String, dynamic> filePacket = {
@@ -391,7 +397,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
       print("bytes length ${bytes.length}");
       if (bytes.length > 6000000) {
-        buildShowDialog(context,  "Error Message","File size should be less than 6 MB!!");
+        buildShowDialog(
+            context, "Error Message", "File size should be less than 6 MB!!");
         return;
       }
       print("this is file ${(file.path.split('.').last)}");
@@ -453,12 +460,12 @@ class _ChatScreenState extends State<ChatScreen> {
     return content;
   }
 
-  Future<bool> _onWillPop() async {
-    _groupListProvider.handlBacktoGroupList(index);
-    Navigator.pop(context);
-    // Navigator.pop(context);
-    return false;
-  }
+  // Future<bool> _onWillPop() async {
+  //   _groupListProvider.handlBacktoGroupList(index);
+  //   Navigator.pop(context);
+  //   // Navigator.pop(context);
+  //   return false;
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -475,7 +482,7 @@ class _ChatScreenState extends State<ChatScreen> {
             : null);
 
     return WillPopScope(
-        onWillPop: _onWillPop,
+       // onWillPop: _onWillPop,
         child: Consumer<GroupListProvider>(
             builder: (context, groupListProvider, child) {
           return GestureDetector(
@@ -493,6 +500,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ischatscreen: true,
                   title: "",
                   index: index,
+                   mainProvider: widget.mainProvider,
                   authProvider: authProvider),
               body: SafeArea(
                 child: Column(

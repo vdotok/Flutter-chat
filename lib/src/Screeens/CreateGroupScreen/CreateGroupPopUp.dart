@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
+import 'package:vdkFlutterChat/src/Screeens/CreateGroupScreen/CreateGroupChatScreen.dart';
 import 'package:vdkFlutterChat/src/core/models/GroupModel.dart';
 import 'package:vdkFlutterChat/src/core/providers/groupListProvider.dart';
+import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
 import 'package:vdotok_connect/vdotok_connect.dart';
 import '../../constants/constant.dart';
 import '../../core/models/contact.dart';
@@ -10,6 +12,8 @@ import '../../core/providers/auth.dart';
 import '../../core/providers/contact_provider.dart';
 
 class CreateGroupPopUp extends StatefulWidget {
+  final MainProvider mainProvider;
+  final handlePress;
   const CreateGroupPopUp(
       {Key key,
       @required TextEditingController groupNameController,
@@ -19,7 +23,7 @@ class CreateGroupPopUp extends StatefulWidget {
       @required this.authProvider,
       this.controllerText,
       this.editGroupName,
-      this.groupid})
+      this.groupid, this.mainProvider, this.handlePress})
       : _groupNameController = groupNameController,
         _selectedContacts = selectedContacts,
         super(key: key);
@@ -228,21 +232,16 @@ class _CreateGroupPopUpState extends State<CreateGroupPopUp> {
                                                 true,
                                                 true);
 
-                                            Navigator.pop(context);
-                                            Navigator.pop(context);
-                                            Navigator.pop(context);
-                                            Navigator.pushNamed(
-                                                context, "/chatScreen",
-                                                arguments: {
-                                                  "index": 0,
-                                                  "publishMessage":
-                                                      widget.publishMessage,
-                                                  "groupListProvider":
-                                                      grouplistp
-                                                });
+                                            print("here on done button");
+                                            widget.mainProvider
+                                                .chatScreen(index: 0);
 
+                                            // strArr.remove("CreateGroupChat");
+                                            // strArr.remove(
+                                            //     "CreateIndividualGroupActiveCall");
                                             grouplistp.handleCreateChatState();
-                                            //  _selectedContacts.clear();
+                                            Navigator.pop(context);
+                                              selectedContacts.clear();
                                           }
                                         }
                                       }

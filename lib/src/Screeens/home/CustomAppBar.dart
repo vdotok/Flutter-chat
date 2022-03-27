@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:vdkFlutterChat/src/Screeens/ContactListScreen/ContactListScreen.dart';
 import 'package:vdkFlutterChat/src/core/providers/auth.dart';
+import 'package:vdkFlutterChat/src/core/providers/contact_provider.dart';
+import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
 import 'package:vdotok_connect/vdotok_connect.dart';
 import '../../constants/constant.dart';
 import '../../core/providers/groupListProvider.dart';
+import 'home.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final title;
   final bool lead;
   final succeedingIcon;
@@ -13,6 +17,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final index;
   final GroupListProvider groupListProvider;
   final AuthProvider authProvider;
+  final ContactProvider contactProvider;
+  final MainProvider mainProvider;
+  final handlePress;
 
   CustomAppBar(
       {Key key,
@@ -22,17 +29,30 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       this.succeedingIcon,
       this.ischatscreen,
       this.index,
-      this.authProvider})
+      this.authProvider,
+      this.contactProvider,
+      this.mainProvider, this.handlePress})
       : super(key: key);
 
+Size get preferredSize {
+    return ischatscreen ? Size.fromHeight(80) : Size.fromHeight(kToolbarHeight);
+  }
+  @override
+  State<CustomAppBar> createState() => _CustomAppBarState();
+}
+
+class _CustomAppBarState extends State<CustomAppBar> {
   @override
   Size get preferredSize {
-    return ischatscreen ? Size.fromHeight(80) : Size.fromHeight(kToolbarHeight);
+    return widget.ischatscreen ? Size.fromHeight(80) : Size.fromHeight(kToolbarHeight);
   }
 
   Emitter emitter;
+
   String _presenceStatus = "";
+
   int _count = 0;
+
   @override
   Widget build(BuildContext context) {
     //   emitter.onPresence = (res) {
@@ -40,29 +60,29 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     //   groupListProvider.handlePresence(json.decode(res));
     // };
-    if (ischatscreen) {
+    if (widget.ischatscreen) {
       //    emitter.onPresence = (res) {
       //   print("Presence  $res");
 
       //   groupListProvider.handlePresence((res));
       // };
       print(
-          "this is group length ${groupListProvider.groupList.groups[index].participants.length}");
-      if (groupListProvider.groupList.groups[index].participants.length == 1) {
-        if (groupListProvider.presenceList.indexOf(groupListProvider
-                .groupList.groups[index].participants[0].ref_id) !=
+          "this is group length ${widget.groupListProvider.groupList.groups[widget.index].participants.length}");
+      if (widget.groupListProvider.groupList.groups[widget.index].participants.length == 1) {
+        if (widget.groupListProvider.presenceList.indexOf(widget.groupListProvider
+                .groupList.groups[widget.index].participants[0].ref_id) !=
             -1) {
           print("hereeeeee");
           _presenceStatus = "online";
         } else
           _presenceStatus = "offline";
-      } else if (groupListProvider
-              .groupList.groups[index].participants.length ==
+      } else if (widget.groupListProvider
+              .groupList.groups[widget.index].participants.length ==
           2) {
         print("i am in 2");
-        groupListProvider.groupList.groups[index].participants
+        widget.groupListProvider.groupList.groups[widget.index].participants
             .forEach((element) {
-          if (groupListProvider.presenceList.indexOf(element.ref_id) != -1)
+          if (widget.groupListProvider.presenceList.indexOf(element.ref_id) != -1)
             _count++;
         });
         if (_count < 2)
@@ -76,13 +96,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return AppBar(
       backgroundColor:
-          ischatscreen ? appbarBackgroundColor : chatRoomBackgroundColor,
+          widget.ischatscreen ? appbarBackgroundColor : chatRoomBackgroundColor,
       elevation: 0.0,
       centerTitle: false,
-      leading: lead == true
-          ? ischatscreen == true
+      leading: widget.lead == true
+          ? widget.ischatscreen == true
               ? Padding(
-                  padding: ischatscreen == true
+                  padding: widget.ischatscreen == true
                       ? EdgeInsets.only(left: 20, top: 21)
                       : EdgeInsets.only(left: 20),
                   child: IconButton(
@@ -92,9 +112,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       color: chatRoomColor,
                     ),
                     onPressed: () {
-                      groupListProvider.handlBacktoGroupList(index);
-                      Navigator.of(context).pop();
-                      // Navigator.of(context).pop();
+                       if (strArr.last == "ChatScreen") {
+                        widget.mainProvider.homeScreen();
+                        strArr.remove("ChatScreen");
+                      } 
+                      widget.groupListProvider.handlBacktoGroupList(widget.index);
+                    
                     },
                   ),
                 )
@@ -107,19 +130,25 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       color: chatRoomColor,
                     ),
                     onPressed: () {
-                      Navigator.of(context).pop();
+                            if (strArr.last == "CreateIndividualGroup") {
+                        print("back arrow create individual");
+                        widget.mainProvider.homeScreen();
+                         selectedContacts.clear();
+
+                        strArr.remove("CreateIndividualGroup");
+                      } 
                     },
                   ),
                 )
           : null,
-      title: ischatscreen == true
+      title: widget.ischatscreen == true
           ? //name of user if participants count is 1
-          groupListProvider.groupList.groups[index].participants.length == 1
+          widget.groupListProvider.groupList.groups[widget.index].participants.length == 1
               //Without Typing Status//
               ? Padding(
                   padding: const EdgeInsets.only(top: 21.0),
                   child: Text(
-                    "${groupListProvider.groupList.groups[index].participants[0].full_name}",
+                    "${widget.groupListProvider.groupList.groups[widget.index].participants[0].full_name}",
                     style: TextStyle(
                       color: userTitleColor,
                       fontSize: 20,
@@ -128,12 +157,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ),
                 )
-              : groupListProvider.groupList.groups[index].participants.length ==
+              : widget.groupListProvider.groupList.groups[widget.index].participants.length ==
                       2
                   ? Padding(
                       padding: const EdgeInsets.only(top: 21.0),
                       child: Text(
-                        "${groupListProvider.groupList.groups[index].participants[groupListProvider.groupList.groups[index].participants.indexWhere((element) => element.ref_id != authProvider.getUser.ref_id)].full_name}",
+                        "${widget.groupListProvider.groupList.groups[widget.index].participants[widget.groupListProvider.groupList.groups[widget.index].participants.indexWhere((element) => element.ref_id != widget.authProvider.getUser.ref_id)].full_name}",
                         style: TextStyle(
                           color: userTitleColor,
                           fontSize: 20,
@@ -145,7 +174,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                   : Padding(
                       padding: const EdgeInsets.only(top: 21.0),
                       child: Text(
-                        "${groupListProvider.groupList.groups[index].group_title}",
+                        "${widget.groupListProvider.groupList.groups[widget.index].group_title}",
                         style: TextStyle(
                           color: userTitleColor,
                           fontSize: 20,
@@ -155,55 +184,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                       ),
                     )
 
-          //With Typing Status//
-          // : Column(
-          //     mainAxisAlignment: MainAxisAlignment.start,
-          //     crossAxisAlignment: CrossAxisAlignment.start,
-          //     children: [
-          //         groupListProvider
-          //                     .groupList.groups[index].typingstatus ==
-          //                 true
-          //             ? SizedBox(height: 15)
-          //             : SizedBox(height: 20),
-          //         groupListProvider.groupList.groups[index].participants
-          //                     .length ==
-          //                 1
-          //             ? Text(
-          //                 "${groupListProvider.groupList.groups[index].participants[0].full_name}",
-          //                 style: TextStyle(
-          //                   color: userTitleColor,
-          //                   fontWeight: FontWeight.w400,
-          //                   fontSize: 14,
-          //                 ),
-          //               )
-          //             : groupListProvider.groupList.groups[index]
-          //                         .participants.length ==
-          //                     2
-          //                 ? Text(
-          //                     "${groupListProvider.groupList.groups[index].participants[groupListProvider.groupList.groups[index].participants.indexWhere((element) => element.ref_id != authProvider.getUser.ref_id)].full_name}",
-          //                     style: TextStyle(
-          //                       color: userTitleColor,
-          //                       fontWeight: FontWeight.w400,
-          //                       fontSize: 14,
-          //                     ),
-          //                   )
-          //                 : Text(
-          //                     "${groupListProvider.groupList.groups[index].group_title}",
-          //                     style: TextStyle(
-          //                       color: userTitleColor,
-          //                       fontSize: 14,
-          //                     ),
-          //                   ),
-          //       ])
-
-          : Text("$title",
+          
+          : Text("${widget.title}",
               style: TextStyle(
                 color: chatRoomColor,
                 fontSize: 20,
                 fontFamily: primaryFontFamily,
                 fontWeight: FontWeight.w500,
               )),
-      bottom: ischatscreen == true
+      bottom: widget.ischatscreen == true
           //&&
           // (groupListProvider.groupList.groups[index].typingstatus != "" &&
           //             groupListProvider.groupList.groups[index].typingstatus !=
@@ -221,22 +210,22 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                         //     ? Text(_presenceStatus)
                         //
 
-                        (groupListProvider
-                                        .groupList.groups[index].typingstatus !=
+                        (widget.groupListProvider
+                                        .groupList.groups[widget.index].typingstatus !=
                                     "" &&
-                                groupListProvider
-                                        .groupList.groups[index].typingstatus !=
+                                widget.groupListProvider
+                                        .groupList.groups[widget.index].typingstatus !=
                                     null)
-                            ? (groupListProvider.typingUserDetail.length > 1)
+                            ? (widget.groupListProvider.typingUserDetail.length > 1)
                                 ? Text(
-                                    "${groupListProvider.groupList.groups[index].typingstatus} are typing...",
+                                    "${widget.groupListProvider.groupList.groups[widget.index].typingstatus} are typing...",
                                     style: TextStyle(
                                       color: userTypingColor,
                                       fontSize: 14,
                                     ),
                                   )
                                 : Text(
-                                    "${groupListProvider.groupList.groups[index].typingstatus} is typing...",
+                                    "${widget.groupListProvider.groupList.groups[widget.index].typingstatus} is typing...",
                                     style: TextStyle(
                                       color: userTypingColor,
                                       fontSize: 14,
@@ -257,7 +246,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         //If we are on chat screen//
 
-        ischatscreen == true
+        widget.ischatscreen == true
             ? Container()
             // Row(
             //     children: [
@@ -294,14 +283,27 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             //If we are on other screens//
             Padding(
                 padding: const EdgeInsets.only(right: 10.0),
-                child: succeedingIcon == ""
+                child: widget.succeedingIcon == ""
                     ? Container()
                     : IconButton(
-                        icon: SvgPicture.asset(succeedingIcon),
-                        onPressed: succeedingIcon == 'assets/plus.svg'
+                        icon: SvgPicture.asset(widget.succeedingIcon),
+                        onPressed: widget.succeedingIcon == 'assets/plus.svg'
                             ? () {
-                                Navigator.pushNamed(context, '/contactlist',
-                                    arguments: groupListProvider);
+                                 print(
+                                        "THSI IS DFFVDFJCJDFBKJD ${widget.mainProvider}");
+
+                                 
+                                      print("khjhg");
+                                      widget.handlePress(
+                                          HomeStatus.CreateIndividualGroup);
+                                   
+                                    //   widget.handlePress(
+                                    //       ListStatus.CreateIndividualGroup);
+                                    //   widget.mainProvider
+                                    //       .inActiveCallCreateIndividualGroup(
+                                    //     startCall: widget.funct,
+                                    //   );
+                                    // }
                               }
                             : () {},
                       ),

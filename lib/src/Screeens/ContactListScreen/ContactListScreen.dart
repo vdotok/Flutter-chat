@@ -3,29 +3,38 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vdkFlutterChat/src/Screeens/home/CustomAppBar.dart';
 import 'package:vdkFlutterChat/src/Screeens/home/NoChatScreen.dart';
+import 'package:vdkFlutterChat/src/Screeens/home/home.dart';
 import 'package:vdkFlutterChat/src/Screeens/splash/splash.dart';
 import 'package:vdkFlutterChat/src/constants/constant.dart';
 import 'package:vdkFlutterChat/src/core/models/GroupModel.dart';
+import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
 import 'package:vdotok_connect/vdotok_connect.dart';
 import '../../core/models/contact.dart';
 import '../../core/providers/auth.dart';
 import '../../core/providers/contact_provider.dart';
 import '../../core/providers/groupListProvider.dart';
 
+  List<Contact> selectedContacts = [];
 class ContactListScreen extends StatefulWidget {
-  const ContactListScreen({Key key}) : super(key: key);
+  final ContactProvider contactProvider;
+
+  final MainProvider mainProvider;
+  final GroupListProvider groupListProvider;
+  final refreshList;
+  final handlePress;
+  const ContactListScreen({Key key, this.contactProvider, this.mainProvider, this.groupListProvider, this.refreshList, this.handlePress}) : super(key: key);
 
   @override
   _ContactListScreenState createState() => _ContactListScreenState();
 }
 
 class _ContactListScreenState extends State<ContactListScreen> {
-  ContactProvider contactProvider;
+  //ContactProvider contactProvider;
   GroupListProvider groupListProvider;
   AuthProvider authProvider;
   int count = 0;
   var changingvaalue;
-  List<Contact> _selectedContacts = [];
+
   final _groupNameController = TextEditingController();
   final _searchController = TextEditingController();
   List<Contact> _filteredList = [];
@@ -37,10 +46,10 @@ class _ContactListScreenState extends State<ContactListScreen> {
   //bool isLoading = false;
   @override
   void initState() {
-    contactProvider = Provider.of<ContactProvider>(context, listen: false);
+    //contactProvider = Provider.of<ContactProvider>(context, listen: false);
     groupListProvider = Provider.of<GroupListProvider>(context, listen: false);
     authProvider = Provider.of<AuthProvider>(context, listen: false);
-    contactProvider.getContacts(authProvider.getUser.auth_token);
+    //contactProvider.getContacts(authProvider.getUser.auth_token);
 
     super.initState();
     scaffoldKey = GlobalKey<ScaffoldState>();
@@ -50,7 +59,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
   onSearch(value) {
     List temp;
 
-    temp = contactProvider.contactList.users.where((element) {
+    temp = widget.contactProvider.contactList.users.where((element) {
       // if (element.full_name.toLowerCase().startsWith(value.toLowerCase())==true) {
       //   print("i am here");
       return element.full_name.toLowerCase().startsWith(value.toLowerCase());
@@ -96,10 +105,10 @@ class _ContactListScreenState extends State<ContactListScreen> {
   Widget build(BuildContext context) {
     return Consumer2<ContactProvider, AuthProvider>(
         builder: (context, contactListProvider, authProvider, child) {
-      if (contactListProvider.contactState == ContactStates.Loading)
+      if (widget.contactProvider.contactState == ContactStates.Loading)
         return SplashScreen();
-      else if (contactListProvider.contactState == ContactStates.Success) {
-        if (contactListProvider.contactList.users.length == 0)
+      else if (widget.contactProvider.contactState == ContactStates.Success) {
+        if (widget.contactProvider.contactList.users.length == 0)
           return NoChatScreen(
             emitter: emitter,
             groupListProvider: groupListProvider,
@@ -115,6 +124,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
               },
               child: Scaffold(
                 appBar: CustomAppBar(
+                  mainProvider: widget.mainProvider,
                     lead: true,
                     ischatscreen: false,
                     title: "New Chat",
@@ -195,8 +205,12 @@ class _ContactListScreenState extends State<ContactListScreen> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                Navigator.pushNamed(context, '/createGroup',
-                                    arguments: groupListProvider);
+                                if (strArr.last == "CreateIndividualGroup") {
+                                    widget.mainProvider.createGroupChatScreen();
+                                    // widget
+                                    //     .handlePress(HomeStatus.CreateGroupChat);
+                                    strArr.remove("CreateIndividualGroup");
+                                  }
                               },
                               child: SizedBox(
                                 width: 236,
@@ -244,11 +258,11 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                 shrinkWrap: true,
                                 //  padding: const EdgeInsets.only(top: 5),
                                 itemCount: _searchController.text.isEmpty
-                                    ? contactProvider.contactList.users.length
+                                    ? widget.contactProvider.contactList.users.length
                                     : _filteredList.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   Contact test = _searchController.text.isEmpty
-                                      ? contactProvider.contactList.users[index]
+                                      ? widget.contactProvider.contactList.users[index]
                                       : _filteredList[index];
                                   var groupIndex = groupListProvider
                                       .groupList.groups
@@ -295,98 +309,106 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                           ),
                                         ),
                                         trailing: GestureDetector(
-                                            onTap: loading == false
-                                                ? () async {
-                                                    groupListProvider
-                                                        .handleCreateChatState();
-                                                    setState(() {
-                                                      loading = true;
-                                                    });
-                                                    _selectedContacts.add(test);
-                                                    print(
-                                                        "the selected contacts:${test.full_name}");
-                                                    var res = await contactProvider
-                                                        .createGroup(
+                                            onTap: !isInternetConnect
+                                                ? () {}
+                                                : loading == false
+                                                    ? () async {
+                                                        groupListProvider
+                                                            .handleCreateChatState();
+                                                        setState(() {
+                                                          loading = true;
+                                                        });
+                                                        selectedContacts
+                                                            .add(test);
+                                                        print(
+                                                            "the selected contacts:${test.full_name}");
+                                                        var res = await widget.contactProvider.createGroup(
                                                             authProvider.getUser
                                                                     .full_name +
-                                                                _selectedContacts[
+                                                                selectedContacts[
                                                                         0]
                                                                     .full_name,
-                                                            _selectedContacts,
+                                                            selectedContacts,
                                                             authProvider.getUser
                                                                 .auth_token);
-                                                    // var getGroups=await
+                                                        // var getGroups=await
 
-                                                    print(
-                                                        "this is already created index ${res["is_already_created"]}");
-                                                    GroupModel groupModel =
-                                                        GroupModel.fromJson(
-                                                            res["group"]);
-                                                    print(
-                                                        "this is group index $groupIndex");
-                                                    print(
-                                                        "this is response of createGroup ${groupModel.participants[0].full_name}, ${groupModel.participants[1].full_name}");
+                                                        print(
+                                                            "this is already created index ${res["is_already_created"]}");
+                                                        GroupModel groupModel =
+                                                            GroupModel.fromJson(
+                                                                res["group"]);
+                                                        print(
+                                                            "this is group index $groupIndex");
+                                                        print(
+                                                            "this is response of createGroup ${groupModel.participants[0].full_name}, ${groupModel.participants[1].full_name}");
 
-                                                    int channelIndex = 0;
-                                                    if (res[
-                                                        "is_already_created"]) {
-                                                      channelIndex = groupListProvider
-                                                          .groupList.groups
-                                                          .indexWhere((element) =>
-                                                              element
-                                                                  .channel_key ==
-                                                              res["group"][
-                                                                  "channel_key"]);
+                                                        int channelIndex = 0;
+                                                        if (res[
+                                                            "is_already_created"]) {
+                                                          channelIndex = groupListProvider
+                                                              .groupList.groups
+                                                              .indexWhere((element) =>
+                                                                  element
+                                                                      .channel_key ==
+                                                                  res["group"][
+                                                                      "channel_key"]);
 
-                                                      print(
-                                                          "this is already created index $channelIndex");
-                                                    } else {
-                                                      groupListProvider
-                                                          .addGroup(groupModel);
-                                                      groupListProvider.subscribeChannel(
-                                                          groupModel
-                                                              .channel_key,
-                                                          groupModel
-                                                              .channel_name);
-                                                      groupListProvider
-                                                          .subscribePresence(
+                                                          print(
+                                                              "this is already created index $channelIndex");
+                                                        } else {
+                                                          groupListProvider
+                                                              .addGroup(
+                                                                  groupModel);
+                                                          groupListProvider.subscribeChannel(
+                                                              groupModel
+                                                                  .channel_key,
+                                                              groupModel
+                                                                  .channel_name);
+                                                          groupListProvider.subscribePresence(
                                                               groupModel
                                                                   .channel_key,
                                                               groupModel
                                                                   .channel_name,
                                                               true,
                                                               true);
-                                                    }
+                                                        }
 
-                                                    publishMessage(
-                                                        key,
-                                                        channelname,
-                                                        sendmessage) {
-                                                      print(
-                                                          "The key:$key....$channelname...$sendmessage");
-                                                      emitter.publish(
-                                                          key,
-                                                          channelname,
-                                                          sendmessage);
-                                                    }
+                                                        publishMessage(
+                                                            key,
+                                                            channelname,
+                                                            sendmessage) {
+                                                          print(
+                                                              "The key:$key....$channelname...$sendmessage");
+                                                          emitter.publish(
+                                                              key,
+                                                              channelname,
+                                                              sendmessage);
+                                                        }
 
-                                                    Navigator.pushNamed(
-                                                        context, "/chatScreen",
-                                                        arguments: {
-                                                          "index": channelIndex,
-                                                          "publishMessage":
-                                                              publishMessage,
-                                                          "groupListProvider":
-                                                              groupListProvider
+                                                        if (res[
+                                                                      "is_already_created"]) {
+                                                                    widget
+                                                                        .mainProvider
+                                                                        .chatScreen(
+                                                                            index:
+                                                                                channelIndex);
+                                                                  } else {
+                                                                    widget
+                                                                        .mainProvider
+                                                                        .chatScreen(
+                                                                            index:
+                                                                                0);
+                                                                  }
+                                                        selectedContacts
+                                                            .clear();
+                                                        groupListProvider
+                                                            .handleCreateChatState();
+                                                        setState(() {
+                                                          loading = false;
                                                         });
-                                                    _selectedContacts.clear();
-                                                    groupListProvider
-                                                        .handleCreateChatState();
-                                                    setState(() {
-                                                      loading = false;
-                                                    });
-                                                  }
-                                                : () {},
+                                                      }
+                                                    : () {},
                                             child: Container(
                                               margin:
                                                   EdgeInsets.only(right: 35),
@@ -426,7 +448,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
           ),
           body: Center(
               child: Text(
-            "${contactProvider.errorMsg}",
+            "${widget.contactProvider.errorMsg}",
             style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
           )),
         );

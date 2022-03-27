@@ -1,5 +1,8 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
 import 'package:vdotok_connect/vdotok_connect.dart';
 import '../../core/providers/auth.dart';
 import '../../core/providers/groupListProvider.dart';
@@ -10,14 +13,18 @@ class NoChatScreen extends StatelessWidget {
   bool presentCheck;
   final bool isConnect;
   final bool state;
-
+  final MainProvider mainProvider;
+  final handlePress;
   NoChatScreen(
       {Key key,
       @required this.groupListProvider,
       @required this.emitter,
       this.refreshList,
       this.authProvider,
-      @required this.presentCheck, this.isConnect, this.state})
+      @required this.presentCheck,
+      this.isConnect,
+      this.state,
+      this.mainProvider, this.handlePress})
       : super(key: key);
 
   final GroupListProvider groupListProvider;
@@ -31,6 +38,8 @@ class NoChatScreen extends StatelessWidget {
       child: Scaffold(
         backgroundColor: chatRoomBackgroundColor,
         appBar: CustomAppBar(
+          handlePress: handlePress,
+          mainProvider: mainProvider,
           groupListProvider: groupListProvider,
           title: "Chat Rooms",
           lead: false,
@@ -99,8 +108,7 @@ class NoChatScreen extends StatelessWidget {
                               ),
                               child: FlatButton(
                                 onPressed: () {
-                                  Navigator.pushNamed(context, '/contactlist',
-                                      arguments: groupListProvider);
+                                  mainProvider.createIndividualGroupScreen();
                                 },
                                 child: Text(
                                   "New Chat",
@@ -171,17 +179,15 @@ class NoChatScreen extends StatelessWidget {
                                 letterSpacing: 0.90),
                           ),
                         )),
-                          Container(
-                  height: 10,
-                  width: 10,
-                  decoration: BoxDecoration(
-                      color:
-                          isConnect && state ? Colors.green : Colors.red,
-                      shape: BoxShape.circle),
-                ),
+                    Container(
+                      height: 10,
+                      width: 10,
+                      decoration: BoxDecoration(
+                          color: isConnect && state ? Colors.green : Colors.red,
+                          shape: BoxShape.circle),
+                    ),
                   ],
                 ),
-              
                 Container(
                     // padding: const EdgeInsets.only(bottom: 60),
                     child: Text(authProvider.getUser.full_name))

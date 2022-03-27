@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vdkFlutterChat/src/Screeens/CreateGroupScreen/CreateGroupPopUp.dart';
+import 'package:vdkFlutterChat/src/Screeens/home/home.dart';
 import 'package:vdkFlutterChat/src/core/models/GroupModel.dart';
+import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
 import '../../core/models/contact.dart';
 import 'package:vdotok_connect/vdotok_connect.dart';
 import '../home/CustomAppBar.dart';
@@ -15,11 +17,16 @@ import '../../core/providers/contact_provider.dart';
 import '../../core/providers/groupListProvider.dart';
 
 class CreateGroupChatScreen extends StatefulWidget {
-  const CreateGroupChatScreen({Key key}) : super(key: key);
+  final ContactProvider contactProvider;
+  final MainProvider mainProvider;
+  final GroupListProvider groupListProvider;
+  final refreshList;
+  final handlePress;
+  const CreateGroupChatScreen({Key key, this.contactProvider, this.mainProvider, this.groupListProvider, this.refreshList, this.handlePress}) : super(key: key);
   @override
   _CreateGroupChatScreenState createState() => _CreateGroupChatScreenState();
 }
-
+List<Contact> selectedContacts = [];
 class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
   ContactProvider contactProvider;
   GroupListProvider groupListProvider;
@@ -27,7 +34,7 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
   Emitter emitter;
   int count = 0;
   var changingvaalue;
-  List<Contact> _selectedContacts = [];
+  
   final _groupNameController = TextEditingController();
   final _searchController = TextEditingController();
   List<Contact> _filteredList = [];
@@ -40,14 +47,14 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
     contactProvider = Provider.of<ContactProvider>(context, listen: false);
     groupListProvider = Provider.of<GroupListProvider>(context, listen: false);
     authProvider = Provider.of<AuthProvider>(context, listen: false);
-    contactProvider.getContacts(authProvider.getUser.auth_token);
+    
     super.initState();
   }
 
   onSearch(value) {
     print("this is here $value");
     List temp;
-    temp = contactProvider.contactList.users
+    temp = widget.contactProvider.contactList.users
         .where((element) => element.full_name.toLowerCase().startsWith(value))
         .toList();
     print("this is filtered list $_filteredList");
@@ -109,10 +116,10 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
 
     return Consumer2<ContactProvider, AuthProvider>(
         builder: (context, contactListProvider, authProvider, child) {
-      if (contactProvider.contactState == ContactStates.Loading)
+      if (widget.contactProvider.contactState == ContactStates.Loading)
         return SplashScreen();
-      else if (contactProvider.contactState == ContactStates.Success) {
-        if (contactListProvider.contactList.users.length == 0)
+      else if (widget.contactProvider.contactState == ContactStates.Success) {
+        if (widget.contactProvider.contactList.users.length == 0)
           return NoChatScreen(
               groupListProvider: groupListProvider,
               emitter: emitter,
@@ -139,8 +146,12 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                           size: 24,
                           color: chatRoomColor,
                         ),
-                        onPressed: () {
-                          Navigator.pop(context);
+                        onPressed: () {if (strArr.last == "CreateGroupChat") {
+                            widget
+                                .handlePress(HomeStatus.CreateIndividualGroup);
+                            strArr.remove("CreateGroupChat");
+                            selectedContacts.clear();
+                          } 
                         },
                       ),
                     ),
@@ -161,16 +172,19 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                         padding: const EdgeInsets.only(right: 10.0),
                         child: IconButton(
                           icon: SvgPicture.asset('assets/checkmark.svg'),
-                          onPressed: _selectedContacts.length == 1
+                          onPressed: !isInternetConnect?(){}:
+                          
+                          
+                          selectedContacts.length == 1
                               ? () async {
                                   var groupName =
-                                      _selectedContacts[0].full_name +
+                                      selectedContacts[0].full_name +
                                           "-" +
                                           authProvider.getUser.full_name;
                                   print("The Group Join: ${groupName}");
-                                  var res = await contactProvider.createGroup(
+                                  var res = await widget.contactProvider.createGroup(
                                       groupName,
-                                      _selectedContacts,
+                                      selectedContacts,
                                       authProvider.getUser.auth_token);
                                   // groupListProvider.getGroupList(
                                   //     authProvider.getUser.auth_token);
@@ -199,8 +213,8 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                     Navigator.pop(context, true);
                                   }
                                 }
-                              : _selectedContacts.length > 1
-                                  ? _selectedContacts.length <= 4
+                              : selectedContacts.length > 1
+                                  ? selectedContacts.length <= 4
                                       ? () {
                                           print("Here in greater than 1");
                                           showDialog(
@@ -210,15 +224,21 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                                     GroupListProvider>.value(
                                                   value: groupListProvider,
                                                   child: CreateGroupPopUp(
+                                                    handlePress:
+                                                                      widget
+                                                                          .handlePress,
                                                       editGroupName: false,
                                                       publishMessage:
                                                           publishMessage,
                                                       groupNameController:
                                                           _groupNameController,
                                                       contactProvider:
-                                                          contactProvider,
+                                                          widget.contactProvider,
                                                       selectedContacts:
-                                                          _selectedContacts,
+                                                          selectedContacts,
+                                                           mainProvider:
+                                                                      widget
+                                                                          .mainProvider,
                                                       // groupListProvider: groupListProvider,
                                                       authProvider:
                                                           authProvider),
@@ -307,13 +327,13 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                 shrinkWrap: true,
                                 padding: const EdgeInsets.only(top: 10),
                                 itemCount: _searchController.text.isEmpty
-                                    ? contactListProvider
+                                    ? widget.contactProvider
                                         .contactList.users.length
                                     : _filteredList.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   Contact element =
                                       _searchController.text.isEmpty
-                                          ? contactListProvider
+                                          ? widget.contactProvider
                                               .contactList.users[index]
                                           : _filteredList[index];
 
@@ -321,17 +341,17 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                     children: [
                                       ListTile(
                                         onTap: () {
-                                          if (_selectedContacts.indexWhere(
+                                          if (selectedContacts.indexWhere(
                                                   (contact) =>
                                                       contact.user_id ==
                                                       element.user_id) !=
                                               -1) {
                                             setState(() {
-                                              _selectedContacts.remove(element);
+                                              selectedContacts.remove(element);
                                             });
                                           } else {
                                             setState(() {
-                                              _selectedContacts.add(element);
+                                              selectedContacts.add(element);
                                             });
                                           }
                                         },
@@ -358,7 +378,7 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                         ),
                                         trailing: Container(
                                           margin: EdgeInsets.only(right: 35),
-                                          child: _selectedContacts.indexWhere(
+                                          child: selectedContacts.indexWhere(
                                                       (contact) =>
                                                           contact.user_id ==
                                                           element.user_id) ==
@@ -401,7 +421,7 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
           ),
           body: Center(
               child: Text(
-            "${contactProvider.errorMsg}",
+            "${widget.contactProvider.errorMsg}",
             style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
           )),
         );

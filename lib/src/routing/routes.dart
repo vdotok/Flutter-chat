@@ -33,12 +33,16 @@ class Routers {
             type: PageTransitionType.rightToLeft);
         break;
       case '/contactlist':
-       return PageTransition(
+ Map<String, dynamic> params = args;
+       {return PageTransition(
             child: ListenableProvider<GroupListProvider>.value(
-              value: args,
-              child: ContactListIndex(),
+              value: params["groupListProvider"],
+              child: ContactListIndex(
+                contactProvider:params["contactProvider"]
+
+              ),
             ),
-            type: PageTransitionType.rightToLeft);
+            type: PageTransitionType.rightToLeft);}
         break;
       case '/createGroup':
         return PageTransition(

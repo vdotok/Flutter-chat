@@ -34,7 +34,7 @@ class ContactProvider with ChangeNotifier {
     } else {
       final json = {"users": response["users"]};
       _contactList = ContactList.fromJson(json);
-      print("this is list $_contactList");
+      print("this is list00 $_contactList");
       _contactStates = ContactStates.Success;
       notifyListeners();
     }

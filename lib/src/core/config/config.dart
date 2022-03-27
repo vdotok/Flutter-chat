@@ -1,6 +1,3 @@
-//const URL = "https://cpaas-api.vdotok.com/API/";
-const URL = "https://tenant-api.vdotok.dev";
+const URL = "https://tenant.vdotok.com";
 const version = "/API/v0/";
-
-//const String auth_token = "3d9686b635b15b5bc2d19800407609fa";
-const String project_id = "176GK5IN";
+const String project_id = "1QK56P";
