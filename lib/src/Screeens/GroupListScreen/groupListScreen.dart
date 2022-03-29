@@ -351,8 +351,8 @@ class _GroupListScreenState extends State<GroupListScreen> {
                                                                 .toString()
                                                                 .length ==
                                                             2)
-                                                    ? 16
-                                                    : 20,
+                                                    ? 20
+                                                    : 25,
                                                 height: (widget
                                                                 .groupListProvider
                                                                 .groupList
@@ -369,8 +369,8 @@ class _GroupListScreenState extends State<GroupListScreen> {
                                                                 .toString()
                                                                 .length ==
                                                             2)
-                                                    ? 16
-                                                    : 20,
+                                                    ? 20
+                                                    : 25,
                                                 decoration: BoxDecoration(
                                                   color: personOfflineColor,
                                                   shape: BoxShape.circle,
