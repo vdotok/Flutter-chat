@@ -103,7 +103,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           isInternetConnect = true;
           isSocketConnect = true;
         });
-        groupListProvider.getGroupList(authProvider.getUser.auth_token);
+        //groupListProvider.getGroupList(authProvider.getUser.auth_token);
         showSnackbar("Internet Connected", whiteColor, Colors.green, false);
       } else {
         setState(() {

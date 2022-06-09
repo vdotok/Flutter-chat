@@ -60,39 +60,39 @@ class _CustomAppBarState extends State<CustomAppBar> {
 
     //   groupListProvider.handlePresence(json.decode(res));
     // };
-    if (widget.ischatscreen) {
-      //    emitter.onPresence = (res) {
-      //   print("Presence  $res");
+    // if (widget.ischatscreen) {
+    //   //    emitter.onPresence = (res) {
+    //   //   print("Presence  $res");
 
-      //   groupListProvider.handlePresence((res));
-      // };
-      print(
-          "this is group length ${widget.groupListProvider.groupList.groups[widget.index].participants.length}");
-      if (widget.groupListProvider.groupList.groups[widget.index].participants.length == 1) {
-        if (widget.groupListProvider.presenceList.indexOf(widget.groupListProvider
-                .groupList.groups[widget.index].participants[0].ref_id) !=
-            -1) {
-          print("hereeeeee");
-          _presenceStatus = "online";
-        } else
-          _presenceStatus = "offline";
-      } else if (widget.groupListProvider
-              .groupList.groups[widget.index].participants.length ==
-          2) {
-        print("i am in 2");
-        widget.groupListProvider.groupList.groups[widget.index].participants
-            .forEach((element) {
-          if (widget.groupListProvider.presenceList.indexOf(element.ref_id) != -1)
-            _count++;
-        });
-        if (_count < 2)
-          _presenceStatus = "offline";
-        else
-          _presenceStatus = "online";
-      }
-    } else {
-      print("nothing");
-    }
+    //   //   groupListProvider.handlePresence((res));
+    //   // };
+    //   print(
+    //       "this is group length ${widget.groupListProvider.groupList.groups[widget.index].participants.length}");
+    //   if (widget.groupListProvider.groupList.groups[widget.index].participants.length == 1) {
+    //     if (widget.groupListProvider.presenceList.indexOf(widget.groupListProvider
+    //             .groupList.groups[widget.index].participants[0].ref_id) !=
+    //         -1) {
+    //       print("hereeeeee");
+    //       _presenceStatus = "online";
+    //     } else
+    //       _presenceStatus = "offline";
+    //   } else if (widget.groupListProvider
+    //           .groupList.groups[widget.index].participants.length ==
+    //       2) {
+    //     print("i am in 2");
+    //     widget.groupListProvider.groupList.groups[widget.index].participants
+    //         .forEach((element) {
+    //       if (widget.groupListProvider.presenceList.indexOf(element.ref_id) != -1)
+    //         _count++;
+    //     });
+    //     if (_count < 2)
+    //       _presenceStatus = "offline";
+    //     else
+    //       _presenceStatus = "online";
+    //   }
+    // } else {
+    //   print("nothing");
+    // }
 
     return AppBar(
       backgroundColor:
