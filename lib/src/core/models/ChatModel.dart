@@ -10,12 +10,12 @@ class ChatModel {
   var type;
   var content;
   var date;
-  int status;
+  int? status;
   var size;
   var isGroupMessage;
   var subtype;
  var readCount;
- List<int> participantsRead;
+ List<int?>? participantsRead;
   ChatModel(
       {this.id,
       this.to,

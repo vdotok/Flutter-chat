@@ -14,8 +14,8 @@ class GroupModel {
   dynamic created_datetime;
   dynamic counter;
   dynamic typingstatus;
-  List<ParticipantsModel> participants = [];
-  List<ChatModel> chatList = [];
+  List<ParticipantsModel?>? participants = [];
+  List<ChatModel?>? chatList = [];
 
   GroupModel(
       {this.admin_id,

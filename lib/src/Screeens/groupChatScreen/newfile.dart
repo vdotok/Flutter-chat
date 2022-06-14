@@ -11,7 +11,7 @@ class OnePersonChatScreen extends StatefulWidget {
 
 class _OnePersonChatScreenState extends State<OnePersonChatScreen> {
   bool backarrow = true;
-  bool preceedingicon;
+  late bool preceedingicon;
   bool chatscreen = true;
   bool issender = true;
   @override

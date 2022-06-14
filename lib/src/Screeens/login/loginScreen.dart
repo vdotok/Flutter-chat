@@ -24,10 +24,10 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   handlePress() async {
-    if (_loginformkey.currentState.validate()) {
+    if (_loginformkey.currentState!.validate()) {
       AuthProvider auth = Provider.of<AuthProvider>(context, listen: false);
       auth.login(_emailController.text, _passwordController.text);
-      if (auth.getUser.auth_token == null) {
+      if (auth.getUser!.auth_token == null) {
         setState(() {
           _autoValidate = true;
         });

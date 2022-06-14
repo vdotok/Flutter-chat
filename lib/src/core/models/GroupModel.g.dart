@@ -17,15 +17,15 @@ GroupModel _$GroupModelFromJson(Map<String, dynamic> json) {
     typingstatus: json['typingstatus'],
     id: json['id'],
     counter: json['counter'],
-    chatList: (json['chatList'] as List)
+    chatList: (json['chatList'])
         ?.map((e) =>
             e == null ? null : ChatModel.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
+        .toList(),
     participants: (json['participants'] as List)
-        ?.map((e) => e == null
+        .map((e) => e == null
             ? null
             : ParticipantsModel.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
+        .toList(),
   );
 }
 

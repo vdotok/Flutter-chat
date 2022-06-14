@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 //Phone Size//
-Size size;
+Size? size;
 
 //**COLORS**/
 

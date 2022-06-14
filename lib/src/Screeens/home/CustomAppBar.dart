@@ -11,23 +11,23 @@ import 'home.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final title;
-  final bool lead;
+  final bool ?lead;
   final succeedingIcon;
   final bool ischatscreen;
   final index;
-  final GroupListProvider groupListProvider;
-  final AuthProvider authProvider;
-  final ContactProvider contactProvider;
-  final MainProvider mainProvider;
+  final GroupListProvider? groupListProvider;
+  final AuthProvider ?authProvider;
+  final ContactProvider ? contactProvider;
+  final MainProvider ?mainProvider;
   final handlePress;
 
   CustomAppBar(
-      {Key key,
+      {Key ?key,
       this.groupListProvider,
       this.title,
       @required this.lead,
       this.succeedingIcon,
-      this.ischatscreen,
+      required this.ischatscreen,
       this.index,
       this.authProvider,
       this.contactProvider,
@@ -47,7 +47,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
     return widget.ischatscreen ? Size.fromHeight(80) : Size.fromHeight(kToolbarHeight);
   }
 
-  Emitter emitter;
+  Emitter ? emitter;
 
   String _presenceStatus = "";
 
@@ -113,10 +113,10 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     ),
                     onPressed: () {
                        if (strArr.last == "ChatScreen") {
-                        widget.mainProvider.homeScreen();
+                        widget.mainProvider!.homeScreen();
                         strArr.remove("ChatScreen");
                       } 
-                      widget.groupListProvider.handlBacktoGroupList(widget.index);
+                      widget.groupListProvider!.handlBacktoGroupList(widget.index);
                     
                     },
                   ),
@@ -132,7 +132,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     onPressed: () {
                             if (strArr.last == "CreateIndividualGroup") {
                         print("back arrow create individual");
-                        widget.mainProvider.homeScreen();
+                        widget.mainProvider!.homeScreen();
                          selectedContacts.clear();
 
                         strArr.remove("CreateIndividualGroup");
@@ -143,12 +143,12 @@ class _CustomAppBarState extends State<CustomAppBar> {
           : null,
       title: widget.ischatscreen == true
           ? //name of user if participants count is 1
-          widget.groupListProvider.groupList.groups[widget.index].participants.length == 1
+          widget.groupListProvider!.groupList.groups![widget.index]!.participants!.length == 1
               //Without Typing Status//
               ? Padding(
                   padding: const EdgeInsets.only(top: 21.0),
                   child: Text(
-                    "${widget.groupListProvider.groupList.groups[widget.index].participants[0].full_name}",
+                    "${widget.groupListProvider!.groupList.groups![widget.index]!.participants![0]!.full_name}",
                     style: TextStyle(
                       color: userTitleColor,
                       fontSize: 20,
@@ -157,12 +157,12 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     ),
                   ),
                 )
-              : widget.groupListProvider.groupList.groups[widget.index].participants.length ==
+              : widget.groupListProvider!.groupList.groups![widget.index]!.participants!.length ==
                       2
                   ? Padding(
                       padding: const EdgeInsets.only(top: 21.0),
                       child: Text(
-                        "${widget.groupListProvider.groupList.groups[widget.index].participants[widget.groupListProvider.groupList.groups[widget.index].participants.indexWhere((element) => element.ref_id != widget.authProvider.getUser.ref_id)].full_name}",
+                        "${widget.groupListProvider!.groupList.groups![widget.index]!.participants![widget.groupListProvider!.groupList.groups![widget.index]!.participants!.indexWhere((element) => element!.ref_id != widget.authProvider!.getUser!.ref_id)]!.full_name}",
                         style: TextStyle(
                           color: userTitleColor,
                           fontSize: 20,
@@ -174,7 +174,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                   : Padding(
                       padding: const EdgeInsets.only(top: 21.0),
                       child: Text(
-                        "${widget.groupListProvider.groupList.groups[widget.index].group_title}",
+                        "${widget.groupListProvider!.groupList.groups![widget.index]!.group_title}",
                         style: TextStyle(
                           color: userTitleColor,
                           fontSize: 20,
@@ -210,22 +210,22 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         //     ? Text(_presenceStatus)
                         //
 
-                        (widget.groupListProvider
-                                        .groupList.groups[widget.index].typingstatus !=
+                        (widget.groupListProvider!
+                                        .groupList.groups![widget.index]!.typingstatus !=
                                     "" &&
-                                widget.groupListProvider
-                                        .groupList.groups[widget.index].typingstatus !=
+                                widget.groupListProvider!
+                                        .groupList.groups![widget.index]!.typingstatus !=
                                     null)
-                            ? (widget.groupListProvider.typingUserDetail.length > 1)
+                            ? (widget.groupListProvider!.typingUserDetail.length > 1)
                                 ? Text(
-                                    "${widget.groupListProvider.groupList.groups[widget.index].typingstatus} are typing...",
+                                    "${widget.groupListProvider!.groupList.groups![widget.index]!.typingstatus} are typing...",
                                     style: TextStyle(
                                       color: userTypingColor,
                                       fontSize: 14,
                                     ),
                                   )
                                 : Text(
-                                    "${widget.groupListProvider.groupList.groups[widget.index].typingstatus} is typing...",
+                                    "${widget.groupListProvider!.groupList.groups![widget.index]!.typingstatus} is typing...",
                                     style: TextStyle(
                                       color: userTypingColor,
                                       fontSize: 14,

@@ -8,13 +8,13 @@ enum ContactStates { Loading, Success, Faliure }
 class ContactProvider with ChangeNotifier {
   List<Contact> userGroups = [];
 
-  ContactList _contactList;
+  late ContactList _contactList;
   ContactList get contactList => _contactList;
 
   ContactStates _contactStates = ContactStates.Loading;
   ContactStates get contactState => _contactStates;
 
-  String _errorMsg;
+  late String _errorMsg;
   String get errorMsg => _errorMsg;
 
   getContacts(String authToken) async {
@@ -41,13 +41,13 @@ class ContactProvider with ChangeNotifier {
   }
 
   selectGroups(index) {
-    if (contactList.users[index].isSelected == false ||
-        contactList.users[index].isSelected == null) {
-      contactList.users[index].isSelected = true;
-      userGroups.add(contactList.users[index]);
+    if (contactList.users![index]!.isSelected == false ||
+        contactList.users![index]!.isSelected == null) {
+      contactList.users![index]!.isSelected = true;
+      userGroups.add(contactList.users![index]!);
     } else {
-      contactList.users[index].isSelected = false;
-      userGroups.remove(contactList.users[index]);
+      contactList.users![index]!.isSelected = false;
+      userGroups.remove(contactList.users![index]);
     }
     print("The user group: $userGroups");
     notifyListeners();

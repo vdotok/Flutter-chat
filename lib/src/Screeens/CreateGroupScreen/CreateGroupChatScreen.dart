@@ -19,25 +19,25 @@ import '../../core/providers/groupListProvider.dart';
 class CreateGroupChatScreen extends StatefulWidget {
   final ContactProvider contactProvider;
   final MainProvider mainProvider;
-  final GroupListProvider groupListProvider;
+  final GroupListProvider ?groupListProvider;
   final refreshList;
   final handlePress;
-  const CreateGroupChatScreen({Key key, this.contactProvider, this.mainProvider, this.groupListProvider, this.refreshList, this.handlePress}) : super(key: key);
+  const CreateGroupChatScreen({Key? key, required this.contactProvider, required this.mainProvider, required this.groupListProvider, this.refreshList, this.handlePress}) : super(key: key);
   @override
   _CreateGroupChatScreenState createState() => _CreateGroupChatScreenState();
 }
 List<Contact> selectedContacts = [];
 class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
-  ContactProvider contactProvider;
-  GroupListProvider groupListProvider;
-  AuthProvider authProvider;
-  Emitter emitter;
+  late ContactProvider contactProvider;
+  late GroupListProvider groupListProvider;
+  late AuthProvider authProvider;
+  late Emitter emitter;
   int count = 0;
   var changingvaalue;
   
   final _groupNameController = TextEditingController();
   final _searchController = TextEditingController();
-  List<Contact> _filteredList = [];
+  List<Contact?>? _filteredList = [];
   bool notmatched = false;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -53,20 +53,20 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
 
   onSearch(value) {
     print("this is here $value");
-    List temp;
-    temp = widget.contactProvider.contactList.users
-        .where((element) => element.full_name.toLowerCase().startsWith(value))
+    List ? temp;
+    temp = widget.contactProvider.contactList.users!
+        .where((element) => element!.full_name.toLowerCase().startsWith(value))
         .toList();
     print("this is filtered list $_filteredList");
 
     setState(() {
-      if (temp.isEmpty) {
+      if (temp!.isEmpty) {
         notmatched = true;
         print("Here in true not matched");
       } else {
         print("Here in false matched");
         notmatched = false;
-        _filteredList = temp;
+        _filteredList = temp.cast<Contact?>();
       }
     });
   }
@@ -119,7 +119,7 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
       if (widget.contactProvider.contactState == ContactStates.Loading)
         return SplashScreen();
       else if (widget.contactProvider.contactState == ContactStates.Success) {
-        if (widget.contactProvider.contactList.users.length == 0)
+        if (widget.contactProvider.contactList.users!.length == 0)
           return NoChatScreen(
               groupListProvider: groupListProvider,
               emitter: emitter,
@@ -180,12 +180,12 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                   var groupName =
                                       selectedContacts[0].full_name +
                                           "-" +
-                                          authProvider.getUser.full_name;
+                                          authProvider.getUser!.full_name;
                                   print("The Group Join: ${groupName}");
                                   var res = await widget.contactProvider.createGroup(
                                       groupName,
                                       selectedContacts,
-                                      authProvider.getUser.auth_token);
+                                      authProvider.getUser!.auth_token);
                                   // groupListProvider.getGroupList(
                                   //     authProvider.getUser.auth_token);
                                   GroupModel groupModel =
@@ -269,7 +269,7 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                           onSearch(value);
                         },
                         validator: (value) =>
-                            value.isEmpty ? "Field cannot be empty." : null,
+                            value!.isEmpty ? "Field cannot be empty." : null,
                         decoration: InputDecoration(
                           fillColor: refreshTextColor,
                           filled: true,
@@ -328,14 +328,14 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                 padding: const EdgeInsets.only(top: 10),
                                 itemCount: _searchController.text.isEmpty
                                     ? widget.contactProvider
-                                        .contactList.users.length
-                                    : _filteredList.length,
+                                        .contactList.users!.length
+                                    : _filteredList!.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  Contact element =
+                                  Contact? element =
                                       _searchController.text.isEmpty
                                           ? widget.contactProvider
-                                              .contactList.users[index]
-                                          : _filteredList[index];
+                                              .contactList.users![index]
+                                          : _filteredList![index];
 
                                   return Column(
                                     children: [
@@ -344,14 +344,14 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                           if (selectedContacts.indexWhere(
                                                   (contact) =>
                                                       contact.user_id ==
-                                                      element.user_id) !=
+                                                      element!.user_id) !=
                                               -1) {
                                             setState(() {
                                               selectedContacts.remove(element);
                                             });
                                           } else {
                                             setState(() {
-                                              selectedContacts.add(element);
+                                              selectedContacts.add(element!);
                                             });
                                           }
                                         },
@@ -368,7 +368,7 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                               'assets/User.svg'),
                                         ),
                                         title: Text(
-                                          "${element.full_name}",
+                                          "${element!.full_name}",
                                           style: TextStyle(
                                             color: contactNameColor,
                                             fontSize: 16,

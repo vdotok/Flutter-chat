@@ -7,10 +7,10 @@ import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
 import 'ChatScreen.dart';
 
 class ChatScreenIndex extends StatefulWidget {
-  final bool activeCall;
+  final bool? activeCall;
   //bool state;
   final handlePress;
-  final int index;
+  final  int index;
   final publishMessage;
   // final VoidCallback  callbackfunction;
   final MainProvider mainProvider;
@@ -18,13 +18,13 @@ class ChatScreenIndex extends StatefulWidget {
   final funct;
 
   ChatScreenIndex({
-    this.index,
+    required this.index,
     this.publishMessage,
-    this.mainProvider,
+    required this.mainProvider,
     this.funct,
-    this.contactprovider,
+    required this.contactprovider,
     this.handlePress,
-    this.activeCall,
+     this.activeCall,
   });
   @override
   _ChatScreenIndexState createState() => _ChatScreenIndexState();

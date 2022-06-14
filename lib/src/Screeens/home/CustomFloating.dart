@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomFloating extends StatefulWidget {
   CustomFloating({
-    Key key,
+    Key ?key,
   }) : super(key: key);
 
   @override

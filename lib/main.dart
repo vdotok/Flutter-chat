@@ -11,16 +11,14 @@ import 'package:vdkFlutterChat/src/core/providers/auth.dart';
 import 'package:vdkFlutterChat/src/routing/routes.dart';
 import 'src/constants/constant.dart';
 
-GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey;
-class MyHttpOverrides extends HttpOverrides {
+GlobalKey<ScaffoldMessengerState>? rootScaffoldMessengerKey;
+ class MyHttpOverrides extends HttpOverrides{
   @override
-  HttpClient createHttpClient(SecurityContext context) {
+  HttpClient createHttpClient(SecurityContext? context){
     return super.createHttpClient(context)
-      ..badCertificateCallback =
-          (X509Certificate cert, String host, int port) => true;
+      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
   }
 }
-
 void main() {
   HttpOverrides.global = new MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +32,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
  
-  StreamSubscription subscription;
+  StreamSubscription ?subscription;
   
 
   @override
@@ -46,7 +44,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void dispose() {
-    subscription.cancel();
+    subscription!.cancel();
     super.dispose();
   }
 

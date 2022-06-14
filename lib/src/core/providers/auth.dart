@@ -27,21 +27,21 @@ class AuthProvider with ChangeNotifier {
   Status get loggedInStatus => _loggedInStatus;
   Status get registeredInStatus => _registeredInStatus;
 
-  User _user = new User();
-  User get getUser => _user;
+  User ?_user = new User(auth_token: '', full_name: '', ref_id: '', authorization_token: '');
+  User? get getUser => _user;
 
   SharedPref _sharedPref = SharedPref();
 
-  String _loginErrorMsg;
+  late String _loginErrorMsg;
   String get loginErrorMsg => _loginErrorMsg;
 
-  String _registerErrorMsg;
+  late String _registerErrorMsg;
   String get registerErrorMsg => _registerErrorMsg;
 
-  String _host;
+  late String _host;
   String get host => _host;
 
-  String _port;
+  late String _port;
   String get port => _port;
 
   Future<bool> register(String username, password, email) async {

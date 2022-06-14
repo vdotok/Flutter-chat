@@ -4,7 +4,7 @@ import '../constants/constant.dart';
 class HeaderFile extends StatelessWidget {
   String textname;
   String headername;
-  HeaderFile({Key key, this.headername, this.textname}) : super(key: key);
+  HeaderFile({Key? key, required this.headername, required this.textname}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

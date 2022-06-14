@@ -22,11 +22,11 @@ class _SignInScreenState extends State<SignInScreen> {
   bool _autoValidate = false;
 
   handlePress() async {
-    if (_loginformkey.currentState.validate()) {
+    if (_loginformkey.currentState!.validate()) {
       AuthProvider auth = Provider.of<AuthProvider>(context, listen: false);
       await auth.login(_emailController.text, _passwordController.text);
 
-      if (auth.getUser.auth_token == null) {
+      if (auth.getUser!.auth_token == null) {
         setState(() {
           _autoValidate = true;
         });
@@ -53,9 +53,9 @@ Navigator.pushNamed(context, "/register");
       statusBarIconBrightness: Brightness.dark, //status barIcon Brightness
     ));
     size = MediaQuery.of(context).size;
-    print("size ${size.width}");
-    print("width is${size.width / 22}");
-    print("height ${size.height / 18.66} ");
+    print("size ${size!.width}");
+    print("width is${size!.width / 22}");
+    print("height ${size!.height / 18.66} ");
 
     return GestureDetector(
       onTap: () {

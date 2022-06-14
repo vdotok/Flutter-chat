@@ -11,24 +11,24 @@ import 'CustomAppBar.dart';
 
 class NoChatScreen extends StatelessWidget {
   bool presentCheck;
-  final bool isConnect;
-  final bool state;
-  final MainProvider mainProvider;
+  final bool ?isConnect;
+  final bool ?state;
+  final MainProvider? mainProvider;
   final handlePress;
   NoChatScreen(
-      {Key key,
-      @required this.groupListProvider,
-      @required this.emitter,
+      {Key? key,
+      required this.groupListProvider,
+      required this.emitter,
       this.refreshList,
-      this.authProvider,
-      @required this.presentCheck,
-      this.isConnect,
-      this.state,
-      this.mainProvider, this.handlePress})
+       this.authProvider,
+      required this.presentCheck,
+       this.isConnect,
+       this.state,
+       this.mainProvider, this.handlePress})
       : super(key: key);
 
   final GroupListProvider groupListProvider;
-  final AuthProvider authProvider;
+  final AuthProvider ?authProvider;
   final Emitter emitter;
   final refreshList;
 
@@ -108,7 +108,7 @@ class NoChatScreen extends StatelessWidget {
                               ),
                               child: FlatButton(
                                 onPressed: () {
-                                  mainProvider.createIndividualGroupScreen();
+                                  mainProvider?.createIndividualGroupScreen();
                                 },
                                 child: Text(
                                   "New Chat",
@@ -165,7 +165,7 @@ class NoChatScreen extends StatelessWidget {
                         width: 105,
                         child: FlatButton(
                           onPressed: () {
-                            authProvider.logout();
+                            authProvider!.logout();
                             emitter.disconnect();
                           },
                           child: Text(
@@ -183,14 +183,14 @@ class NoChatScreen extends StatelessWidget {
                       height: 10,
                       width: 10,
                       decoration: BoxDecoration(
-                          color: isConnect && state ? Colors.green : Colors.red,
+                          color: isConnect! && state! ? Colors.green : Colors.red,
                           shape: BoxShape.circle),
                     ),
                   ],
                 ),
                 Container(
                     // padding: const EdgeInsets.only(bottom: 60),
-                    child: Text(authProvider.getUser.full_name))
+                    child: Text(authProvider!.getUser!.full_name))
               ],
             ),
           ),

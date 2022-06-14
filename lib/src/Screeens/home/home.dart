@@ -36,14 +36,14 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> with WidgetsBindingObserver {
   final _groupNameController = TextEditingController();
-  AuthProvider authProvider;
-  GroupListProvider groupListProvider;
+  late AuthProvider authProvider;
+  late GroupListProvider groupListProvider;
   bool isSocketConnect = true;
-  MainProvider _mainProvider;
-  ContactProvider contactProvider;
+  late MainProvider _mainProvider;
+  late ContactProvider contactProvider;
 
   List<Uint8List> listOfChunks = [];
-  Map<String, dynamic> header;
+  late Map<String, dynamic> header;
   bool scrollUp = false;
 
   @override
@@ -55,10 +55,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     contactProvider = Provider.of<ContactProvider>(context, listen: false);
     _mainProvider = Provider.of<MainProvider>(context, listen: false);
     emitter.connect(
-        clientId: authProvider.getUser.user_id.toString(),
+        clientId: authProvider.getUser!.user_id.toString(),
         reconnectivity: true,
-        refID: authProvider.getUser.ref_id,
-        authorization_token: authProvider.getUser.authorization_token,
+        refID: authProvider.getUser!.ref_id,
+        authorization_token: authProvider.getUser!.authorization_token,
         project_id: project_id,
         host: authProvider.host,
         port: authProvider.port);
@@ -66,10 +66,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     emitter.onConnect = (res) {
       print('this is response on connect $res');
       if (res) {
-  
-        groupListProvider.getGroupList(authProvider.getUser.auth_token);
-        contactProvider.getContacts(authProvider.getUser.auth_token);
-      
+        groupListProvider.getGroupList(authProvider.getUser!.auth_token);
+        contactProvider.getContacts(authProvider.getUser!.auth_token);
+
         print("Connected Successfully $res");
         setState(() {
           isSocketConnect = true;
@@ -82,10 +81,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         });
         if (isInternetConnect == true) {
           emitter.connect(
-              clientId: authProvider.getUser.user_id.toString(),
+              clientId: authProvider.getUser!.user_id.toString(),
               reconnectivity: true,
-              refID: authProvider.getUser.ref_id,
-              authorization_token: authProvider.getUser.authorization_token,
+              refID: authProvider.getUser!.ref_id,
+              authorization_token: authProvider.getUser!.authorization_token,
               project_id: project_id,
               host: authProvider.host,
               port: authProvider.port
@@ -122,9 +121,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     emitter.onsubscribe = (value) {
       print(("subscription homee $value"));
       if (value ==
-          groupListProvider.groupList.groups.last.channel_key +
+          groupListProvider.groupList.groups!.last!.channel_key +
               "/" +
-              groupListProvider.groupList.groups.last.channel_name) {
+              groupListProvider.groupList.groups!.last!.channel_name) {
         groupListProvider.changeState();
       }
     };
@@ -139,16 +138,16 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       switch (message["type"]) {
         case MessageType.text:
           {
-            if (authProvider.getUser.ref_id != message["from"]) {
+            if (authProvider.getUser!.ref_id != message["from"]) {
               if (groupListProvider.currentOpendChat != null) {
-                if (groupListProvider.currentOpendChat.channel_key ==
+                if (groupListProvider.currentOpendChat!.channel_key ==
                     message["key"]) {
                   print("samee channel oppeened");
                   var receiptMsg = message;
                   receiptMsg["status"] = ReceiptType.seen;
                   Map<String, dynamic> tempData = {
                     "date": ((DateTime.now()).millisecondsSinceEpoch).round(),
-                    "from": authProvider.getUser.ref_id,
+                    "from": authProvider.getUser!.ref_id,
                     "key": message["key"],
                     "messageId": message["id"],
                     "receiptType": ReceiptType.seen,
@@ -158,8 +157,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
                   groupListProvider.recevieMsg(receiptMsg);
                   emitter.publish(
-                      groupListProvider.currentOpendChat.channel_key,
-                      groupListProvider.currentOpendChat.channel_name,
+                      groupListProvider.currentOpendChat!.channel_key,
+                      groupListProvider.currentOpendChat!.channel_name,
                       tempData);
                 } else {
                   groupListProvider.recevieMsg(message);
@@ -189,7 +188,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           break;
         case MessageType.typing:
           {
-            if (authProvider.getUser.ref_id != message["from"]) {
+            if (authProvider.getUser!.ref_id != message["from"]) {
               groupListProvider.updateTypingStatus(msg);
             }
           }
@@ -207,10 +206,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           message["type"] == MediaType.video ||
           message["type"] == MediaType.image ||
           message["type"] == MediaType.file) {
-        if (authProvider.getUser.ref_id != message["from"]) {
+        if (authProvider.getUser!.ref_id != message["from"]) {
           if (groupListProvider.currentOpendChat != null) {
             //if shame channel is open
-            if (groupListProvider.currentOpendChat.channel_key ==
+            if (groupListProvider.currentOpendChat!.channel_key ==
                 message["key"]) {
               print("samee channel oppeened ${message["date"]}  ${message}  ");
               var receiptMsg = message;
@@ -232,7 +231,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 message["id"] = message["messageId"];
                 groupListProvider.recevieMsg(message);
               } else {
-                final url = await JsManager.instance.connect(
+                final url = await JsManager.instance!.connect(
                     base64.decode(receiptMsg["content"]),
                     receiptMsg["fileExtension"]);
                 receiptMsg["content"] = url;
@@ -240,7 +239,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               }
               Map<String, dynamic> tempData = {
                 "date": ((DateTime.now()).millisecondsSinceEpoch).round(),
-                "from": authProvider.getUser.ref_id,
+                "from": authProvider.getUser!.ref_id,
                 "key": message["key"],
                 "messageId": message["messageId"],
                 "receiptType": ReceiptType.seen,
@@ -249,8 +248,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
               print("this is temp data $tempData ${message["to"]}");
 
-              emitter.publish(groupListProvider.currentOpendChat.channel_key,
-                  groupListProvider.currentOpendChat.channel_name, tempData);
+              emitter.publish(groupListProvider.currentOpendChat!.channel_key,
+                  groupListProvider.currentOpendChat!.channel_name, tempData);
             }
             // if same channel in not opened
             else {
@@ -269,7 +268,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 message["content"] = file;
                 groupListProvider.recevieMsg(message);
               } else {
-                final url = await JsManager.instance.connect(
+                final url = await JsManager.instance!.connect(
                     base64.decode(message["content"]),
                     message["fileExtension"]);
                 message["content"] = url;
@@ -291,7 +290,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               message["content"] = file;
               groupListProvider.recevieMsg(message);
             } else {
-              final url = await JsManager.instance.connect(
+              final url = await JsManager.instance!.connect(
                   base64.decode(message["content"]), message["fileExtension"]);
               message["content"] = url;
               groupListProvider.recevieMsg(message);
@@ -308,7 +307,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 
   showSnackbar(text, Color color, Color backgroundColor, bool check) {
     if (check == false) {
-      rootScaffoldMessengerKey.currentState
+      rootScaffoldMessengerKey!.currentState!
         ..hideCurrentSnackBar()
         ..showSnackBar(SnackBar(
           content: Text(
@@ -319,7 +318,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           duration: Duration(seconds: 2),
         ));
     } else if (check == true) {
-      rootScaffoldMessengerKey.currentState
+      rootScaffoldMessengerKey!.currentState!
         ..showSnackBar(SnackBar(
           content: Text(
             '$text',
@@ -346,9 +345,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 //   }
   renderList() {
     if (groupListProvider.groupListStatus == ListStatus.Scussess)
-      groupListProvider.getGroupList(authProvider.getUser.auth_token);
+      groupListProvider.getGroupList(authProvider.getUser!.auth_token);
     else {
-      contactProvider.getContacts(authProvider.getUser.auth_token);
+      contactProvider.getContacts(authProvider.getUser!.auth_token);
       //_selectedContacts.clear();
     }
   }
@@ -370,10 +369,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           print("here in resume");
 
           emitter.connect(
-              clientId: authProvider.getUser.user_id.toString(),
+              clientId: authProvider.getUser!.user_id.toString(),
               reconnectivity: true,
-              refID: authProvider.getUser.ref_id,
-              authorization_token: authProvider.getUser.authorization_token,
+              refID: authProvider.getUser!.ref_id,
+              authorization_token: authProvider.getUser!.authorization_token,
               project_id: project_id,
               host: authProvider.host,
               port: authProvider.port
@@ -423,150 +422,154 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       statusBarBrightness: Brightness.light, //status bar brigtness
       statusBarIconBrightness: Brightness.dark, //status barIcon Brightness
     ));
-  Future<bool> _onWillPop() async {
+    Future<bool> _onWillPop() async {
       // _groupListProvider.handlBacktoGroupList(index);
       if (strArr.last == "ChatScreen") {
         print("here in willpop chat");
         _mainProvider.homeScreen();
         strArr.remove("ChatScreen");
-      }  else if (strArr.last == "CreateGroupChat") {
+      } else if (strArr.last == "CreateGroupChat") {
         _mainProvider.createIndividualGroupScreen();
         strArr.remove("CreateGroupChat");
-      }  else if (strArr.last == "CreateIndividualGroup") {
+      } else if (strArr.last == "CreateIndividualGroup") {
         _mainProvider.homeScreen();
         strArr.remove("CreateGroupChat");
-      }else if (strArr.last == "GroupList") {
+      } else if (strArr.last == "GroupList") {
         return true;
-       
-      }  else if (strArr.last == "NoChat") {
+      } else if (strArr.last == "NoChat") {
         return true;
         // SystemNavigator.pop();
 
-      } 
+      }
 
       return false;
     }
+
     GroupListProvider groupListProvider =
         Provider.of<GroupListProvider>(context);
-    return  WillPopScope(
+    return WillPopScope(
         onWillPop: _onWillPop,
-        child: Consumer4<GroupListProvider, AuthProvider, MainProvider,ContactProvider>(
-      builder: (context, listProvider, authProvider, mainProvider,contactProvider, child) {
-        //When the Screen is Laoding//
-        if (listProvider.groupListStatus == ListStatus.Loading )
-          return SplashScreen();
-else if( contactProvider.contactState == ContactStates.Loading)
-return SplashScreen();
-        //In case of success//
-        else if (listProvider.groupListStatus == ListStatus.Scussess&& contactProvider.contactState == ContactStates.Success) {
-          if (_mainProvider.homeStatus == HomeStatus.Home) {
-            //Screen when there is no group or chat in Chat Room//
-            if (listProvider.groupList.groups.length == 0) {
-              if (strArr.contains("NoChat")) {
-              } else {
-                strArr.add("NoChat");
-              }
-
-              print("this is strarray1 $strArr");
-              print("no chat screen");
-              return NoChatScreen(
-                 handlePress: handleCreateGroup,
-                 mainProvider: _mainProvider,
-                isConnect: isSocketConnect,
-                state: isInternetConnect,
-                groupListProvider: groupListProvider,
-                emitter: emitter,
-                refreshList: refreshList,
-                authProvider: authProvider,
-                presentCheck: true,
-              );
-            }
-
-            //Screen with chats in Chat Room//
-            else {
-              if (strArr.contains("GroupList")) {
-              } else {
-                strArr.add("GroupList");
-              }
-              print("this is strarray2 $strArr");
-              print("this is group list screen");
-              return GroupListScreen(
-                  handlePress: handleCreateGroup,
-                  groupListProvider: groupListProvider,
-                  contactProvider: contactProvider,
-                  authProvider: authProvider,
-                  chatSocket: isSocketConnect,
-                  refreshList: refreshList,
-                  publishMesg: publishMessage,
-                  mainProvider: _mainProvider);
-            }
-
-            // if data found
-          } else if (_mainProvider.homeStatus == HomeStatus.ChatScreen) {
-            if (strArr.contains("ChatScreen")) {
-            } else {
-              strArr.add("ChatScreen");
-            }
-            print("this is strarray8 $strArr");
-            print("this is chat screen1");
-            print("this is index from main provider ${mainProvider.index}");
-            return ChatScreenIndex(
-              mainProvider: _mainProvider,
-              index: mainProvider.index,
-              publishMessage: publishMessage,
-              contactprovider: contactProvider,
-            );
-          } else if (_mainProvider.homeStatus == HomeStatus.CreateGroupChat) {
-  if (strArr.contains("CreateGroupChat")) {
+        child: Consumer4<GroupListProvider, AuthProvider, MainProvider,
+                ContactProvider>(
+            builder: (context, listProvider, authProvider, mainProvider,
+                contactProvider, child) {
+          //When the Screen is Laoding//
+          if (listProvider.groupListStatus == ListStatus.Loading)
+            return SplashScreen();
+          else if (contactProvider.contactState == ContactStates.Loading)
+            return SplashScreen();
+          //In case of success//
+          else if (listProvider.groupListStatus == ListStatus.Scussess &&
+              contactProvider.contactState == ContactStates.Success) {
+            if (_mainProvider.homeStatus == HomeStatus.Home) {
+              //Screen when there is no group or chat in Chat Room//
+              if (listProvider.groupList.groups!.length == 0) {
+                if (strArr.contains("NoChat")) {
                 } else {
-                  strArr.add("CreateGroupChat");
+                  strArr.add("NoChat");
                 }
-                print("this is strarray6 $strArr");
-                print("this is create group screen");
-                return CreateGroupChatIndex(
-                    refreshList: refreshList,
-                    mainProvider: _mainProvider,
+
+                print("this is strarray1 $strArr");
+                print("no chat screen");
+                return NoChatScreen(
+                  handlePress: handleCreateGroup,
+                  mainProvider: _mainProvider,
+                  isConnect: isSocketConnect,
+                  state: isInternetConnect,
+                  groupListProvider: groupListProvider,
+                  emitter: emitter,
+                  refreshList: refreshList,
+                  authProvider: authProvider,
+                  presentCheck: true,
+                );
+              }
+
+              //Screen with chats in Chat Room//
+              else {
+                if (strArr.contains("GroupList")) {
+                } else {
+                  strArr.add("GroupList");
+                }
+                print("this is strarray2 $strArr");
+                print("this is group list screen");
+                return GroupListScreen(
+                    handlePress: handleCreateGroup,
+                    groupListProvider: groupListProvider,
                     contactProvider: contactProvider,
-                    handlePress: handleCreateGroup);
+                    authProvider: authProvider,
+                    chatSocket: isSocketConnect,
+                    refreshList: refreshList,
+                    publishMesg: publishMessage,
+                    mainProvider: _mainProvider);
+              }
 
-
-          } else if (_mainProvider.homeStatus ==
-              HomeStatus.CreateIndividualGroup) {
-            if (strArr.contains("CreateIndividualGroup")) {
+              // if data found
+            } else if (_mainProvider.homeStatus == HomeStatus.ChatScreen) {
+              if (strArr.contains("ChatScreen")) {
+              } else {
+                strArr.add("ChatScreen");
+              }
+              print("this is strarray8 $strArr");
+              print("this is chat screen1");
+              print("this is index from main provider ${mainProvider.index}");
+              return ChatScreenIndex(
+                mainProvider: _mainProvider,
+                index: mainProvider.index,
+                publishMessage: publishMessage,
+                contactprovider: contactProvider,
+              );
+            } else if (_mainProvider.homeStatus == HomeStatus.CreateGroupChat) {
+              if (strArr.contains("CreateGroupChat")) {
+              } else {
+                strArr.add("CreateGroupChat");
+              }
+              print("this is strarray6 $strArr");
+              print("this is create group screen");
+              return CreateGroupChatIndex(
+                  refreshList: refreshList,
+                  mainProvider: _mainProvider,
+                  contactProvider: contactProvider,
+                  handlePress: handleCreateGroup);
+            } else if (_mainProvider.homeStatus ==
+                HomeStatus.CreateIndividualGroup) {
+              if (strArr.contains("CreateIndividualGroup")) {
+              } else {
+                strArr.add("CreateIndividualGroup");
+              }
+              print("this is strarray4 $strArr");
+              print("this is create group screen");
+              return ContactListIndex(
+                refreshList: refreshList,
+                handlePress: handleCreateGroup,
+                contactProvider: contactProvider,
+                mainProvider: _mainProvider,
+                groupListProvider: groupListProvider,
+              );
             } else {
-              strArr.add("CreateIndividualGroup");
+              return Container();
             }
-            print("this is strarray4 $strArr");
-            print("this is create group screen");
-            return ContactListIndex(
-              refreshList: refreshList,
-              handlePress: handleCreateGroup,
-              contactProvider: contactProvider,
-              mainProvider: _mainProvider,
-              groupListProvider: groupListProvider,
+          }
+
+          //The Screen Displayed in case of error//
+          else {
+            return Scaffold(
+              appBar: CustomAppBar(
+                groupListProvider: groupListProvider,
+                title: "Chat Rooms",
+                mainProvider: _mainProvider,
+                handlePress: handleCreateGroup,
+                lead: false,
+                succeedingIcon: 'assets/plus.svg',
+                ischatscreen: false,
+              ),
+              body: Center(
+                  child: Text(
+                "${listProvider.errorMsg}",
+                style:
+                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+              )),
             );
           }
-        }
-
-        //The Screen Displayed in case of error//
-        else
-          return Scaffold(
-            appBar: CustomAppBar(
-              groupListProvider: groupListProvider,
-              title: "Chat Rooms",
-              mainProvider: _mainProvider,
-              handlePress: handleCreateGroup,
-              lead: false,
-              succeedingIcon: 'assets/plus.svg',
-              ischatscreen: false,
-            ),
-            body: Center(
-                child: Text(
-              "${listProvider.errorMsg}",
-              style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-            )),
-          );
-      },
-    ));
+        }));
   }
 }

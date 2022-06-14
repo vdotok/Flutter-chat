@@ -12,7 +12,7 @@ class AudioWidget extends StatefulWidget {
   File file;
   int chatindex;
   int index;
-  AudioWidget({this.groupListProvider, this.chatindex, this.index, this.file, this.isReceive});
+  AudioWidget({required this.groupListProvider, required this.chatindex, required this.index, required this.file, required this.isReceive});
   @override
   _AudioWidgetState createState() => _AudioWidgetState();
 }
@@ -20,7 +20,7 @@ class AudioWidget extends StatefulWidget {
 class _AudioWidgetState extends State<AudioWidget> {
   AudioPlayer _audioPlayer = AudioPlayer();
 
- PlayerState _audioPlayerState;
+ late PlayerState _audioPlayerState;
   bool isPlaying = false;
   var currentTime = "00:00";
   var completeTime = "00:00";
@@ -34,8 +34,8 @@ class _AudioWidgetState extends State<AudioWidget> {
   bool isPaused = false;
   bool isResumed = false;
   double min = 0.0;
-  String newDuration;
-  String currentNewDuration;
+  late String newDuration;
+  late String currentNewDuration;
 
   @override
   void initState() {
@@ -239,16 +239,16 @@ class _AudioWidgetState extends State<AudioWidget> {
 
 class CustomTrackShape extends RoundedRectSliderTrackShape {
   Rect getPreferredRect({
-    @required RenderBox parentBox,
+    required RenderBox parentBox,
     Offset offset = Offset.zero,
-    @required SliderThemeData sliderTheme,
+    required SliderThemeData sliderTheme,
     bool isEnabled = false,
     bool isDiscrete = false,
   }) {
-    final double trackHeight = sliderTheme.trackHeight;
+    final double? trackHeight = sliderTheme.trackHeight;
     final double trackLeft = offset.dx;
     final double trackTop =
-        offset.dy + (parentBox.size.height - trackHeight) / 2;
+        offset.dy + (parentBox.size.height - trackHeight!) / 2;
     final double trackWidth = parentBox.size.width;
     return Rect.fromLTWH(trackLeft, trackTop, trackWidth, trackHeight);
   }
