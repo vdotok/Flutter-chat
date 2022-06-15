@@ -19,14 +19,23 @@ import '../../core/providers/groupListProvider.dart';
 class CreateGroupChatScreen extends StatefulWidget {
   final ContactProvider contactProvider;
   final MainProvider mainProvider;
-  final GroupListProvider ?groupListProvider;
+  final GroupListProvider? groupListProvider;
   final refreshList;
   final handlePress;
-  const CreateGroupChatScreen({Key? key, required this.contactProvider, required this.mainProvider, required this.groupListProvider, this.refreshList, this.handlePress}) : super(key: key);
+  const CreateGroupChatScreen(
+      {Key? key,
+      required this.contactProvider,
+      required this.mainProvider,
+      required this.groupListProvider,
+      this.refreshList,
+      this.handlePress})
+      : super(key: key);
   @override
   _CreateGroupChatScreenState createState() => _CreateGroupChatScreenState();
 }
+
 List<Contact> selectedContacts = [];
+
 class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
   late ContactProvider contactProvider;
   late GroupListProvider groupListProvider;
@@ -34,7 +43,7 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
   late Emitter emitter;
   int count = 0;
   var changingvaalue;
-  
+
   final _groupNameController = TextEditingController();
   final _searchController = TextEditingController();
   List<Contact?>? _filteredList = [];
@@ -47,13 +56,13 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
     contactProvider = Provider.of<ContactProvider>(context, listen: false);
     groupListProvider = Provider.of<GroupListProvider>(context, listen: false);
     authProvider = Provider.of<AuthProvider>(context, listen: false);
-    
+
     super.initState();
   }
 
   onSearch(value) {
     print("this is here $value");
-    List ? temp;
+    List? temp;
     temp = widget.contactProvider.contactList.users!
         .where((element) => element!.full_name.toLowerCase().startsWith(value))
         .toList();
@@ -77,7 +86,8 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
     emitter.publish(key, channelname, sendmessage);
   }
 
-  Future buildShowDialog(BuildContext context,String mesg, String errorMessage) {
+  Future buildShowDialog(
+      BuildContext context, String mesg, String errorMessage) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -146,12 +156,13 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                           size: 24,
                           color: chatRoomColor,
                         ),
-                        onPressed: () {if (strArr.last == "CreateGroupChat") {
+                        onPressed: () {
+                          if (strArr.last == "CreateGroupChat") {
                             widget
                                 .handlePress(HomeStatus.CreateIndividualGroup);
                             strArr.remove("CreateGroupChat");
                             selectedContacts.clear();
-                          } 
+                          }
                         },
                       ),
                     ),
@@ -172,87 +183,92 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                         padding: const EdgeInsets.only(right: 10.0),
                         child: IconButton(
                           icon: SvgPicture.asset('assets/checkmark.svg'),
-                          onPressed: !isInternetConnect?(){}:
-                          
-                          
-                          selectedContacts.length == 1
-                              ? () async {
-                                  var groupName =
-                                      selectedContacts[0].full_name +
-                                          "-" +
-                                          authProvider.getUser!.full_name;
-                                  print("The Group Join: ${groupName}");
-                                  var res = await widget.contactProvider.createGroup(
-                                      groupName,
-                                      selectedContacts,
-                                      authProvider.getUser!.auth_token);
-                                  // groupListProvider.getGroupList(
-                                  //     authProvider.getUser.auth_token);
-                                  GroupModel groupModel =
-                                      GroupModel.fromJson(res["group"]);
-                                  // print(
-                                  //     "this is response of createGroup ${groupModel.channel_key}, ${groupModel.channel_name}");
-                                  if (res["is_already_created"]) {
-                                    print("here in already created grouup");
-                                    buildShowDialog(context,  "Error Message",
-                                      "You already have a group with this user");
-                                    //   Navigator.pop(context, true);
-                                    // Navigator.pop(context, true);
-                                  } else {
-                                    groupListProvider.addGroup(groupModel);
-                                    groupListProvider.subscribeChannel(
-                                        groupModel.channel_key,
-                                        groupModel.channel_name);
-                                    groupListProvider.subscribePresence(
-                                        groupModel.channel_key,
-                                        groupModel.channel_name,
-                                        true,
-                                        true);
+                          onPressed: !isInternetConnect
+                              ? () {}
+                              : selectedContacts.length == 1
+                                  ? () async {
+                                      var groupName =
+                                          selectedContacts[0].full_name +
+                                              "-" +
+                                              authProvider.getUser!.full_name;
+                                      print("The Group Join: ${groupName}");
+                                      var res = await widget.contactProvider
+                                          .createGroup(
+                                              groupName,
+                                              selectedContacts,
+                                              authProvider.getUser!.auth_token);
+                                      // groupListProvider.getGroupList(
+                                      //     authProvider.getUser.auth_token);
+                                      GroupModel groupModel =
+                                          GroupModel.fromJson(res["group"]);
+                                      // print(
+                                      //     "this is response of createGroup ${groupModel.channel_key}, ${groupModel.channel_name}");
+                                      if (res["is_already_created"]) {
+                                        print("here in already created grouup");
+                                        buildShowDialog(
+                                            context,
+                                            "Error Message",
+                                            "You already have a group with this user");
+                                        //   Navigator.pop(context, true);
+                                        // Navigator.pop(context, true);
+                                      } else {
+                                        groupListProvider.addGroup(groupModel);
+                                        groupListProvider.subscribeChannel(
+                                            groupModel.channel_key,
+                                            groupModel.channel_name);
+                                        groupListProvider.subscribePresence(
+                                            groupModel.channel_key,
+                                            groupModel.channel_name,
+                                            true,
+                                            true);
 
-                                    Navigator.pop(context, true);
-                                    Navigator.pop(context, true);
-                                  }
-                                }
-                              : selectedContacts.length > 1
-                                  ? selectedContacts.length <= 4
-                                      ? () {
-                                          print("Here in greater than 1");
-                                          showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return ListenableProvider<
-                                                    GroupListProvider>.value(
-                                                  value: groupListProvider,
-                                                  child: CreateGroupPopUp(
-                                                    handlePress:
-                                                                      widget
-                                                                          .handlePress,
-                                                      editGroupName: false,
-                                                      publishMessage:
-                                                          publishMessage,
-                                                      groupNameController:
-                                                          _groupNameController,
-                                                      contactProvider:
-                                                          widget.contactProvider,
-                                                      selectedContacts:
-                                                          selectedContacts,
-                                                           mainProvider:
-                                                                      widget
-                                                                          .mainProvider,
-                                                      // groupListProvider: groupListProvider,
-                                                      authProvider:
-                                                          authProvider),
-                                                );
-                                              });
-                                        }
+                                        Navigator.pop(context, true);
+                                        Navigator.pop(context, true);
+                                      }
+                                    }
+                                  : selectedContacts.length > 1
+                                      ? selectedContacts.length <= 4
+                                          ? () {
+                                              print("Here in greater than 1");
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return ListenableProvider<
+                                                        GroupListProvider>.value(
+                                                      value: groupListProvider,
+                                                      child: CreateGroupPopUp(
+                                                          handlePress: widget
+                                                              .handlePress,
+                                                          editGroupName: false,
+                                                          publishMessage:
+                                                              publishMessage,
+                                                          groupNameController:
+                                                              _groupNameController,
+                                                          contactProvider: widget
+                                                              .contactProvider,
+                                                          selectedContacts:
+                                                              selectedContacts,
+                                                          mainProvider: widget
+                                                              .mainProvider,
+                                                          // groupListProvider: groupListProvider,
+                                                          authProvider:
+                                                              authProvider),
+                                                    );
+                                                  });
+                                            }
+                                          : () {
+                                              buildShowDialog(
+                                                  context,
+                                                  "Error Message",
+                                                  "Contacts should not be greater than 5!!!");
+                                            }
                                       : () {
-                                          buildShowDialog(context,  "Error Message",
-                                              "Contacts should not be greater than 5!!!");
-                                        }
-                                  : () {
-                                      buildShowDialog(context,  "Error Message",
-                                          "Please Select At least one contact to proceed!!!");
-                                    },
+                                          buildShowDialog(
+                                              context,
+                                              "Error Message",
+                                              "Please Select At least one contact to proceed!!!");
+                                        },
                         ),
                       ),
                     ]),
@@ -327,14 +343,14 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                 shrinkWrap: true,
                                 padding: const EdgeInsets.only(top: 10),
                                 itemCount: _searchController.text.isEmpty
-                                    ? widget.contactProvider
-                                        .contactList.users!.length
+                                    ? widget.contactProvider.contactList.users!
+                                        .length
                                     : _filteredList!.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   Contact? element =
                                       _searchController.text.isEmpty
-                                          ? widget.contactProvider
-                                              .contactList.users![index]
+                                          ? widget.contactProvider.contactList
+                                              .users![index]
                                           : _filteredList![index];
 
                                   return Column(

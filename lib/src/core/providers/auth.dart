@@ -27,7 +27,8 @@ class AuthProvider with ChangeNotifier {
   Status get loggedInStatus => _loggedInStatus;
   Status get registeredInStatus => _registeredInStatus;
 
-  User ?_user = new User(auth_token: '', full_name: '', ref_id: '', authorization_token: '');
+  User? _user = new User(
+      auth_token: '', full_name: '', ref_id: '', authorization_token: '');
   User? get getUser => _user;
 
   SharedPref _sharedPref = SharedPref();
@@ -92,7 +93,7 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
       return false;
     } else {
-        _host = response["messaging_server_map"]["host"];
+      _host = response["messaging_server_map"]["host"];
       _port = response["messaging_server_map"]["port"];
       SharedPref sharedPref = SharedPref();
       sharedPref.save("authUser", response);
@@ -108,7 +109,11 @@ class AuthProvider with ChangeNotifier {
     _loggedInStatus = Status.Loading;
     notifyListeners();
 
-    Map<String, dynamic> jsonData = {"email": email, "password": password,  "project_id": project_id};
+    Map<String, dynamic> jsonData = {
+      "email": email,
+      "password": password,
+      "project_id": project_id
+    };
 
     final response = await callAPI(jsonData, "Login", null);
     print("this is response of login api $response");

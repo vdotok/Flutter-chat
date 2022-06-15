@@ -12,31 +12,33 @@ import '../../core/providers/auth.dart';
 import '../../core/providers/contact_provider.dart';
 
 class CreateGroupPopUp extends StatefulWidget {
-  final MainProvider ?mainProvider;
+  final MainProvider? mainProvider;
   final handlePress;
   const CreateGroupPopUp(
       {Key? key,
       required TextEditingController groupNameController,
-       this.contactProvider,
-       required List<Contact> selectedContacts,
+      this.contactProvider,
+      required List<Contact> selectedContacts,
       @required this.publishMessage,
       required this.authProvider,
-       this.controllerText,
+      this.controllerText,
       required this.editGroupName,
-       this.groupid,  this.mainProvider, this.handlePress})
+      this.groupid,
+      this.mainProvider,
+      this.handlePress})
       : _groupNameController = groupNameController,
         _selectedContacts = selectedContacts,
         super(key: key);
 
   final TextEditingController _groupNameController;
-  final ContactProvider ?contactProvider;
+  final ContactProvider? contactProvider;
   final List<Contact> _selectedContacts;
   final AuthProvider authProvider;
   final publishMessage;
-  final String ?controllerText;
+  final String? controllerText;
   final bool editGroupName;
 
-  final int ?groupid;
+  final int? groupid;
 
   @override
   _CreateGroupPopUpState createState() => _CreateGroupPopUpState();
@@ -241,7 +243,7 @@ class _CreateGroupPopUpState extends State<CreateGroupPopUp> {
                                             //     "CreateIndividualGroupActiveCall");
                                             grouplistp.handleCreateChatState();
                                             Navigator.pop(context);
-                                              selectedContacts.clear();
+                                            selectedContacts.clear();
                                           }
                                         }
                                       }

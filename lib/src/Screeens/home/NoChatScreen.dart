@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
@@ -11,8 +9,8 @@ import 'CustomAppBar.dart';
 
 class NoChatScreen extends StatelessWidget {
   bool presentCheck;
-  final bool ?isConnect;
-  final bool ?state;
+  final bool? isConnect;
+  final bool? state;
   final MainProvider? mainProvider;
   final handlePress;
   NoChatScreen(
@@ -20,15 +18,16 @@ class NoChatScreen extends StatelessWidget {
       required this.groupListProvider,
       required this.emitter,
       this.refreshList,
-       this.authProvider,
+      this.authProvider,
       required this.presentCheck,
-       this.isConnect,
-       this.state,
-       this.mainProvider, this.handlePress})
+      this.isConnect,
+      this.state,
+      this.mainProvider,
+      this.handlePress})
       : super(key: key);
 
   final GroupListProvider groupListProvider;
-  final AuthProvider ?authProvider;
+  final AuthProvider? authProvider;
   final Emitter emitter;
   final refreshList;
 
@@ -183,7 +182,8 @@ class NoChatScreen extends StatelessWidget {
                       height: 10,
                       width: 10,
                       decoration: BoxDecoration(
-                          color: isConnect! && state! ? Colors.green : Colors.red,
+                          color:
+                              isConnect! && state! ? Colors.green : Colors.red,
                           shape: BoxShape.circle),
                     ),
                   ],

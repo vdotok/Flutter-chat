@@ -19,7 +19,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   RegExp emailRegex = new RegExp(
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-RegExp userNameRegex = new RegExp(r"^[a-zA-Z0-9_]+$");
+  RegExp userNameRegex = new RegExp(r"^[a-zA-Z0-9_]+$");
   RegExp allowNumber = new RegExp(r"^[0-9]*$");
   //RegExp nameRegex = new RegExp(r"^[a-zA-Z]+([_a-zA-Z0-9_]+)*$");
   String email = '';
@@ -64,7 +64,7 @@ RegExp userNameRegex = new RegExp(r"^[a-zA-Z0-9_]+$");
               focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.all(Radius.circular(15)),
                   borderSide: BorderSide(color: focusedBorderColor))),
-      validator: (value) {
+          validator: (value) {
             if (value!.isEmpty) {
               print("The value:${value}");
               return "Field cannot be empty";
@@ -88,8 +88,7 @@ RegExp userNameRegex = new RegExp(r"^[a-zA-Z0-9_]+$");
               return 'Please enter a valid email';
             else
               return null;
-          }
-          ),
+          }),
     );
   }
 }

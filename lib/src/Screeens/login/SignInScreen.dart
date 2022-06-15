@@ -40,10 +40,10 @@ class _SignInScreenState extends State<SignInScreen> {
       });
     }
   }
-  
+
   handleButton() {
-Navigator.pushNamed(context, "/register");
-}
+    Navigator.pushNamed(context, "/register");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +80,7 @@ Navigator.pushNamed(context, "/register");
             backgroundColor: Colors.transparent,
             //backgroundColor: Colors.amber,
             body: SingleChildScrollView(
-               //physics: BouncingScrollPhysics(),
+              //physics: BouncingScrollPhysics(),
               child: Container(
                 // height: MediaQuery.of(context).size.height,
                 alignment: Alignment.center,
@@ -98,7 +98,7 @@ Navigator.pushNamed(context, "/register");
                     //    Expanded(
                     Form(
                       key: _loginformkey,
-                   autovalidateMode: AutovalidateMode.always,
+                      autovalidateMode: AutovalidateMode.always,
                       child: Container(
                         width: 290,
                         height: 510,
@@ -133,8 +133,8 @@ Navigator.pushNamed(context, "/register");
                                     builder: (context, auth, child) {
                                       if (auth.loggedInStatus == Status.Failure)
                                         return Container(
-                                        
-      padding: EdgeInsets.symmetric(horizontal: 17),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 17),
                                           child: Text(
                                             auth.loginErrorMsg,
                                             style: TextStyle(color: Colors.red),
@@ -161,7 +161,10 @@ Navigator.pushNamed(context, "/register");
                                     },
                                   ),
                                   SizedBox(height: 38),
-                                  CustomTextButton(text: "SIGN UP",handlePress: handleButton,),
+                                  CustomTextButton(
+                                    text: "SIGN UP",
+                                    handlePress: handleButton,
+                                  ),
                                   SizedBox(height: 36),
                                 ],
                               ),

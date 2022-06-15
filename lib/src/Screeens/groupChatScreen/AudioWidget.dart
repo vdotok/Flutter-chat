@@ -7,12 +7,17 @@ import 'package:vdkFlutterChat/src/constants/constant.dart';
 import 'package:vdkFlutterChat/src/core/providers/groupListProvider.dart';
 
 class AudioWidget extends StatefulWidget {
-   bool isReceive;
+  bool isReceive;
   GroupListProvider groupListProvider;
   File file;
   int chatindex;
   int index;
-  AudioWidget({required this.groupListProvider, required this.chatindex, required this.index, required this.file, required this.isReceive});
+  AudioWidget(
+      {required this.groupListProvider,
+      required this.chatindex,
+      required this.index,
+      required this.file,
+      required this.isReceive});
   @override
   _AudioWidgetState createState() => _AudioWidgetState();
 }
@@ -20,7 +25,7 @@ class AudioWidget extends StatefulWidget {
 class _AudioWidgetState extends State<AudioWidget> {
   AudioPlayer _audioPlayer = AudioPlayer();
 
- late PlayerState _audioPlayerState;
+  late PlayerState _audioPlayerState;
   bool isPlaying = false;
   var currentTime = "00:00";
   var completeTime = "00:00";
@@ -106,7 +111,6 @@ class _AudioWidgetState extends State<AudioWidget> {
 
   @override
   void dispose() {
-   
     _audioPlayer.stop();
     super.dispose();
   }
@@ -119,18 +123,15 @@ class _AudioWidgetState extends State<AudioWidget> {
 
   @override
   Widget build(BuildContext context) {
-   
     return Container(
-    
       width: 230,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
-        color:  widget.isReceive?receiverMessagecolor:
-        searchbarContainerColor,
+        color:
+            widget.isReceive ? receiverMessagecolor : searchbarContainerColor,
       ),
       child: Row(
         children: [
-          
           IconButton(
             onPressed: () async {
               if (!isPlaying) {
@@ -176,18 +177,16 @@ class _AudioWidgetState extends State<AudioWidget> {
             icon: (isPlaying || isResumed)
                 ? Icon(
                     Icons.pause,
-                    color: 
-                    widget.isReceive?Colors.white:
-                    receiverMessagecolor,
+                    color:
+                        widget.isReceive ? Colors.white : receiverMessagecolor,
                   )
                 : Icon(
                     Icons.play_arrow,
-                    color:  widget.isReceive?Colors.white:
-                    receiverMessagecolor,
+                    color:
+                        widget.isReceive ? Colors.white : receiverMessagecolor,
                   ),
-           
           ),
-         
+
           SizedBox(
             // height: 20,
             width: 125,
@@ -200,9 +199,8 @@ class _AudioWidgetState extends State<AudioWidget> {
                   thumbColor: Colors.transparent,
                   thumbShape: RoundSliderThumbShape(enabledThumbRadius: 5.0)),
               child: Slider(
-                activeColor: 
-                 widget.isReceive?Colors.white:
-                receiverMessagecolor,
+                activeColor:
+                    widget.isReceive ? Colors.white : receiverMessagecolor,
                 inactiveColor: typeMessageColor,
                 min: min,
                 max: _playDuration.inSeconds.toDouble(),
@@ -226,8 +224,7 @@ class _AudioWidgetState extends State<AudioWidget> {
           Text(
             (currentTime != "00:00") ? currentTime : completeTime,
             style: TextStyle(
-              color:  widget.isReceive?Colors.white:
-              geryColor,
+              color: widget.isReceive ? Colors.white : geryColor,
               fontSize: 14,
             ),
           ),

@@ -4,9 +4,9 @@ import '../constants/constant.dart';
 class CustomTextButton extends StatelessWidget {
   final handlePress;
   final String text;
- 
+
   CustomTextButton({required this.text, @required this.handlePress});
- 
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -46,7 +46,7 @@ class CustomTextButton extends StatelessWidget {
     //         ),
     //       ),
     //    // ),
- 
+
     // );
   }
 }

@@ -14,7 +14,8 @@ import '../../core/providers/auth.dart';
 import '../../core/providers/contact_provider.dart';
 import '../../core/providers/groupListProvider.dart';
 
-  List<Contact> selectedContacts = [];
+List<Contact> selectedContacts = [];
+
 class ContactListScreen extends StatefulWidget {
   final ContactProvider contactProvider;
 
@@ -22,7 +23,14 @@ class ContactListScreen extends StatefulWidget {
   final GroupListProvider groupListProvider;
   final refreshList;
   final handlePress;
-  const ContactListScreen({Key? key, required this.contactProvider, required this.mainProvider, required this.groupListProvider, this.refreshList, this.handlePress}) : super(key: key);
+  const ContactListScreen(
+      {Key? key,
+      required this.contactProvider,
+      required this.mainProvider,
+      required this.groupListProvider,
+      this.refreshList,
+      this.handlePress})
+      : super(key: key);
 
   @override
   _ContactListScreenState createState() => _ContactListScreenState();
@@ -124,7 +132,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
               },
               child: Scaffold(
                 appBar: CustomAppBar(
-                  mainProvider: widget.mainProvider,
+                    mainProvider: widget.mainProvider,
                     lead: true,
                     ischatscreen: false,
                     title: "New Chat",
@@ -206,11 +214,11 @@ class _ContactListScreenState extends State<ContactListScreen> {
                             GestureDetector(
                               onTap: () {
                                 if (strArr.last == "CreateIndividualGroup") {
-                                    widget.mainProvider.createGroupChatScreen();
-                                    // widget
-                                    //     .handlePress(HomeStatus.CreateGroupChat);
-                                    strArr.remove("CreateIndividualGroup");
-                                  }
+                                  widget.mainProvider.createGroupChatScreen();
+                                  // widget
+                                  //     .handlePress(HomeStatus.CreateGroupChat);
+                                  strArr.remove("CreateIndividualGroup");
+                                }
                               },
                               child: SizedBox(
                                 width: 236,
@@ -258,11 +266,13 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                 shrinkWrap: true,
                                 //  padding: const EdgeInsets.only(top: 5),
                                 itemCount: _searchController.text.isEmpty
-                                    ? widget.contactProvider.contactList.users!.length
+                                    ? widget.contactProvider.contactList.users!
+                                        .length
                                     : _filteredList!.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   Contact? test = _searchController.text.isEmpty
-                                      ? widget.contactProvider.contactList.users![index]
+                                      ? widget.contactProvider.contactList
+                                          .users![index]
                                       : _filteredList![index];
                                   var groupIndex = groupListProvider
                                       .groupList.groups!
@@ -322,15 +332,19 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                                             .add(test);
                                                         print(
                                                             "the selected contacts:${test.full_name}");
-                                                        var res = await widget.contactProvider.createGroup(
-                                                            authProvider.getUser!
-                                                                    .full_name +
-                                                                selectedContacts[
-                                                                        0]
-                                                                    .full_name,
-                                                            selectedContacts,
-                                                            authProvider.getUser!
-                                                                .auth_token);
+                                                        var res = await widget
+                                                            .contactProvider
+                                                            .createGroup(
+                                                                authProvider
+                                                                        .getUser!
+                                                                        .full_name +
+                                                                    selectedContacts[
+                                                                            0]
+                                                                        .full_name,
+                                                                selectedContacts,
+                                                                authProvider
+                                                                    .getUser!
+                                                                    .auth_token);
                                                         // var getGroups=await
 
                                                         print(
@@ -387,19 +401,16 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                                         }
 
                                                         if (res[
-                                                                      "is_already_created"]) {
-                                                                    widget
-                                                                        .mainProvider
-                                                                        .chatScreen(
-                                                                            index:
-                                                                                channelIndex);
-                                                                  } else {
-                                                                    widget
-                                                                        .mainProvider
-                                                                        .chatScreen(
-                                                                            index:
-                                                                                0);
-                                                                  }
+                                                            "is_already_created"]) {
+                                                          widget.mainProvider
+                                                              .chatScreen(
+                                                                  index:
+                                                                      channelIndex);
+                                                        } else {
+                                                          widget.mainProvider
+                                                              .chatScreen(
+                                                                  index: 0);
+                                                        }
                                                         selectedContacts
                                                             .clear();
                                                         groupListProvider

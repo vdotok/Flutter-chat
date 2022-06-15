@@ -27,10 +27,7 @@ class Routers {
         break;
       case '/home':
         return PageTransition(
-            child: HomeIndex(
-               
-                ),
-            type: PageTransitionType.rightToLeft);
+            child: HomeIndex(), type: PageTransitionType.rightToLeft);
         break;
 //       case '/contactlist':
 //  Map<String, dynamic> params = args;

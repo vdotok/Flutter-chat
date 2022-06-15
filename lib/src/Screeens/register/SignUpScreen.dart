@@ -91,7 +91,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           Logo(),
                           SizedBox(height: 39.64),
                           Form(
-                             autovalidateMode: AutovalidateMode.always,
+                            autovalidateMode: AutovalidateMode.always,
                             key: _registerformkey,
                             child: Container(
                               width: 290,
@@ -127,16 +127,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                           builder: (context, auth, child) {
                                             if (auth.registeredInStatus ==
                                                 Status.Failure)
-                                              return 
-                                              Container(
-                                        
-      padding: EdgeInsets.symmetric(horizontal: 17),
-                                          child:
-                                              Text(
-                                                auth.registerErrorMsg,
-                                                style: TextStyle(
-                                                    color: Colors.red),
-                                              ),) ;
+                                              return Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 17),
+                                                child: Text(
+                                                  auth.registerErrorMsg,
+                                                  style: TextStyle(
+                                                      color: Colors.red),
+                                                ),
+                                              );
                                             else
                                               return Container();
                                           },

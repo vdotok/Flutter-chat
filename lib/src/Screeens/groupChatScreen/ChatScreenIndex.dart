@@ -10,7 +10,7 @@ class ChatScreenIndex extends StatefulWidget {
   final bool? activeCall;
   //bool state;
   final handlePress;
-  final  int index;
+  final int index;
   final publishMessage;
   // final VoidCallback  callbackfunction;
   final MainProvider mainProvider;
@@ -24,7 +24,7 @@ class ChatScreenIndex extends StatefulWidget {
     this.funct,
     required this.contactprovider,
     this.handlePress,
-     this.activeCall,
+    this.activeCall,
   });
   @override
   _ChatScreenIndexState createState() => _ChatScreenIndexState();

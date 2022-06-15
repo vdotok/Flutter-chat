@@ -41,7 +41,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
 
   onSearch(value) {
     print("this is here $value");
-     List temp;
+    List temp;
     temp = contactProvider.contactList.users!
         .where((element) => element!.full_name.contains(value))
         .toList();

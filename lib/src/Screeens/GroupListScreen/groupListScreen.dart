@@ -14,7 +14,7 @@ TextEditingController _groupNameController = TextEditingController();
 
 class GroupListScreen extends StatefulWidget {
   final GroupListProvider groupListProvider;
-  final ContactProvider ?contactProvider;
+  final ContactProvider? contactProvider;
   final AuthProvider authProvider;
   final publishMesg;
   final refreshList;
@@ -29,7 +29,8 @@ class GroupListScreen extends StatefulWidget {
       this.refreshList,
       this.chatSocket,
       this.publishMesg,
-      this.mainProvider, this.handlePress})
+      this.mainProvider,
+      this.handlePress})
       : super(key: key);
   @override
   _GroupListScreenState createState() => _GroupListScreenState();
@@ -52,8 +53,8 @@ class _GroupListScreenState extends State<GroupListScreen> {
 
   handleSeenStatus(index) {
     if (widget.groupListProvider.groupList.groups![index]!.chatList != null) {
-      widget.groupListProvider.groupList.groups![index]!.chatList
-          !.forEach((element) {
+      widget.groupListProvider.groupList.groups![index]!.chatList!
+          .forEach((element) {
         if (element!.status != ReceiptType.delivered &&
             widget.authProvider.getUser!.ref_id != element.from) {
           // ChatModel notseenMsg = element;
@@ -66,7 +67,8 @@ class _GroupListScreenState extends State<GroupListScreen> {
             "key": element.key,
             "messageId": element.id,
             "receiptType": ReceiptType.seen,
-            "to": widget.groupListProvider.groupList.groups![index]!.channel_name
+            "to":
+                widget.groupListProvider.groupList.groups![index]!.channel_name
           };
           emitter.publish(
               widget.groupListProvider.groupList.groups![index]!.channel_key,
@@ -168,25 +170,25 @@ class _GroupListScreenState extends State<GroupListScreen> {
 
                   String _presenceStatus = "";
                   int _count = 0;
-                  if (widget.groupListProvider.groupList.groups![index]
-                          !.participants!.length ==
+                  if (widget.groupListProvider.groupList.groups![index]!
+                          .participants!.length ==
                       1) {
                     if (widget.groupListProvider.presenceList.indexOf(widget
                             .groupListProvider
                             .groupList
-                            .groups![index]
-                            !.participants![0]
-                            !.ref_id) !=
+                            .groups![index]!
+                            .participants![0]!
+                            .ref_id) !=
                         -1)
                       _presenceStatus = "online";
                     else
                       _presenceStatus = "offline";
-                  } else if (widget.groupListProvider.groupList.groups![index]
-                          !.participants!.length ==
+                  } else if (widget.groupListProvider.groupList.groups![index]!
+                          .participants!.length ==
                       2) {
-                    widget
-                        .groupListProvider.groupList.groups![index]!.participants
-                        !.forEach((element) {
+                    widget.groupListProvider.groupList.groups![index]!
+                        .participants!
+                        .forEach((element) {
                       if (widget.groupListProvider.presenceList
                               .indexOf(element!.ref_id) !=
                           -1) _count++;
@@ -196,9 +198,9 @@ class _GroupListScreenState extends State<GroupListScreen> {
                     else
                       _presenceStatus = "online";
                   } else {
-                    widget
-                        .groupListProvider.groupList.groups![index]!.participants
-                        !.forEach((element) {
+                    widget.groupListProvider.groupList.groups![index]!
+                        .participants!
+                        .forEach((element) {
                       if (widget.groupListProvider.presenceList
                               .indexOf(element!.ref_id) !=
                           -1) _count++;
@@ -206,8 +208,8 @@ class _GroupListScreenState extends State<GroupListScreen> {
                     _presenceStatus = "(" +
                         _count.toString() +
                         "/" +
-                        widget.groupListProvider.groupList.groups![index]
-                            !.participants!.length
+                        widget.groupListProvider.groupList.groups![index]!
+                            .participants!.length
                             .toString() +
                         ") online";
                   }
@@ -259,9 +261,9 @@ class _GroupListScreenState extends State<GroupListScreen> {
                                           child: widget
                                                       .groupListProvider
                                                       .groupList
-                                                      .groups![index]
-                                                      !.participants
-                                                      !.length ==
+                                                      .groups![index]!
+                                                      .participants!
+                                                      .length ==
                                                   1
                                               ? Text(
                                                   //personal chat
@@ -281,9 +283,9 @@ class _GroupListScreenState extends State<GroupListScreen> {
                                               : widget
                                                           .groupListProvider
                                                           .groupList
-                                                          .groups![index]
-                                                          !.participants
-                                                          !.length ==
+                                                          .groups![index]!
+                                                          .participants!
+                                                          .length ==
                                                       2
                                                   ? Text(
                                                       "${widget.groupListProvider.groupList.groups![index]!.participants![widget.groupListProvider.groupList.groups![index]!.participants!.indexWhere((element) => element!.ref_id != widget.authProvider.getUser!.ref_id)]!.full_name}",
@@ -319,11 +321,17 @@ class _GroupListScreenState extends State<GroupListScreen> {
                                       SizedBox(width: 3),
 
                                       //The Notification Counter for Each Group//
-                                      widget.groupListProvider.groupList
-                                                      .groups![index]!.counter ==
+                                      widget
+                                                      .groupListProvider
+                                                      .groupList
+                                                      .groups![index]!
+                                                      .counter ==
                                                   null ||
-                                              widget.groupListProvider.groupList
-                                                      .groups![index]!.counter ==
+                                              widget
+                                                      .groupListProvider
+                                                      .groupList
+                                                      .groups![index]!
+                                                      .counter ==
                                                   0
                                           ? Text("")
                                           :
@@ -338,16 +346,16 @@ class _GroupListScreenState extends State<GroupListScreen> {
                                                 width: (widget
                                                                 .groupListProvider
                                                                 .groupList
-                                                                .groups![index]
-                                                                !.counter
+                                                                .groups![index]!
+                                                                .counter
                                                                 .toString()
                                                                 .length ==
                                                             1 ||
                                                         widget
                                                                 .groupListProvider
                                                                 .groupList
-                                                                .groups![index]
-                                                                !.counter
+                                                                .groups![index]!
+                                                                .counter
                                                                 .toString()
                                                                 .length ==
                                                             2)
@@ -356,16 +364,16 @@ class _GroupListScreenState extends State<GroupListScreen> {
                                                 height: (widget
                                                                 .groupListProvider
                                                                 .groupList
-                                                                .groups![index]
-                                                                !.counter
+                                                                .groups![index]!
+                                                                .counter
                                                                 .toString()
                                                                 .length ==
                                                             1 ||
                                                         widget
                                                                 .groupListProvider
                                                                 .groupList
-                                                                .groups![index]
-                                                                !.counter
+                                                                .groups![index]!
+                                                                .counter
                                                                 .toString()
                                                                 .length ==
                                                             2)
@@ -420,16 +428,16 @@ class _GroupListScreenState extends State<GroupListScreen> {
                                               enabled: (widget
                                                               .groupListProvider
                                                               .groupList
-                                                              .groups![index]
-                                                              !.participants
-                                                              !.length ==
+                                                              .groups![index]!
+                                                              .participants!
+                                                              .length ==
                                                           1 ||
                                                       widget
                                                               .groupListProvider
                                                               .groupList
-                                                              .groups![index]
-                                                              !.participants
-                                                              !.length ==
+                                                              .groups![index]!
+                                                              .participants!
+                                                              .length ==
                                                           2)
                                                   ? false
                                                   : true,
@@ -530,19 +538,20 @@ class _GroupListScreenState extends State<GroupListScreen> {
                                                       groupid: widget
                                                           .groupListProvider
                                                           .groupList
-                                                          .groups![index]
-                                                          !.id,
+                                                          .groups![index]!
+                                                          .id,
                                                       controllerText: widget
                                                           .groupListProvider
                                                           .groupList
-                                                          .groups![index]
-                                                          !.group_title,
+                                                          .groups![index]!
+                                                          .group_title,
                                                       groupNameController:
                                                           _groupNameController,
                                                       publishMessage:
                                                           widget.publishMesg,
                                                       authProvider:
-                                                          widget.authProvider, selectedContacts: [],
+                                                          widget.authProvider,
+                                                      selectedContacts: [],
                                                     ));
                                               });
                                           print("i am after here");
@@ -573,37 +582,38 @@ class _GroupListScreenState extends State<GroupListScreen> {
                                             color: messageStatusColor,
                                             fontSize: 14,
                                           ))
-                                      : (widget.groupListProvider.groupList.groups![index]!.counter == null ||
+                                      : (widget.groupListProvider.groupList.groups![index]!.counter ==
+                                                      null ||
                                                   widget
                                                           .groupListProvider
                                                           .groupList
-                                                          .groups![index]
-                                                          !.counter ==
+                                                          .groups![index]!
+                                                          .counter ==
                                                       0) &&
                                               widget
                                                       .groupListProvider
                                                       .groupList
-                                                      .groups![index]
-                                                      !.chatList
-                                                      !.last
-                                                      !.type !=
+                                                      .groups![index]!
+                                                      .chatList!
+                                                      .last!
+                                                      .type !=
                                                   0
                                           ? Text(
                                               widget
                                                           .groupListProvider
                                                           .groupList
-                                                          .groups![index]
-                                                          !.chatList
-                                                          !.last
-                                                          !.type ==
+                                                          .groups![index]!
+                                                          .chatList!
+                                                          .last!
+                                                          .type ==
                                                       "text"
                                                   ? (widget
                                                               .groupListProvider
                                                               .groupList
-                                                              .groups![index]
-                                                              !.chatList
-                                                              !.last
-                                                              !.from ==
+                                                              .groups![index]!
+                                                              .chatList!
+                                                              .last!
+                                                              .from ==
                                                           widget.authProvider
                                                               .getUser!.ref_id)
                                                       //(listProvider.groupList.groups[index].chatList.last.content
@@ -623,10 +633,10 @@ class _GroupListScreenState extends State<GroupListScreen> {
                                           : widget
                                                       .groupListProvider
                                                       .groupList
-                                                      .groups![index]
-                                                      !.chatList
-                                                      !.last
-                                                      !.type ==
+                                                      .groups![index]!
+                                                      .chatList!
+                                                      .last!
+                                                      .type ==
                                                   0
                                               ? Text("Image",
                                                   style: TextStyle(

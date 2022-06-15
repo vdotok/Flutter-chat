@@ -28,8 +28,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   handlePress() async {
     if (_registerformkey.currentState!.validate()) {
       AuthProvider auth = Provider.of<AuthProvider>(context, listen: false);
-      bool res = await auth.register(_emailController.text, _passwordController.text,"");
-      if (auth.getUser!.auth_token == null || auth.getUser!.auth_token.isEmpty) {
+      bool res = await auth.register(
+          _emailController.text, _passwordController.text, "");
+      if (auth.getUser!.auth_token == null ||
+          auth.getUser!.auth_token.isEmpty) {
         setState(() {
           _autoValidate = true;
         });

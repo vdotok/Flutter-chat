@@ -8,8 +8,11 @@ import '../services/server.dart';
 import 'package:vdotok_connect/vdotok_connect.dart';
 
 enum ListStatus { Scussess, Failure, Loading }
+
 enum CreateChatStatus { New, Loading }
+
 enum DeleteGroupStatus { Success, Failure, Loading }
+
 enum EditGroupNameStatus { Success, Failure, Loading }
 
 class GroupListProvider with ChangeNotifier {
@@ -28,8 +31,8 @@ class GroupListProvider with ChangeNotifier {
   late GroupListModel _groupList;
   GroupListModel get groupList => _groupList;
 
-   GroupModel ?_currentOpenedChat;
-  GroupModel?  get currentOpendChat => _currentOpenedChat;
+  GroupModel? _currentOpenedChat;
+  GroupModel? get currentOpendChat => _currentOpenedChat;
 
   List<String> _presenceList = [];
   List<String> get presenceList => _presenceList;
@@ -266,13 +269,14 @@ class GroupListProvider with ChangeNotifier {
 
   changeMsgStatus(msg, status) {
     print("this is receipt type $msg");
-    var groupindex = _groupList.groups!.indexWhere(
-        (element) => element!.channel_key == json.decode(msg)["key"].toString());
+    var groupindex = _groupList.groups!.indexWhere((element) =>
+        element!.channel_key == json.decode(msg)["key"].toString());
 
-    var participantIndex = _groupList.groups![groupindex]!.participants
-        !.indexWhere(
-            (element) => element!.ref_id == json.decode(msg)["from"].toString());
-    var msgindex = _groupList.groups![groupindex]!.chatList!.indexWhere((element) {
+    var participantIndex = _groupList.groups![groupindex]!.participants!
+        .indexWhere((element) =>
+            element!.ref_id == json.decode(msg)["from"].toString());
+    var msgindex =
+        _groupList.groups![groupindex]!.chatList!.indexWhere((element) {
       return element!.id == json.decode(msg)["messageId"].toString();
       //return element.id == json.decode(msg)["messageId"].toString();
     });
@@ -302,11 +306,11 @@ class GroupListProvider with ChangeNotifier {
             _groupList.groups![groupindex]!.chatList![i]!.participantsRead = [];
             _groupList.groups![groupindex]!.chatList![i]!.readCount = 0;
           }
-          if (_groupList.groups![groupindex]!.chatList![i]!.participantsRead
-              !.contains(participantIndex)) {
+          if (_groupList.groups![groupindex]!.chatList![i]!.participantsRead!
+              .contains(participantIndex)) {
           } else {
-            _groupList.groups![groupindex]!.chatList![i]!.participantsRead
-                !.add(participantIndex);
+            _groupList.groups![groupindex]!.chatList![i]!.participantsRead!
+                .add(participantIndex);
             _groupList.groups![groupindex]!.chatList![i]!.readCount++;
             print(
                 "thos osdsdjfk counter ${_groupList.groups![groupindex]!.chatList![i]!.readCount}");
@@ -379,13 +383,13 @@ class GroupListProvider with ChangeNotifier {
 
   changeMsgStatusToDelivered(msg, status) {
     print("this is message to deliverd $msg");
-    var groupindex = _groupList.groups
-        !.indexWhere((element) => element!.channel_key == msg["key"]);
+    var groupindex = _groupList.groups!
+        .indexWhere((element) => element!.channel_key == msg["key"]);
 
     // print("this is msg ${_groupList.groups[groupindex].chatList.length}");
     if (groupindex != 1) {
-      var msgindex = _groupList.groups![groupindex]!.chatList
-          !.indexWhere((element) => element!.id == msg["id"]);
+      var msgindex = _groupList.groups![groupindex]!.chatList!
+          .indexWhere((element) => element!.id == msg["id"]);
       print("this is msg index $msgindex");
 
       _groupList.groups![groupindex]!.chatList![msgindex]!.status = status;
@@ -408,8 +412,8 @@ class GroupListProvider with ChangeNotifier {
   }
 
   updateTypingStatus(msg) {
-    var index = _groupList.groups!.indexWhere(
-        (element) => element!.channel_key == json.decode(msg)["key"].toString());
+    var index = _groupList.groups!.indexWhere((element) =>
+        element!.channel_key == json.decode(msg)["key"].toString());
 
     var participantIndex = _groupList.groups![index]!.participants!.indexWhere(
         (element) => element!.ref_id == json.decode(msg)["from"].toString());
@@ -468,8 +472,8 @@ class GroupListProvider with ChangeNotifier {
           notifyListeners();
         });
       } else {
-        _groupList.groups![index]!.typingstatus =
-            _groupList.groups![index]!.participants![participantIndex]!.full_name;
+        _groupList.groups![index]!.typingstatus = _groupList
+            .groups![index]!.participants![participantIndex]!.full_name;
         notifyListeners();
         Timer(Duration(seconds: 2), () {
           if (_currentOpenedChat != null) {

@@ -8,10 +8,17 @@ import '../../core/providers/contact_provider.dart';
 class CreateGroupChatIndex extends StatefulWidget {
   final ContactProvider contactProvider;
   final MainProvider mainProvider;
-  final GroupListProvider ?groupListProvider;
+  final GroupListProvider? groupListProvider;
   final refreshList;
   final handlePress;
-  const CreateGroupChatIndex({Key? key, required this.contactProvider, required this.mainProvider,  this.groupListProvider, this.refreshList, this.handlePress}) : super(key: key);
+  const CreateGroupChatIndex(
+      {Key? key,
+      required this.contactProvider,
+      required this.mainProvider,
+      this.groupListProvider,
+      this.refreshList,
+      this.handlePress})
+      : super(key: key);
 
   @override
   _CreateGroupChatIndexState createState() => _CreateGroupChatIndexState();
@@ -20,16 +27,17 @@ class CreateGroupChatIndex extends StatefulWidget {
 class _CreateGroupChatIndexState extends State<CreateGroupChatIndex> {
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(providers: [
-      ChangeNotifierProvider<ContactProvider>(
-        create: (context) => ContactProvider(),
-      ),
-    ], child: CreateGroupChatScreen(
-       contactProvider: widget.contactProvider,
+    return MultiProvider(
+        providers: [
+          ChangeNotifierProvider<ContactProvider>(
+            create: (context) => ContactProvider(),
+          ),
+        ],
+        child: CreateGroupChatScreen(
+            contactProvider: widget.contactProvider,
             refreshList: widget.refreshList,
             handlePress: widget.handlePress,
             mainProvider: widget.mainProvider,
-            groupListProvider: widget.groupListProvider
-    ));
+            groupListProvider: widget.groupListProvider));
   }
 }

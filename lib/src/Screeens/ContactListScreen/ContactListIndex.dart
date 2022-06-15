@@ -16,7 +16,8 @@ class ContactListIndex extends StatefulWidget {
       required this.contactProvider,
       required this.mainProvider,
       required this.groupListProvider,
-      this.refreshList, this.handlePress})
+      this.refreshList,
+      this.handlePress})
       : super(key: key);
 
   @override

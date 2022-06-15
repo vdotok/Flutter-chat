@@ -247,8 +247,7 @@ class _OnePersonChatScreenState extends State<OnePersonChatScreen> {
                           Container(
                             padding: EdgeInsets.only(left: 16),
                             child: IconButton(
-                              icon: SvgPicture.asset(
-                                  'assets/imagepic.svg'),
+                              icon: SvgPicture.asset('assets/imagepic.svg'),
                               onPressed: () {
                                 print("three dot icon pressed");
                               },
@@ -281,5 +280,3 @@ class _OnePersonChatScreenState extends State<OnePersonChatScreen> {
         ));
   }
 }
-
-

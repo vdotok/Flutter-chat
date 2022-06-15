@@ -6,18 +6,16 @@ class AddAttachmentPopUp extends StatelessWidget {
   final getImage;
   final iconName;
   final filePIcker;
-  
-  const AddAttachmentPopUp({
-    Key? key, this.getImage, this.iconName, this.filePIcker
-  }) : super(key: key);
 
+  const AddAttachmentPopUp(
+      {Key? key, this.getImage, this.iconName, this.filePIcker})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-        shape: RoundedRectangleBorder(
-            borderRadius:
-                BorderRadius.circular(20.0)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
         elevation: 0,
         actions: <Widget>[
           Container(
@@ -30,37 +28,30 @@ class AddAttachmentPopUp extends StatelessWidget {
                     child: Row(
                       children: [
                         Expanded(
-                                                child: Container(
+                          child: Container(
                               // width: 201,
-                             
+
                               child: Text(
-                                "Add Attachment",
-                                style: TextStyle(
-                                  color:
-                                      createGroupColor,
-                                  fontSize: 14,
-                                  fontFamily:
-                                      searchFontFamily,
-                                  fontWeight:
-                                      FontWeight
-                                          .w600,
-                                ),
-                              )),
+                            "Add Attachment",
+                            style: TextStyle(
+                              color: createGroupColor,
+                              fontSize: 14,
+                              fontFamily: searchFontFamily,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          )),
                         ),
                         Container(
-                          margin:
-                              EdgeInsets.only(
-                            // left: 54,
-                            // top: 30,
-                          ),
+                          margin: EdgeInsets.only(
+                              // left: 54,
+                              // top: 30,
+                              ),
                           width: 30,
                           height: 30,
                           child: IconButton(
-                            icon: SvgPicture.asset(
-                                'assets/close.svg'),
+                            icon: SvgPicture.asset('assets/close.svg'),
                             onPressed: () {
-                              Navigator.pop(
-                                  context);
+                              Navigator.pop(context);
                             },
                           ),
                         )
@@ -68,32 +59,21 @@ class AddAttachmentPopUp extends StatelessWidget {
                     ),
                   ),
                   Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment
-                            .spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Column(
                         children: [
                           Container(
-                            margin: EdgeInsets
-                                .only(
-                                    bottom:
-                                        4),
+                            margin: EdgeInsets.only(bottom: 4),
                             width: 56,
                             height: 56,
-                            decoration:
-                                BoxDecoration(
-                              color:
-                                  textfieldhint,
-                              shape: BoxShape
-                                  .circle,
+                            decoration: BoxDecoration(
+                              color: textfieldhint,
+                              shape: BoxShape.circle,
                             ),
                             child: IconButton(
-                                icon: SvgPicture
-                                    .asset(
-                                        'assets/File.svg'),
-                                onPressed:
-                                    () {
+                                icon: SvgPicture.asset('assets/File.svg'),
+                                onPressed: () {
                                   filePIcker("file");
                                   //   Navigator.pop(
                                   // context);
@@ -102,8 +82,7 @@ class AddAttachmentPopUp extends StatelessWidget {
                           Text(
                             "File",
                             style: TextStyle(
-                              color:
-                                  attachmentNameColor,
+                              color: attachmentNameColor,
                               fontSize: 14,
                             ),
                           )
@@ -112,36 +91,25 @@ class AddAttachmentPopUp extends StatelessWidget {
                       Column(
                         children: [
                           Container(
-                            margin: EdgeInsets
-                                .only(
-                                    bottom:
-                                        4),
+                            margin: EdgeInsets.only(bottom: 4),
                             width: 56,
                             height: 56,
-                            decoration:
-                                BoxDecoration(
-                              color:
-                                  textfieldhint,
-                              shape: BoxShape
-                                  .circle,
+                            decoration: BoxDecoration(
+                              color: textfieldhint,
+                              shape: BoxShape.circle,
                             ),
                             child: IconButton(
-                                icon: SvgPicture
-                                    .asset(
-                                        'assets/Camera.svg'),
-                                onPressed:
-                                    () {
-                                   getImage("Camera");
+                                icon: SvgPicture.asset('assets/Camera.svg'),
+                                onPressed: () {
+                                  getImage("Camera");
                                   //    Navigator.pop(
                                   // context);
-                                   
                                 }),
                           ),
                           Text(
                             "Camera",
                             style: TextStyle(
-                              color:
-                                  attachmentNameColor,
+                              color: attachmentNameColor,
                               fontSize: 14,
                             ),
                           )
@@ -150,36 +118,26 @@ class AddAttachmentPopUp extends StatelessWidget {
                       Column(
                         children: [
                           Container(
-                            margin: EdgeInsets
-                                .only(
-                                    bottom:
-                                        4),
+                            margin: EdgeInsets.only(bottom: 4),
                             width: 56,
                             height: 56,
-                            decoration:
-                                BoxDecoration(
-                              color:
-                                  textfieldhint,
-                              shape: BoxShape
-                                  .circle,
+                            decoration: BoxDecoration(
+                              color: textfieldhint,
+                              shape: BoxShape.circle,
                             ),
                             child: IconButton(
-                                icon: SvgPicture
-                                    .asset(
-                                        'assets/Album.svg'),
-                                onPressed:
-                                    () {
-                                     filePIcker("ImageAndVideo");
-                                 // getImage("Gallery");
-                                //    Navigator.pop(
-                                // context);
+                                icon: SvgPicture.asset('assets/Album.svg'),
+                                onPressed: () {
+                                  filePIcker("ImageAndVideo");
+                                  // getImage("Gallery");
+                                  //    Navigator.pop(
+                                  // context);
                                 }),
                           ),
                           Text(
                             "Album",
                             style: TextStyle(
-                              color:
-                                  attachmentNameColor,
+                              color: attachmentNameColor,
                               fontSize: 14,
                             ),
                           )
@@ -189,45 +147,32 @@ class AddAttachmentPopUp extends StatelessWidget {
                   ),
                   SizedBox(height: 12),
                   Row(
-                    mainAxisAlignment:
-                        MainAxisAlignment
-                            .spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Column(
                         children: [
                           Container(
-                            margin: EdgeInsets
-                                .only(
-                                    bottom:
-                                        4),
+                            margin: EdgeInsets.only(bottom: 4),
                             width: 56,
                             height: 56,
-                            decoration:
-                                BoxDecoration(
-                              color:
-                                  textfieldhint,
-                              shape: BoxShape
-                                  .circle,
+                            decoration: BoxDecoration(
+                              color: textfieldhint,
+                              shape: BoxShape.circle,
                             ),
                             child: IconButton(
-                                icon: SvgPicture
-                                    .asset(
-                                        'assets/Audio.svg'),
-                                onPressed:
-                                    () {
-                                      filePIcker("audio");
+                                icon: SvgPicture.asset('assets/Audio.svg'),
+                                onPressed: () {
+                                  filePIcker("audio");
                                   //       Navigator.pop(
                                   // context);
-                                      
-                                  print(
-                                      "close icon pressed");
+
+                                  print("close icon pressed");
                                 }),
                           ),
                           Text(
                             "Audio",
                             style: TextStyle(
-                              color:
-                                  attachmentNameColor,
+                              color: attachmentNameColor,
                               fontSize: 14,
                             ),
                           )
@@ -236,34 +181,23 @@ class AddAttachmentPopUp extends StatelessWidget {
                       Column(
                         children: [
                           Container(
-                            margin: EdgeInsets
-                                .only(
-                                    bottom:
-                                        4),
+                            margin: EdgeInsets.only(bottom: 4),
                             width: 56,
                             height: 56,
-                            decoration:
-                                new BoxDecoration(
-                              color:
-                                  textfieldhint,
-                              shape: BoxShape
-                                  .circle,
+                            decoration: new BoxDecoration(
+                              color: textfieldhint,
+                              shape: BoxShape.circle,
                             ),
                             child: IconButton(
-                                icon: SvgPicture
-                                    .asset(
-                                        'assets/Map.svg'),
-                                onPressed:
-                                    () {
-                                  print(
-                                      "close icon pressed");
+                                icon: SvgPicture.asset('assets/Map.svg'),
+                                onPressed: () {
+                                  print("close icon pressed");
                                 }),
                           ),
                           Text(
                             "Loction",
                             style: TextStyle(
-                              color:
-                                  attachmentNameColor,
+                              color: attachmentNameColor,
                               fontSize: 14,
                             ),
                           )
@@ -272,34 +206,24 @@ class AddAttachmentPopUp extends StatelessWidget {
                       Column(
                         children: [
                           Container(
-                            margin: EdgeInsets
-                                .only(
-                                    bottom:
-                                        4),
+                            margin: EdgeInsets.only(bottom: 4),
                             width: 56,
                             height: 56,
-                            decoration:
-                                new BoxDecoration(
-                              color:
-                                  textfieldhint,
-                              shape: BoxShape
-                                  .circle,
+                            decoration: new BoxDecoration(
+                              color: textfieldhint,
+                              shape: BoxShape.circle,
                             ),
                             child: IconButton(
-                              icon: SvgPicture
-                                  .asset(
-                                      'assets/User.svg'),
+                              icon: SvgPicture.asset('assets/User.svg'),
                               onPressed: () {
-                                print(
-                                    "close icon pressed");
+                                print("close icon pressed");
                               },
                             ),
                           ),
                           Text(
                             "Contact",
                             style: TextStyle(
-                              color:
-                                  attachmentNameColor,
+                              color: attachmentNameColor,
                               fontSize: 14,
                             ),
                           )

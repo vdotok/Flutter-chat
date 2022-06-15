@@ -14,8 +14,8 @@ class ChatModel {
   var size;
   var isGroupMessage;
   var subtype;
- var readCount;
- List<int?>? participantsRead;
+  var readCount;
+  List<int?>? participantsRead;
   ChatModel(
       {this.id,
       this.to,
@@ -29,8 +29,7 @@ class ChatModel {
       this.isGroupMessage,
       this.subtype,
       this.readCount,
-      this.participantsRead
-     });
+      this.participantsRead});
 
   factory ChatModel.fromJson(Map<String, dynamic> json) =>
       _$ChatModelFromJson(json);

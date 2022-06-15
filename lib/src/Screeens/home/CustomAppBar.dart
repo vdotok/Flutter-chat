@@ -11,18 +11,18 @@ import 'home.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final title;
-  final bool ?lead;
+  final bool? lead;
   final succeedingIcon;
   final bool ischatscreen;
   final index;
   final GroupListProvider? groupListProvider;
-  final AuthProvider ?authProvider;
-  final ContactProvider ? contactProvider;
-  final MainProvider ?mainProvider;
+  final AuthProvider? authProvider;
+  final ContactProvider? contactProvider;
+  final MainProvider? mainProvider;
   final handlePress;
 
   CustomAppBar(
-      {Key ?key,
+      {Key? key,
       this.groupListProvider,
       this.title,
       @required this.lead,
@@ -31,12 +31,14 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
       this.index,
       this.authProvider,
       this.contactProvider,
-      this.mainProvider, this.handlePress})
+      this.mainProvider,
+      this.handlePress})
       : super(key: key);
 
-Size get preferredSize {
+  Size get preferredSize {
     return ischatscreen ? Size.fromHeight(80) : Size.fromHeight(kToolbarHeight);
   }
+
   @override
   State<CustomAppBar> createState() => _CustomAppBarState();
 }
@@ -44,10 +46,12 @@ Size get preferredSize {
 class _CustomAppBarState extends State<CustomAppBar> {
   @override
   Size get preferredSize {
-    return widget.ischatscreen ? Size.fromHeight(80) : Size.fromHeight(kToolbarHeight);
+    return widget.ischatscreen
+        ? Size.fromHeight(80)
+        : Size.fromHeight(kToolbarHeight);
   }
 
-  Emitter ? emitter;
+  Emitter? emitter;
 
   String _presenceStatus = "";
 
@@ -112,12 +116,12 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       color: chatRoomColor,
                     ),
                     onPressed: () {
-                       if (strArr.last == "ChatScreen") {
+                      if (strArr.last == "ChatScreen") {
                         widget.mainProvider!.homeScreen();
                         strArr.remove("ChatScreen");
-                      } 
-                      widget.groupListProvider!.handlBacktoGroupList(widget.index);
-                    
+                      }
+                      widget.groupListProvider!
+                          .handlBacktoGroupList(widget.index);
                     },
                   ),
                 )
@@ -130,20 +134,22 @@ class _CustomAppBarState extends State<CustomAppBar> {
                       color: chatRoomColor,
                     ),
                     onPressed: () {
-                            if (strArr.last == "CreateIndividualGroup") {
+                      if (strArr.last == "CreateIndividualGroup") {
                         print("back arrow create individual");
                         widget.mainProvider!.homeScreen();
-                         selectedContacts.clear();
+                        selectedContacts.clear();
 
                         strArr.remove("CreateIndividualGroup");
-                      } 
+                      }
                     },
                   ),
                 )
           : null,
       title: widget.ischatscreen == true
           ? //name of user if participants count is 1
-          widget.groupListProvider!.groupList.groups![widget.index]!.participants!.length == 1
+          widget.groupListProvider!.groupList.groups![widget.index]!
+                      .participants!.length ==
+                  1
               //Without Typing Status//
               ? Padding(
                   padding: const EdgeInsets.only(top: 21.0),
@@ -157,7 +163,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     ),
                   ),
                 )
-              : widget.groupListProvider!.groupList.groups![widget.index]!.participants!.length ==
+              : widget.groupListProvider!.groupList.groups![widget.index]!
+                          .participants!.length ==
                       2
                   ? Padding(
                       padding: const EdgeInsets.only(top: 21.0),
@@ -183,8 +190,6 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         ),
                       ),
                     )
-
-          
           : Text("${widget.title}",
               style: TextStyle(
                 color: chatRoomColor,
@@ -210,13 +215,15 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         //     ? Text(_presenceStatus)
                         //
 
-                        (widget.groupListProvider!
-                                        .groupList.groups![widget.index]!.typingstatus !=
+                        (widget.groupListProvider!.groupList
+                                        .groups![widget.index]!.typingstatus !=
                                     "" &&
-                                widget.groupListProvider!
-                                        .groupList.groups![widget.index]!.typingstatus !=
+                                widget.groupListProvider!.groupList
+                                        .groups![widget.index]!.typingstatus !=
                                     null)
-                            ? (widget.groupListProvider!.typingUserDetail.length > 1)
+                            ? (widget.groupListProvider!.typingUserDetail
+                                        .length >
+                                    1)
                                 ? Text(
                                     "${widget.groupListProvider!.groupList.groups![widget.index]!.typingstatus} are typing...",
                                     style: TextStyle(
@@ -289,21 +296,20 @@ class _CustomAppBarState extends State<CustomAppBar> {
                         icon: SvgPicture.asset(widget.succeedingIcon),
                         onPressed: widget.succeedingIcon == 'assets/plus.svg'
                             ? () {
-                                 print(
-                                        "THSI IS DFFVDFJCJDFBKJD ${widget.mainProvider}");
+                                print(
+                                    "THSI IS DFFVDFJCJDFBKJD ${widget.mainProvider}");
 
-                                 
-                                      print("khjhg");
-                                      widget.handlePress(
-                                          HomeStatus.CreateIndividualGroup);
-                                   
-                                    //   widget.handlePress(
-                                    //       ListStatus.CreateIndividualGroup);
-                                    //   widget.mainProvider
-                                    //       .inActiveCallCreateIndividualGroup(
-                                    //     startCall: widget.funct,
-                                    //   );
-                                    // }
+                                print("khjhg");
+                                widget.handlePress(
+                                    HomeStatus.CreateIndividualGroup);
+
+                                //   widget.handlePress(
+                                //       ListStatus.CreateIndividualGroup);
+                                //   widget.mainProvider
+                                //       .inActiveCallCreateIndividualGroup(
+                                //     startCall: widget.funct,
+                                //   );
+                                // }
                               }
                             : () {},
                       ),

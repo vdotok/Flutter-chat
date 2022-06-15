@@ -8,12 +8,11 @@ enum HomeStatus {
   CreateIndividualGroup,
   CreateGroupChat,
   Home,
- 
 }
 
 class MainProvider with ChangeNotifier {
   HomeStatus _homeStatus = HomeStatus.Home;
-  
+
   HomeStatus get homeStatus => _homeStatus;
 
   int _index = 0;
@@ -46,7 +45,7 @@ class MainProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  chatScreen({int ?index, GroupListProvider? groupListProvider}) {
+  chatScreen({int? index, GroupListProvider? groupListProvider}) {
     _index = index!;
     _homeStatus = HomeStatus.ChatScreen;
     print("chat screen in main provider $index");

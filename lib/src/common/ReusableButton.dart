@@ -26,7 +26,7 @@ class _ReusableButtonState extends State<ReusableButton> {
           onPressed: widget.handlePress,
 
           shape: RoundedRectangleBorder(
-            borderRadius:  BorderRadius.circular(5.0),
+            borderRadius: BorderRadius.circular(5.0),
           ),
 
           // child: Container(

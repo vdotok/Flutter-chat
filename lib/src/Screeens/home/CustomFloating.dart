@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomFloating extends StatefulWidget {
   CustomFloating({
-    Key ?key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -13,9 +13,6 @@ class _CustomFloatingState extends State<CustomFloating> {
   @override
   Widget build(BuildContext context) {
     return FloatingActionButton(
-        heroTag: "2",
-        child: Icon(Icons.add),
-        onPressed: () async {
-        });
+        heroTag: "2", child: Icon(Icons.add), onPressed: () async {});
   }
 }

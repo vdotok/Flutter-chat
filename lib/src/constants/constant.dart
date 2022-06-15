@@ -66,10 +66,8 @@ const messageBoxColor = Color(0xffFFFFFF);
 const userTypingColor = Color(0xFF29B37B);
 const userTitleColor = Color(0xFF3D5D57);
 const attachmentNameColor = Color(0xff3d5d57);
-const popupGreyColor=Color(0xFFC3C4C5);
-const popupDeleteButtonColor=Color(0xFFE9446A);
-
-
+const popupGreyColor = Color(0xFFC3C4C5);
+const popupDeleteButtonColor = Color(0xFFE9446A);
 
 //fonts for the text
 const primaryFontFamily = "Manrope";
@@ -157,8 +155,7 @@ const blackShadeColor = Color(0xFF231818);
 const dividerColor = Color(0XFFD5D5E0);
 const navyColor = Color(0xFF11243D);
 const greyColor2 = Color(0xFF878787);
-const geryColor=Color(0XFF4A4A5D);
-
+const geryColor = Color(0XFF4A4A5D);
 
 const listTrailing = Color(0xFF333333);
 const listViewSeparatorColor = Color(0xFFF0F0F0);
