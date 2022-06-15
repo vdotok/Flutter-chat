@@ -22,9 +22,9 @@ class MainProvider with ChangeNotifier {
   dynamic get publishMesg => _publishMesg;
   dynamic _startCall;
   dynamic get startCall => startCall;
-  GroupListProvider _groupListProvider;
+  late GroupListProvider _groupListProvider;
   GroupListProvider get groupListProvider => _groupListProvider;
-  ContactProvider _contactProvider;
+  late ContactProvider _contactProvider;
   ContactProvider get contactProvider => _contactProvider;
   initial() {
     _homeStatus = HomeStatus.Home;
@@ -46,8 +46,8 @@ class MainProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  chatScreen({int index, GroupListProvider groupListProvider}) {
-    _index = index;
+  chatScreen({int ?index, GroupListProvider? groupListProvider}) {
+    _index = index!;
     _homeStatus = HomeStatus.ChatScreen;
     print("chat screen in main provider $index");
     print("this is homeStatus $_homeStatus");

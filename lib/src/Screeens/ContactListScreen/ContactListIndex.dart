@@ -12,10 +12,10 @@ class ContactListIndex extends StatefulWidget {
   final refreshList;
   final handlePress;
   const ContactListIndex(
-      {Key key,
-      this.contactProvider,
-      this.mainProvider,
-      this.groupListProvider,
+      {Key? key,
+      required this.contactProvider,
+      required this.mainProvider,
+      required this.groupListProvider,
       this.refreshList, this.handlePress})
       : super(key: key);
 

@@ -14,26 +14,26 @@ class CreateGroupScreen extends StatefulWidget {
 }
 
 class _CreateGroupScreenState extends State<CreateGroupScreen> {
-  ContactProvider contactProvider;
+  late ContactProvider contactProvider;
 
-  GroupListProvider groupListProvider;
+  late GroupListProvider groupListProvider;
 
-  AuthProvider authProvider;
+  late AuthProvider authProvider;
   int count = 0;
   var changingvaalue;
   List<Contact> _selectedContacts = [];
   final _groupNameController = TextEditingController();
   final _searchController = TextEditingController();
-  List<Contact> _filteredList = [];
+  List<Contact?>? _filteredList = [];
   bool notmatched = false;
-  GlobalKey<ScaffoldState> scaffoldKey;
+  late GlobalKey<ScaffoldState> scaffoldKey;
 
   @override
   void initState() {
     contactProvider = Provider.of<ContactProvider>(context, listen: false);
     groupListProvider = Provider.of<GroupListProvider>(context, listen: false);
     authProvider = Provider.of<AuthProvider>(context, listen: false);
-    contactProvider.getContacts(authProvider.getUser.auth_token);
+    contactProvider.getContacts(authProvider.getUser!.auth_token);
 
     super.initState();
     scaffoldKey = GlobalKey<ScaffoldState>();
@@ -41,9 +41,9 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
 
   onSearch(value) {
     print("this is here $value");
-    List temp;
-    temp = contactProvider.contactList.users
-        .where((element) => element.full_name.contains(value))
+     List temp;
+    temp = contactProvider.contactList.users!
+        .where((element) => element!.full_name.contains(value))
         .toList();
     print("this is filtered list $_filteredList");
 
@@ -54,7 +54,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
       } else {
         print("Here in false matched");
         notmatched = false;
-        _filteredList = temp;
+        _filteredList = temp.cast<Contact>();
       }
     });
   }
@@ -68,7 +68,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
       backgroundColor: primaryColor,
       duration: Duration(seconds: 2),
     );
-    scaffoldKey.currentState
+    scaffoldKey.currentState!
       ..hideCurrentSnackBar()
       ..showSnackBar(snackBar);
   }
@@ -80,14 +80,14 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
       if (contactProvider.contactState == ContactStates.Loading)
         return SplashScreen();
       else if (contactProvider.contactState == ContactStates.Success) {
-        if (contactListProvider.contactList.users.length == 0)
+        if (contactListProvider.contactList.users!.length == 0)
           return Scaffold(
             key: scaffoldKey,
             appBar: AppBar(
               leading: IconButton(
                 icon: Icon(Icons.arrow_back),
                 onPressed: () {
-                  scaffoldKey.currentState.removeCurrentSnackBar();
+                  scaffoldKey.currentState!.removeCurrentSnackBar();
                   Navigator.of(context).pop();
                 },
               ),
@@ -100,7 +100,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    "${contactListProvider.contactList.users.length} contacts",
+                    "${contactListProvider.contactList.users!.length} contacts",
                     style: TextStyle(fontSize: 12),
                   ),
                 ],
@@ -123,7 +123,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    "${contactListProvider.contactList.users.length} contacts",
+                    "${contactListProvider.contactList.users!.length} contacts",
                     style: TextStyle(fontSize: 12),
                   ),
                 ],
@@ -138,7 +138,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                       onSearch(value);
                     },
                     validator: (value) =>
-                        value.isEmpty ? "Field cannot be empty." : null,
+                        value!.isEmpty ? "Field cannot be empty." : null,
                     decoration: new InputDecoration(
                       prefixIcon: Icon(Icons.search),
                       suffixIcon: IconButton(
@@ -172,18 +172,18 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                       ? Text("No data Found")
                       : ListView.builder(
                           itemCount: _searchController.text.isEmpty
-                              ? contactListProvider.contactList.users.length
-                              : _filteredList.length,
+                              ? contactListProvider.contactList.users!.length
+                              : _filteredList!.length,
                           scrollDirection: Axis.vertical,
                           shrinkWrap: true,
                           itemBuilder: (context, userindex) {
                             //      print("this is is selected value: ${contactListProvider.contactList.users[userindex].isSelected}");
-                            Contact element = _searchController.text.isEmpty
+                            Contact? element = _searchController.text.isEmpty
                                 ? contactListProvider
-                                    .contactList.users[userindex]
-                                : _filteredList[userindex];
+                                    .contactList.users![userindex]
+                                : _filteredList![userindex];
                             return buildInkWell(
-                                element, userindex, contactListProvider);
+                                element!, userindex, contactListProvider);
                           }),
                 ),
               ],
@@ -197,12 +197,12 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                   ? () async {
                       var groupName = _selectedContacts[0].full_name +
                           "-" +
-                          authProvider.getUser.full_name;
+                          authProvider.getUser!.full_name;
                       print("The Group Join: ${groupName}");
                       await contactProvider.createGroup(groupName,
-                          _selectedContacts, authProvider.getUser.auth_token);
+                          _selectedContacts, authProvider.getUser!.auth_token);
                       groupListProvider
-                          .getGroupList(authProvider.getUser.auth_token);
+                          .getGroupList(authProvider.getUser!.auth_token);
 
                       Navigator.pop(context, true);
                     }
@@ -235,10 +235,10 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                                                 _groupNameController.text,
                                                 _selectedContacts,
                                                 authProvider
-                                                    .getUser.auth_token);
+                                                    .getUser!.auth_token);
                                             groupListProvider.getGroupList(
                                                 authProvider
-                                                    .getUser.auth_token);
+                                                    .getUser!.auth_token);
 
                                             Navigator.pop(context);
                                             Navigator.pop(context);

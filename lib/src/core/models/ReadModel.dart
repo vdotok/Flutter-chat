@@ -2,5 +2,5 @@ class ReadModel{
  int counter;
  String msgId;
  List<int> participants;
-ReadModel({this.counter,this.participants,this.msgId});
+ReadModel({required this.counter,required this.participants,required this.msgId});
 }

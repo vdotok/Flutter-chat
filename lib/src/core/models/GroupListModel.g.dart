@@ -9,9 +9,9 @@ part of 'GroupListModel.dart';
 GroupListModel _$GroupListModelFromJson(Map<String, dynamic> json) {
   return GroupListModel(
     groups: (json['groups'] as List)
-        ?.map((e) =>
+        .map((e) =>
             e == null ? null : GroupModel.fromJson(e as Map<String, dynamic>))
-        ?.toList(),
+        .toList(),
   );
 }
 

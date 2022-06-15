@@ -25,11 +25,11 @@ class GroupListProvider with ChangeNotifier {
   EditGroupNameStatus _editGroupNameStatus = EditGroupNameStatus.Loading;
   EditGroupNameStatus get editGroupNameStatus => _editGroupNameStatus;
 
-  GroupListModel _groupList;
+  late GroupListModel _groupList;
   GroupListModel get groupList => _groupList;
 
-  GroupModel _currentOpenedChat;
-  GroupModel get currentOpendChat => _currentOpenedChat;
+   GroupModel ?_currentOpenedChat;
+  GroupModel?  get currentOpendChat => _currentOpenedChat;
 
   List<String> _presenceList = [];
   List<String> get presenceList => _presenceList;
@@ -40,13 +40,13 @@ class GroupListProvider with ChangeNotifier {
   List<int> _readParticipants = [];
   List<int> get readParticipants => _readParticipants;
 
-  String _successMsg;
+  late String _successMsg;
   String get successMsg => _successMsg;
 
-  String _errorMsg;
+  late String _errorMsg;
   String get errorMsg => _errorMsg;
 
-  int _status;
+  late int _status;
   int get status => _status;
 
   // set readmodelList(List<ReadModel> myList) {
@@ -77,15 +77,15 @@ class GroupListProvider with ChangeNotifier {
       notifyListeners();
     } else {
       _groupList = GroupListModel.fromJson(currentData);
-      if (_groupList.groups.length == 0) {
+      if (_groupList.groups!.length == 0) {
         _groupListStatus = ListStatus.Scussess;
         notifyListeners();
       } else {
-        for (int i = 0; i < _groupList.groups.length; i++) {
-          subscribeChannel(_groupList.groups[i].channel_key,
-              _groupList.groups[i].channel_name);
-          subscribePresence(_groupList.groups[i].channel_key,
-              _groupList.groups[i].channel_name, true, true);
+        for (int i = 0; i < _groupList.groups!.length; i++) {
+          subscribeChannel(_groupList.groups![i]!.channel_key,
+              _groupList.groups![i]!.channel_name);
+          subscribePresence(_groupList.groups![i]!.channel_key,
+              _groupList.groups![i]!.channel_name, true, true);
           // _emitter.subscribe(_groupList.groups[i].channel_key,
           //     _groupList.groups[i].channel_name);
           // _emitter.subscribePresence(_groupList.groups[i].channel_key,
@@ -106,16 +106,16 @@ class GroupListProvider with ChangeNotifier {
   }
 
   addGroup(GroupModel groupModel) {
-    _groupList.groups.insert(0, groupModel);
+    _groupList.groups!.insert(0, groupModel);
     notifyListeners();
   }
 
   changeState() {
     _groupListStatus = ListStatus.Scussess;
     notifyListeners();
-    for (int i = 0; i < _groupList.groups.length; i++) {
-      _emitter.subscribePresence(_groupList.groups[i].channel_key,
-          _groupList.groups[i].channel_name, true, true);
+    for (int i = 0; i < _groupList.groups!.length; i++) {
+      _emitter.subscribePresence(_groupList.groups![i]!.channel_key,
+          _groupList.groups![i]!.channel_name, true, true);
     }
   }
 
@@ -164,30 +164,30 @@ class GroupListProvider with ChangeNotifier {
   }
 
   recevieMsg(message) {
-    print("this is group list ${_groupList.groups.length}");
+    print("this is group list ${_groupList.groups!.length}");
 
     //find the index of channel... does it exist in grouplist?
-    var index = _groupList.groups
-        .indexWhere((element) => element.channel_key == message["key"]);
+    var index = _groupList.groups!
+        .indexWhere((element) => element!.channel_key == message["key"]);
     if (index != -1) {
       print("thi is index $index");
-      if (_groupList.groups[index].chatList == null) {
-        _groupList.groups[index].chatList = [];
-        _groupList.groups[index].counter = 1;
+      if (_groupList.groups![index]!.chatList == null) {
+        _groupList.groups![index]!.chatList = [];
+        _groupList.groups![index]!.counter = 1;
         print("i am here in null");
-        _groupList.groups[index].chatList.add(ChatModel.fromJson(message));
+        _groupList.groups![index]!.chatList!.add(ChatModel.fromJson(message));
         if (_currentOpenedChat == null) {
-          GroupModel element = _groupList.groups.removeAt(index);
-          _groupList.groups.insert(0, element);
+          GroupModel? element = _groupList.groups!.removeAt(index);
+          _groupList.groups!.insert(0, element);
           print("i am here in current chat null");
         }
       } else {
-        _groupList.groups[index].chatList.add(ChatModel.fromJson(message));
-        _groupList.groups[index].counter++;
+        _groupList.groups![index]!.chatList!.add(ChatModel.fromJson(message));
+        _groupList.groups![index]!.counter++;
         print("i am here in not null");
         if (_currentOpenedChat == null) {
-          GroupModel element = _groupList.groups.removeAt(index);
-          _groupList.groups.insert(0, element);
+          GroupModel? element = _groupList.groups!.removeAt(index);
+          _groupList.groups!.insert(0, element);
         }
       }
     }
@@ -251,14 +251,14 @@ class GroupListProvider with ChangeNotifier {
   }
 
   sendMsg(index, msg) {
-    if (_groupList.groups[index].chatList == null) {
+    if (_groupList.groups![index]!.chatList == null) {
       print("this is send message $index $msg");
 
-      _groupList.groups[index].chatList = [];
+      _groupList.groups![index]!.chatList = [];
       print("thisis json ${ChatModel.fromJson(msg)}");
-      _groupList.groups[index].chatList.add(ChatModel.fromJson(msg));
+      _groupList.groups![index]!.chatList!.add(ChatModel.fromJson(msg));
     } else {
-      _groupList.groups[index].chatList.add(ChatModel.fromJson(msg));
+      _groupList.groups![index]!.chatList!.add(ChatModel.fromJson(msg));
     }
 
     notifyListeners();
@@ -266,14 +266,14 @@ class GroupListProvider with ChangeNotifier {
 
   changeMsgStatus(msg, status) {
     print("this is receipt type $msg");
-    var groupindex = _groupList.groups.indexWhere(
-        (element) => element.channel_key == json.decode(msg)["key"].toString());
+    var groupindex = _groupList.groups!.indexWhere(
+        (element) => element!.channel_key == json.decode(msg)["key"].toString());
 
-    var participantIndex = _groupList.groups[groupindex].participants
-        .indexWhere(
-            (element) => element.ref_id == json.decode(msg)["from"].toString());
-    var msgindex = _groupList.groups[groupindex].chatList.indexWhere((element) {
-      return element.id == json.decode(msg)["messageId"].toString();
+    var participantIndex = _groupList.groups![groupindex]!.participants
+        !.indexWhere(
+            (element) => element!.ref_id == json.decode(msg)["from"].toString());
+    var msgindex = _groupList.groups![groupindex]!.chatList!.indexWhere((element) {
+      return element!.id == json.decode(msg)["messageId"].toString();
       //return element.id == json.decode(msg)["messageId"].toString();
     });
     // var chatIndex= _groupList.groups[groupindex].chatList[0].;
@@ -281,40 +281,40 @@ class GroupListProvider with ChangeNotifier {
     // if(_groupList.groups[groupindex].chatList[participantIndex].
     print("this is msg --- $participantIndex");
     if (groupindex != -1) {
-      if (_groupList.groups[groupindex].participants.length > 2) {
+      if (_groupList.groups![groupindex]!.participants!.length > 2) {
         print(
             "this is msg idddddddd ${json.decode(msg)["messageId"].toString()}");
         // print("this is LISTTTTTTTT $_readmodelList");
         // if (_messageIDD.contains(json.decode(msg)["messageId"].toString())) {
         print("here oooooooo");
         int i = 0;
-        while (_groupList.groups[groupindex].chatList[i].id !=
+        while (_groupList.groups![groupindex]!.chatList![i]!.id !=
             json.decode(msg)["messageId"].toString()) {
           i++;
         }
-        if (_groupList.groups[groupindex].chatList[i].id ==
+        if (_groupList.groups![groupindex]!.chatList![i]!.id ==
             json.decode(msg)["messageId"].toString()) {
           print(
-              "thos osdsdjfk counter ${_groupList.groups[groupindex].chatList[i].readCount}");
-          if (_groupList.groups[groupindex].chatList[i].participantsRead ==
+              "thos osdsdjfk counter ${_groupList.groups![groupindex]!.chatList![i]!.readCount}");
+          if (_groupList.groups![groupindex]!.chatList![i]!.participantsRead ==
               null) {
             print("this is nukkk kklkvl");
-            _groupList.groups[groupindex].chatList[i].participantsRead = [];
-            _groupList.groups[groupindex].chatList[i].readCount = 0;
+            _groupList.groups![groupindex]!.chatList![i]!.participantsRead = [];
+            _groupList.groups![groupindex]!.chatList![i]!.readCount = 0;
           }
-          if (_groupList.groups[groupindex].chatList[i].participantsRead
-              .contains(participantIndex)) {
+          if (_groupList.groups![groupindex]!.chatList![i]!.participantsRead
+              !.contains(participantIndex)) {
           } else {
-            _groupList.groups[groupindex].chatList[i].participantsRead
-                .add(participantIndex);
-            _groupList.groups[groupindex].chatList[i].readCount++;
+            _groupList.groups![groupindex]!.chatList![i]!.participantsRead
+                !.add(participantIndex);
+            _groupList.groups![groupindex]!.chatList![i]!.readCount++;
             print(
-                "thos osdsdjfk counter ${_groupList.groups[groupindex].chatList[i].readCount}");
+                "thos osdsdjfk counter ${_groupList.groups![groupindex]!.chatList![i]!.readCount}");
             print(
-                "thos osdsdjfk counter ${_groupList.groups[groupindex].chatList[i].participantsRead}");
+                "thos osdsdjfk counter ${_groupList.groups![groupindex]!.chatList![i]!.participantsRead}");
           }
         }
-        _groupList.groups[groupindex].chatList[msgindex].status = status;
+        _groupList.groups![groupindex]!.chatList![msgindex]!.status = status;
         notifyListeners();
         // while (_readmodelList[i].msgId !=
         // json.decode(msg)["messageId"].toString()) {
@@ -324,7 +324,7 @@ class GroupListProvider with ChangeNotifier {
         // if (_readmodelList[i].msgId ==
         // json.decode(msg)["messageId"].toString()) {
         // if (_readmodelList[i].participants.contains(participantIndex)) {
-        // } else {
+        // } else {!
         // _readmodelList[i].participants.add(participantIndex);
         // _readmodelList[i].counter++;
         // print("thos osdsdjfk counter ${_readmodelList[0].counter}");
@@ -361,16 +361,16 @@ class GroupListProvider with ChangeNotifier {
       } else {
         print("i am in personal chat");
         var msgindex =
-            _groupList.groups[groupindex].chatList.indexWhere((element) {
+            _groupList.groups![groupindex]!.chatList!.indexWhere((element) {
           print("this is id ${json.decode(msg)["messageId"].toString()}");
           // print("participant index is $participantIndex");
-          print("element is ${element.id}");
+          print("element is ${element!.id}");
           return element.id == json.decode(msg)["messageId"].toString();
         });
         print("this is msg index $msgindex");
         // print(
         //     "this is status ${_groupList.groups[groupindex].chatList[msgindex].status}");
-        _groupList.groups[groupindex].chatList[msgindex].status = status;
+        _groupList.groups![groupindex]!.chatList![msgindex]!.status = status;
 
         notifyListeners();
       }
@@ -380,15 +380,15 @@ class GroupListProvider with ChangeNotifier {
   changeMsgStatusToDelivered(msg, status) {
     print("this is message to deliverd $msg");
     var groupindex = _groupList.groups
-        .indexWhere((element) => element.channel_key == msg["key"]);
+        !.indexWhere((element) => element!.channel_key == msg["key"]);
 
     // print("this is msg ${_groupList.groups[groupindex].chatList.length}");
-    if (groupindex != -1) {
-      var msgindex = _groupList.groups[groupindex].chatList
-          .indexWhere((element) => element.id == msg["id"]);
+    if (groupindex != 1) {
+      var msgindex = _groupList.groups![groupindex]!.chatList
+          !.indexWhere((element) => element!.id == msg["id"]);
       print("this is msg index $msgindex");
 
-      _groupList.groups[groupindex].chatList[msgindex].status = status;
+      _groupList.groups![groupindex]!.chatList![msgindex]!.status = status;
 
       notifyListeners();
     }
@@ -396,37 +396,37 @@ class GroupListProvider with ChangeNotifier {
 
   setCountZero(index) {
     print("yes this is back");
-    _groupList.groups[index].counter = 0;
-    _currentOpenedChat = _groupList.groups[index];
+    _groupList.groups![index]!.counter = 0;
+    _currentOpenedChat = _groupList.groups![index];
     notifyListeners();
   }
 
   handlBacktoGroupList(index) {
-    _groupList.groups[index].counter = 0;
+    _groupList.groups![index]!.counter = 0;
     _currentOpenedChat = null;
     notifyListeners();
   }
 
   updateTypingStatus(msg) {
-    var index = _groupList.groups.indexWhere(
-        (element) => element.channel_key == json.decode(msg)["key"].toString());
+    var index = _groupList.groups!.indexWhere(
+        (element) => element!.channel_key == json.decode(msg)["key"].toString());
 
-    var participantIndex = _groupList.groups[index].participants.indexWhere(
-        (element) => element.ref_id == json.decode(msg)["from"].toString());
+    var participantIndex = _groupList.groups![index]!.participants!.indexWhere(
+        (element) => element!.ref_id == json.decode(msg)["from"].toString());
 
     if (index != -1) {
-      if (_groupList.groups[index].participants.length > 2) {
+      if (_groupList.groups![index]!.participants!.length > 2) {
         //_typingUserDetail = [];
         if (_typingUserDetail.length <= 2) {
           if (_typingUserDetail.contains(_groupList
-              .groups[index].participants[participantIndex].full_name)) {
+              .groups![index]!.participants![participantIndex]!.full_name)) {
             // _typingUserDetail = _typingUserDetail;
           } else {
             _typingUserDetail.add(_groupList
-                .groups[index].participants[participantIndex].full_name);
+                .groups![index]!.participants![participantIndex]!.full_name);
           }
         }
-        _groupList.groups[index].typingstatus = _typingUserDetail
+        _groupList.groups![index]!.typingstatus = _typingUserDetail
             .toString()
             .replaceAll("[", "")
             .replaceAll("]", "");
@@ -437,48 +437,48 @@ class GroupListProvider with ChangeNotifier {
             print("after delay $index");
 
             _typingUserDetail.remove(_groupList
-                .groups[index].participants[participantIndex].full_name);
+                .groups![index]!.participants![participantIndex]!.full_name);
             if (_typingUserDetail.isNotEmpty) {
-              _groupList.groups[index].typingstatus = _typingUserDetail
+              _groupList.groups![index]!.typingstatus = _typingUserDetail
                   .toString()
                   .replaceAll("[", "")
                   .replaceAll("]", "");
             } else {
-              _groupList.groups[index].typingstatus = "";
+              _groupList.groups![index]!.typingstatus = "";
             }
 
             print("this is typing user detail afterrr $_typingUserDetail");
           } else {
-            var index = _groupList.groups.indexWhere((element) =>
-                element.channel_key == json.decode(msg)["key"].toString());
+            var index = _groupList.groups!.indexWhere((element) =>
+                element!.channel_key == json.decode(msg)["key"].toString());
 
             _typingUserDetail.remove(_groupList
-                .groups[index].participants[participantIndex].full_name);
+                .groups![index]!.participants![participantIndex]!.full_name);
             // _groupList.groups[index].typingstatus = "";
             if (_typingUserDetail.isNotEmpty) {
-              _groupList.groups[index].typingstatus = _typingUserDetail
+              _groupList.groups![index]!.typingstatus = _typingUserDetail
                   .toString()
                   .replaceAll("[", "")
                   .replaceAll("]", "");
             } else {
-              _groupList.groups[index].typingstatus = "";
+              _groupList.groups![index]!.typingstatus = "";
             }
             print("this is typing user detail after  $_typingUserDetail");
           }
           notifyListeners();
         });
       } else {
-        _groupList.groups[index].typingstatus =
-            _groupList.groups[index].participants[participantIndex].full_name;
+        _groupList.groups![index]!.typingstatus =
+            _groupList.groups![index]!.participants![participantIndex]!.full_name;
         notifyListeners();
         Timer(Duration(seconds: 2), () {
           if (_currentOpenedChat != null) {
             print("after delay $index");
-            _groupList.groups[index].typingstatus = "";
+            _groupList.groups![index]!.typingstatus = "";
           } else {
-            var index = _groupList.groups.indexWhere((element) =>
-                element.channel_key == json.decode(msg)["key"].toString());
-            _groupList.groups[index].typingstatus = "";
+            var index = _groupList.groups!.indexWhere((element) =>
+                element!.channel_key == json.decode(msg)["key"].toString());
+            _groupList.groups![index]!.typingstatus = "";
           }
           notifyListeners();
         });

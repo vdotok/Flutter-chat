@@ -8,10 +8,10 @@ import '../../core/providers/contact_provider.dart';
 class CreateGroupChatIndex extends StatefulWidget {
   final ContactProvider contactProvider;
   final MainProvider mainProvider;
-  final GroupListProvider groupListProvider;
+  final GroupListProvider ?groupListProvider;
   final refreshList;
   final handlePress;
-  const CreateGroupChatIndex({Key key, this.contactProvider, this.mainProvider, this.groupListProvider, this.refreshList, this.handlePress}) : super(key: key);
+  const CreateGroupChatIndex({Key? key, required this.contactProvider, required this.mainProvider,  this.groupListProvider, this.refreshList, this.handlePress}) : super(key: key);
 
   @override
   _CreateGroupChatIndexState createState() => _CreateGroupChatIndexState();

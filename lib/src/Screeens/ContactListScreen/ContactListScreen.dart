@@ -22,7 +22,7 @@ class ContactListScreen extends StatefulWidget {
   final GroupListProvider groupListProvider;
   final refreshList;
   final handlePress;
-  const ContactListScreen({Key key, this.contactProvider, this.mainProvider, this.groupListProvider, this.refreshList, this.handlePress}) : super(key: key);
+  const ContactListScreen({Key? key, required this.contactProvider, required this.mainProvider, required this.groupListProvider, this.refreshList, this.handlePress}) : super(key: key);
 
   @override
   _ContactListScreenState createState() => _ContactListScreenState();
@@ -30,17 +30,17 @@ class ContactListScreen extends StatefulWidget {
 
 class _ContactListScreenState extends State<ContactListScreen> {
   //ContactProvider contactProvider;
-  GroupListProvider groupListProvider;
-  AuthProvider authProvider;
+  late GroupListProvider groupListProvider;
+  late AuthProvider authProvider;
   int count = 0;
   var changingvaalue;
 
   final _groupNameController = TextEditingController();
   final _searchController = TextEditingController();
-  List<Contact> _filteredList = [];
+  List<Contact?>? _filteredList = [];
   bool notmatched = false;
-  Emitter emitter;
-  GlobalKey<ScaffoldState> scaffoldKey;
+  late Emitter emitter;
+  late GlobalKey<ScaffoldState> scaffoldKey;
   bool loading = false;
 
   //bool isLoading = false;
@@ -59,10 +59,10 @@ class _ContactListScreenState extends State<ContactListScreen> {
   onSearch(value) {
     List temp;
 
-    temp = widget.contactProvider.contactList.users.where((element) {
+    temp = widget.contactProvider.contactList.users!.where((element) {
       // if (element.full_name.toLowerCase().startsWith(value.toLowerCase())==true) {
       //   print("i am here");
-      return element.full_name.toLowerCase().startsWith(value.toLowerCase());
+      return element!.full_name.toLowerCase().startsWith(value.toLowerCase());
       // }
       // else {
       //   return element.full_name.toLowerCase().contains(value.toLowerCase());
@@ -95,10 +95,10 @@ class _ContactListScreenState extends State<ContactListScreen> {
       } else {
         print("Here in false matched");
         notmatched = false;
-        _filteredList = temp;
+        _filteredList = temp.cast<Contact?>();
       }
     });
-    print("this is filtered list ${_filteredList[0].full_name}  ");
+    print("this is filtered list ${_filteredList![0]!.full_name}  ");
   }
 
   @override
@@ -108,7 +108,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
       if (widget.contactProvider.contactState == ContactStates.Loading)
         return SplashScreen();
       else if (widget.contactProvider.contactState == ContactStates.Success) {
-        if (widget.contactProvider.contactList.users.length == 0)
+        if (widget.contactProvider.contactList.users!.length == 0)
           return NoChatScreen(
             emitter: emitter,
             groupListProvider: groupListProvider,
@@ -143,7 +143,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
                           onSearch(value);
                         },
                         validator: (value) =>
-                            value.isEmpty ? "Field cannot be empty." : null,
+                            value!.isEmpty ? "Field cannot be empty." : null,
                         decoration: InputDecoration(
                           fillColor: refreshTextColor,
                           filled: true,
@@ -258,18 +258,18 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                 shrinkWrap: true,
                                 //  padding: const EdgeInsets.only(top: 5),
                                 itemCount: _searchController.text.isEmpty
-                                    ? widget.contactProvider.contactList.users.length
-                                    : _filteredList.length,
+                                    ? widget.contactProvider.contactList.users!.length
+                                    : _filteredList!.length,
                                 itemBuilder: (BuildContext context, int index) {
-                                  Contact test = _searchController.text.isEmpty
-                                      ? widget.contactProvider.contactList.users[index]
-                                      : _filteredList[index];
+                                  Contact? test = _searchController.text.isEmpty
+                                      ? widget.contactProvider.contactList.users![index]
+                                      : _filteredList![index];
                                   var groupIndex = groupListProvider
-                                      .groupList.groups
+                                      .groupList.groups!
                                       .indexWhere((element) =>
-                                          element.group_title ==
-                                          authProvider.getUser.full_name +
-                                              test.full_name);
+                                          element!.group_title ==
+                                          authProvider.getUser!.full_name +
+                                              test!.full_name);
 
                                   return Column(
                                     children: [
@@ -300,7 +300,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                               'assets/User.svg'),
                                         ),
                                         title: Text(
-                                          "${test.full_name}",
+                                          "${test!.full_name}",
                                           style: TextStyle(
                                             color: contactNameColor,
                                             fontSize: 16,
@@ -323,13 +323,13 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                                         print(
                                                             "the selected contacts:${test.full_name}");
                                                         var res = await widget.contactProvider.createGroup(
-                                                            authProvider.getUser
+                                                            authProvider.getUser!
                                                                     .full_name +
                                                                 selectedContacts[
                                                                         0]
                                                                     .full_name,
                                                             selectedContacts,
-                                                            authProvider.getUser
+                                                            authProvider.getUser!
                                                                 .auth_token);
                                                         // var getGroups=await
 
@@ -341,15 +341,15 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                                         print(
                                                             "this is group index $groupIndex");
                                                         print(
-                                                            "this is response of createGroup ${groupModel.participants[0].full_name}, ${groupModel.participants[1].full_name}");
+                                                            "this is response of createGroup ${groupModel.participants![0]!.full_name}, ${groupModel.participants![1]!.full_name}");
 
                                                         int channelIndex = 0;
                                                         if (res[
                                                             "is_already_created"]) {
                                                           channelIndex = groupListProvider
-                                                              .groupList.groups
+                                                              .groupList.groups!
                                                               .indexWhere((element) =>
-                                                                  element
+                                                                  element!
                                                                       .channel_key ==
                                                                   res["group"][
                                                                       "channel_key"]);

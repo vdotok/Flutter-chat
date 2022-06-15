@@ -20,8 +20,7 @@ ChatModel _$ChatModelFromJson(Map<String, dynamic> json) {
     isGroupMessage: json['isGroupMessage'],
     subtype: json['subtype'],
     readCount: json['readCount'],
-    participantsRead:
-        (json['participantsRead'] as List)?.map((e) => e as int)?.toList(),
+    participantsRead: (json['participantsRead'])?.map((e) => e as int).toList(),
   );
 }
 

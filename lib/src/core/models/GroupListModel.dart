@@ -4,7 +4,7 @@ part 'GroupListModel.g.dart';
 
 @JsonSerializable()
 class GroupListModel {
-  List<GroupModel> groups = [];
+  List<GroupModel?>? groups = [];
 
   GroupListModel({this.groups});
 

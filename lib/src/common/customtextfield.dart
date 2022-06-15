@@ -15,7 +15,7 @@ class CustomTextField extends StatefulWidget {
 
 class _CustomTextFieldState extends State<CustomTextField> {
   final String error = '';
-  Size size;
+  late Size size;
 
   RegExp emailRegex = new RegExp(
       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
@@ -65,7 +65,7 @@ RegExp userNameRegex = new RegExp(r"^[a-zA-Z0-9_]+$");
                   borderRadius: BorderRadius.all(Radius.circular(15)),
                   borderSide: BorderSide(color: focusedBorderColor))),
       validator: (value) {
-            if (value.isEmpty) {
+            if (value!.isEmpty) {
               print("The value:${value}");
               return "Field cannot be empty";
             }

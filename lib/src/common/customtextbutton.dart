@@ -5,7 +5,7 @@ class CustomTextButton extends StatelessWidget {
   final handlePress;
   final String text;
  
-  CustomTextButton({this.text, @required this.handlePress});
+  CustomTextButton({required this.text, @required this.handlePress});
  
   @override
   Widget build(BuildContext context) {

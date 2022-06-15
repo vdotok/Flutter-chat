@@ -12,31 +12,31 @@ import '../../core/providers/auth.dart';
 import '../../core/providers/contact_provider.dart';
 
 class CreateGroupPopUp extends StatefulWidget {
-  final MainProvider mainProvider;
+  final MainProvider ?mainProvider;
   final handlePress;
   const CreateGroupPopUp(
-      {Key key,
-      @required TextEditingController groupNameController,
-      this.contactProvider,
-      List<Contact> selectedContacts,
+      {Key? key,
+      required TextEditingController groupNameController,
+       this.contactProvider,
+       required List<Contact> selectedContacts,
       @required this.publishMessage,
-      @required this.authProvider,
-      this.controllerText,
-      this.editGroupName,
-      this.groupid, this.mainProvider, this.handlePress})
+      required this.authProvider,
+       this.controllerText,
+      required this.editGroupName,
+       this.groupid,  this.mainProvider, this.handlePress})
       : _groupNameController = groupNameController,
         _selectedContacts = selectedContacts,
         super(key: key);
 
   final TextEditingController _groupNameController;
-  final ContactProvider contactProvider;
+  final ContactProvider ?contactProvider;
   final List<Contact> _selectedContacts;
   final AuthProvider authProvider;
   final publishMessage;
-  final String controllerText;
+  final String ?controllerText;
   final bool editGroupName;
 
-  final int groupid;
+  final int ?groupid;
 
   @override
   _CreateGroupPopUpState createState() => _CreateGroupPopUpState();
@@ -46,7 +46,7 @@ class _CreateGroupPopUpState extends State<CreateGroupPopUp> {
   @override
   void initState() {
     if (widget.controllerText != "" || widget.controllerText != null) {
-      widget._groupNameController.text = widget.controllerText;
+      widget._groupNameController.text = widget.controllerText!;
     }
   }
 
@@ -184,7 +184,7 @@ class _CreateGroupPopUpState extends State<CreateGroupPopUp> {
                                           await grouplistp.editGroupName(
                                               widget._groupNameController.text,
                                               widget.groupid,
-                                              widget.authProvider.getUser
+                                              widget.authProvider.getUser!
                                                   .auth_token);
                                           if (grouplistp.editGroupNameStatus ==
                                               EditGroupNameStatus.Success) {
@@ -206,12 +206,12 @@ class _CreateGroupPopUpState extends State<CreateGroupPopUp> {
                                           } else {
                                             grouplistp.handleCreateChatState();
                                             var res = await widget
-                                                .contactProvider
+                                                .contactProvider!
                                                 .createGroup(
                                                     widget._groupNameController
                                                         .text,
                                                     widget._selectedContacts,
-                                                    widget.authProvider.getUser
+                                                    widget.authProvider.getUser!
                                                         .auth_token);
 
                                             // grouplistp.getGroupList(
@@ -233,7 +233,7 @@ class _CreateGroupPopUpState extends State<CreateGroupPopUp> {
                                                 true);
 
                                             print("here on done button");
-                                            widget.mainProvider
+                                            widget.mainProvider!
                                                 .chatScreen(index: 0);
 
                                             // strArr.remove("CreateGroupChat");

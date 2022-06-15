@@ -8,7 +8,7 @@ class AddAttachmentPopUp extends StatelessWidget {
   final filePIcker;
   
   const AddAttachmentPopUp({
-    Key key, this.getImage, this.iconName, this.filePIcker
+    Key? key, this.getImage, this.iconName, this.filePIcker
   }) : super(key: key);
 
 

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import '../constants/constant.dart';
 
 class TextFieldFile extends StatefulWidget {
-  String name;
-  var myController = TextEditingController();
-  TextFieldFile({Key key, this.name, this.myController}) : super(key: key);
+  String? name;
+  var  myController = TextEditingController();
+  TextFieldFile({Key? key, this.name, required this.myController}) : super(key: key);
   @override
   _WidgetHeaderState createState() => _WidgetHeaderState();
 }
@@ -27,7 +27,7 @@ class _WidgetHeaderState extends State<TextFieldFile> {
       child: TextFormField(
         controller: myController,
         validator: (value) {
-          if (value.isEmpty) return "Field cannot be empty";
+          if (value!.isEmpty) return "Field cannot be empty";
           if (value.length < 6)
             return "Entry should be at least 6 characters long";
           if (value.length > 14) return "Entry should not exceed 14 characters";

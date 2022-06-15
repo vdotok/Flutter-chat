@@ -32,32 +32,32 @@ class Routers {
                 ),
             type: PageTransitionType.rightToLeft);
         break;
-      case '/contactlist':
- Map<String, dynamic> params = args;
-       {return PageTransition(
-            child: ListenableProvider<GroupListProvider>.value(
-              value: params["groupListProvider"],
-              child: ContactListIndex(
-                contactProvider:params["contactProvider"]
+//       case '/contactlist':
+//  Map<String, dynamic> params = args;
+//        {return PageTransition(
+//             child: ListenableProvider<GroupListProvider>.value(
+//               value: params["groupListProvider"],
+//               child: ContactListIndex(
+//                 contactProvider:params["contactProvider"]
 
-              ),
-            ),
-            type: PageTransitionType.rightToLeft);}
+//               ),
+//             ),
+//             type: PageTransitionType.rightToLeft);}
         break;
-      case '/createGroup':
-        return PageTransition(
-            child: ListenableProvider<GroupListProvider>.value(
-              value: args,
-              child: CreateGroupChatIndex(),
-            ),
-            type: PageTransitionType.rightToLeft);
-        break;
+      // case '/createGroup':
+      //   return PageTransition(
+      //       child: ListenableProvider<GroupListProvider>.value(
+      //         value: args,
+      //         child: CreateGroupChatIndex(),
+      //       ),
+      //       type: PageTransitionType.rightToLeft);
+      //   break;
       case '/chatScreen':
         {
-          Map<String, dynamic> params = args;
+          Map<String, dynamic>? params = args as Map<String, dynamic>?;
           return PageTransition(
               child: ListenableProvider<GroupListProvider>.value(
-                value: params["groupListProvider"],
+                value: params!["groupListProvider"],
                 child: ChatScreen(
                   index: params["index"],
                   publishMessage: params["publishMessage"],

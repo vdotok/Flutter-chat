@@ -4,7 +4,7 @@ import '../constants/constant.dart';
 class CustomText extends StatelessWidget {
   final text;
 
-  const CustomText({Key key, this.text}) : super(key: key);
+  const CustomText({Key? key, this.text}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
