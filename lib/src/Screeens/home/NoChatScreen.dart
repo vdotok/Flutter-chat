@@ -26,7 +26,7 @@ class NoChatScreen extends StatelessWidget {
       this.handlePress})
       : super(key: key);
 
-  final GroupListProvider groupListProvider;
+  final GroupListProvider ?groupListProvider;
   final AuthProvider? authProvider;
   final Emitter emitter;
   final refreshList;

@@ -29,10 +29,15 @@ import '../groupChatScreen/videoPlayer.dart';
 class ChatScreen extends StatefulWidget {
   final int index;
   final publishMessage;
-  final MainProvider ?mainProvider;
+  final MainProvider? mainProvider;
   final ContactProvider? contactProvider;
 
-  const ChatScreen({Key ?key, required this.index, this.publishMessage,  this.mainProvider,  this.contactProvider})
+  const ChatScreen(
+      {Key? key,
+      required this.index,
+      this.publishMessage,
+      this.mainProvider,
+      this.contactProvider})
       : super(key: key);
 
   @override
@@ -225,7 +230,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future getImage(String src) async {
     print('yes im here');
-    PickedFile ?pickedFile;
+    PickedFile? pickedFile;
     if (src == "Gallery") {
       pickedFile = (await picker.getImage(source: ImageSource.gallery))!;
       // pickedFile = await picker.getVideo(source: ImageSource.gallery);
@@ -248,8 +253,8 @@ class _ChatScreenState extends State<ChatScreen> {
         return;
       }
       Map<String, dynamic> filePacket = {
-        "id":
-            generateMd5(_groupListProvider.groupList.groups![index]!.channel_key),
+        "id": generateMd5(
+            _groupListProvider.groupList.groups![index]!.channel_key),
         // "topic": _groupListProvider.groupList.groups[index].channel_name,
         "to": _groupListProvider.groupList.groups![index]!.channel_name,
         "key": _groupListProvider.groupList.groups![index]!.channel_key,
@@ -274,7 +279,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   filePIcker(String fileType) async {
-     FilePickerResult? result;
+    FilePickerResult? result;
     if (fileType == "file")
       result = (await FilePicker.platform
           .pickFiles(allowMultiple: false, type: FileType.any))!;
@@ -404,8 +409,8 @@ class _ChatScreenState extends State<ChatScreen> {
       }
       print("this is file ${(file.path.split('.').last)}");
       Map<String, dynamic> filePacket = {
-        "id":
-            generateMd5(_groupListProvider.groupList.groups![index]!.channel_key),
+        "id": generateMd5(
+            _groupListProvider.groupList.groups![index]!.channel_key),
         // "topic": _groupListProvider.groupList.groups[index].channel_name,
         "to": _groupListProvider.groupList.groups![index]!.channel_name,
         "key": _groupListProvider.groupList.groups![index]!.channel_key,
@@ -431,6 +436,7 @@ class _ChatScreenState extends State<ChatScreen> {
       _groupListProvider.sendMsg(index, filePacket);
       Navigator.pop(context);
     } else {
+      print("null value apear");
       // User canceled the picker
     }
   }
@@ -483,7 +489,7 @@ class _ChatScreenState extends State<ChatScreen> {
             : null);
 
     return WillPopScope(
-       onWillPop: _onWillPop,
+        onWillPop: _onWillPop,
         child: Consumer<GroupListProvider>(
             builder: (context, groupListProvider, child) {
           return GestureDetector(
@@ -501,7 +507,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ischatscreen: true,
                   title: "",
                   index: index,
-                   mainProvider: widget.mainProvider,
+                  mainProvider: widget.mainProvider,
                   authProvider: authProvider),
               body: SafeArea(
                 child: Column(
@@ -584,13 +590,14 @@ class _ChatScreenState extends State<ChatScreen> {
   Column receiverText(
       GroupListProvider groupListProvider, int chatindex, String date) {
     var participantIndex = groupListProvider
-        .groupList.groups![index]!.participants
-        !.indexWhere((element) =>
+        .groupList.groups![index]!.participants!
+        .indexWhere((element) =>
             element!.ref_id ==
-            groupListProvider.groupList.groups![index]!.chatList![chatindex]!.from);
+            groupListProvider
+                .groupList.groups![index]!.chatList![chatindex]!.from);
     print("chat index is $chatindex");
-    var content =
-        groupListProvider.groupList.groups![index]!.chatList![chatindex]!.content;
+    var content = groupListProvider
+        .groupList.groups![index]!.chatList![chatindex]!.content;
     //.toString().codeUnits;
     // var decode = utf8.decode(content.toString().codeUnits);
     // print("Decode is $decode");
@@ -638,8 +645,11 @@ class _ChatScreenState extends State<ChatScreen> {
                                 ),
 
                                 //The Text Inside Receiver Container//
-                                child: groupListProvider.groupList.groups![index]
-                                            !.chatList![chatindex]!.type ==
+                                child: groupListProvider
+                                            .groupList
+                                            .groups![index]!
+                                            .chatList![chatindex]!
+                                            .type ==
                                         MessageType.text
                                     ?
                                     //If we have type not equal to 0 then we have to show the content inside the message
@@ -663,8 +673,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                     :
                                     //If its an image then we will check if its on web or mobile device
 
-                                    groupListProvider.groupList.groups![index]
-                                                !.chatList![chatindex]!.type ==
+                                    groupListProvider.groupList.groups![index]!
+                                                .chatList![chatindex]!.type ==
                                             MediaType.image
                                         ? kIsWeb
                                             ? Container(
@@ -672,9 +682,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                                 child: Image.network(
                                                   groupListProvider
                                                       .groupList
-                                                      .groups![index]
-                                                      !.chatList![chatindex]
-                                                      !.content,
+                                                      .groups![index]!
+                                                      .chatList![chatindex]!
+                                                      .content,
                                                   fit: BoxFit.fill,
                                                 ))
                                             : Container(
@@ -701,18 +711,18 @@ class _ChatScreenState extends State<ChatScreen> {
                                                   child: Image.file(
                                                     groupListProvider
                                                         .groupList
-                                                        .groups![index]
-                                                        !.chatList![chatindex]
-                                                        !.content,
+                                                        .groups![index]!
+                                                        .chatList![chatindex]!
+                                                        .content,
                                                     fit: BoxFit.fill,
                                                   ),
                                                 ),
                                               )
                                         : groupListProvider
                                                     .groupList
-                                                    .groups![index]
-                                                    !.chatList![chatindex]
-                                                    !.type ==
+                                                    .groups![index]!
+                                                    .chatList![chatindex]!
+                                                    .type ==
                                                 MediaType.audio
                                             ?
                                             //for audio
@@ -723,16 +733,16 @@ class _ChatScreenState extends State<ChatScreen> {
                                                 index: index,
                                                 file: groupListProvider
                                                     .groupList
-                                                    .groups![index]
-                                                    !.chatList![chatindex]
-                                                    !.content,
+                                                    .groups![index]!
+                                                    .chatList![chatindex]!
+                                                    .content,
                                                 isReceive: true,
                                               )
                                             : groupListProvider
                                                         .groupList
-                                                        .groups![index]
-                                                        !.chatList![chatindex]
-                                                        !.type ==
+                                                        .groups![index]!
+                                                        .chatList![chatindex]!
+                                                        .type ==
                                                     MediaType.video
                                                 ?
                                                 //for video
@@ -743,9 +753,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                                       OpenFile.open(
                                                         groupListProvider
                                                             .groupList
-                                                            .groups![index]
-                                                            !.chatList![chatindex]
-                                                            !.content
+                                                            .groups![index]!
+                                                            .chatList![
+                                                                chatindex]!
+                                                            .content
                                                             .path,
                                                       );
 
@@ -781,9 +792,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                                       child: Text(
                                                         groupListProvider
                                                             .groupList
-                                                            .groups![index]
-                                                            !.chatList![chatindex]
-                                                            !.content
+                                                            .groups![index]!
+                                                            .chatList![
+                                                                chatindex]!
+                                                            .content
                                                             .path
                                                             .toString()
                                                             .split("/")
@@ -806,9 +818,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                                       OpenFile.open(
                                                         groupListProvider
                                                             .groupList
-                                                            .groups![index]
-                                                            !.chatList![chatindex]
-                                                            !.content
+                                                            .groups![index]!
+                                                            .chatList![
+                                                                chatindex]!
+                                                            .content
                                                             .path,
                                                       );
 
@@ -842,9 +855,10 @@ class _ChatScreenState extends State<ChatScreen> {
                                                       child: Text(
                                                         groupListProvider
                                                             .groupList
-                                                            .groups![index]
-                                                            !.chatList![chatindex]
-                                                            !.content
+                                                            .groups![index]!
+                                                            .chatList![
+                                                                chatindex]!
+                                                            .content
                                                             .path
                                                             .toString()
                                                             .split("/")
@@ -870,9 +884,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                       DateTime.fromMillisecondsSinceEpoch(
                                           groupListProvider
                                               .groupList
-                                              .groups![index]
-                                              !.chatList![chatindex]
-                                              !.date)),
+                                              .groups![index]!
+                                              .chatList![chatindex]!
+                                              .date)),
                                   style: TextStyle(
                                     color: messageTimeColor,
                                     fontSize: 12,
@@ -911,8 +925,8 @@ class _ChatScreenState extends State<ChatScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                groupListProvider
-                            .groupList.groups![index]!.chatList![chatindex]!.from !=
+                groupListProvider.groupList.groups![index]!
+                            .chatList![chatindex]!.from !=
                         authProvider.getUser!.ref_id
                     ? Text(
                         "",
@@ -922,16 +936,16 @@ class _ChatScreenState extends State<ChatScreen> {
                           fontSize: 14,
                         ),
                       )
-                    : groupListProvider.groupList.groups![index]
-                                !.chatList![chatindex]!.status ==
+                    : groupListProvider.groupList.groups![index]!
+                                .chatList![chatindex]!.status ==
                             ReceiptType.sent
                         ? Text("")
-                        : groupListProvider.groupList.groups![index]
-                                    !.chatList![chatindex]!.status ==
+                        : groupListProvider.groupList.groups![index]!
+                                    .chatList![chatindex]!.status ==
                                 ReceiptType.delivered
                             ? Text("")
-                            : (groupListProvider.groupList.groups![index]
-                                        !.participants!.length >
+                            : (groupListProvider.groupList.groups![index]!
+                                        .participants!.length >
                                     2)
                                 ? Text(
                                     "Read ${groupListProvider.groupList.groups![index]!.chatList![chatindex]!.readCount}",
@@ -970,9 +984,9 @@ class _ChatScreenState extends State<ChatScreen> {
                       DateFormat().add_jm().format(
                           DateTime.fromMillisecondsSinceEpoch(groupListProvider
                               .groupList
-                              .groups![index]
-                              !.chatList![chatindex]
-                              !.date)),
+                              .groups![index]!
+                              .chatList![chatindex]!
+                              .date)),
                       style: TextStyle(
                         color: messageTimeColor,
                         fontSize: 12,
@@ -987,8 +1001,8 @@ class _ChatScreenState extends State<ChatScreen> {
                   borderRadius: BorderRadius.circular(5),
                   color: searchbarContainerColor,
                 ),
-                child: groupListProvider
-                            .groupList.groups![index]!.chatList![chatindex]!.type ==
+                child: groupListProvider.groupList.groups![index]!
+                            .chatList![chatindex]!.type ==
                         MessageType.text
                     ?
                     //for text
@@ -1004,8 +1018,8 @@ class _ChatScreenState extends State<ChatScreen> {
                           ),
                         ),
                       )
-                    : groupListProvider.groupList.groups![index]
-                                !.chatList![chatindex]!.type ==
+                    : groupListProvider.groupList.groups![index]!
+                                .chatList![chatindex]!.type ==
                             MediaType.image
                         ?
                         //for image
@@ -1018,8 +1032,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(5.0),
                                   child: Image.network(
-                                    groupListProvider.groupList.groups![index]
-                                        !.chatList![chatindex]!.content,
+                                    groupListProvider.groupList.groups![index]!
+                                        .chatList![chatindex]!.content,
                                     fit: BoxFit.fill,
                                   ),
                                 ))
@@ -1027,8 +1041,8 @@ class _ChatScreenState extends State<ChatScreen> {
                                 onTap: () {
                                   print("i am opening file3");
                                   OpenFile.open(
-                                    groupListProvider.groupList.groups![index]
-                                        !.chatList![chatindex]!.content.path,
+                                    groupListProvider.groupList.groups![index]!
+                                        .chatList![chatindex]!.content.path,
                                   );
                                 },
                                 child: Container(
@@ -1044,15 +1058,18 @@ class _ChatScreenState extends State<ChatScreen> {
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(5.0),
                                     child: Image.file(
-                                      groupListProvider.groupList.groups![index]
-                                          !.chatList![chatindex]!.content,
+                                      groupListProvider
+                                          .groupList
+                                          .groups![index]!
+                                          .chatList![chatindex]!
+                                          .content,
                                       fit: BoxFit.fill,
                                     ),
                                   ),
                                 ),
                               )
-                        : groupListProvider.groupList.groups![index]
-                                    !.chatList![chatindex]!.type ==
+                        : groupListProvider.groupList.groups![index]!
+                                    .chatList![chatindex]!.type ==
                                 MediaType.audio
                             ?
                             //for audio
@@ -1060,12 +1077,15 @@ class _ChatScreenState extends State<ChatScreen> {
                                 groupListProvider: groupListProvider,
                                 chatindex: chatindex,
                                 index: index,
-                                file: groupListProvider.groupList.groups![index]
-                                    !.chatList![chatindex]!.content,
+                                file: groupListProvider
+                                    .groupList
+                                    .groups![index]!
+                                    .chatList![chatindex]!
+                                    .content,
                                 isReceive: false,
                               )
-                            : groupListProvider.groupList.groups![index]
-                                        !.chatList![chatindex]!.type ==
+                            : groupListProvider.groupList.groups![index]!
+                                        .chatList![chatindex]!.type ==
                                     MediaType.video
                                 ?
                                 //for video
@@ -1076,9 +1096,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                       OpenFile.open(
                                         groupListProvider
                                             .groupList
-                                            .groups![index]
-                                            !.chatList![chatindex]
-                                            !.content
+                                            .groups![index]!
+                                            .chatList![chatindex]!
+                                            .content
                                             .path,
                                       );
                                       // Navigator.of(context)
@@ -1109,9 +1129,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                       child: Text(
                                         groupListProvider
                                             .groupList
-                                            .groups![index]
-                                            !.chatList![chatindex]
-                                            !.content
+                                            .groups![index]!
+                                            .chatList![chatindex]!
+                                            .content
                                             .path
                                             .toString()
                                             .split("/")
@@ -1131,9 +1151,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                       OpenFile.open(
                                         groupListProvider
                                             .groupList
-                                            .groups![index]
-                                            !.chatList![chatindex]
-                                            !.content
+                                            .groups![index]!
+                                            .chatList![chatindex]!
+                                            .content
                                             .path,
                                       );
 
@@ -1160,9 +1180,9 @@ class _ChatScreenState extends State<ChatScreen> {
                                       child: Text(
                                         groupListProvider
                                             .groupList
-                                            .groups![index]
-                                            !.chatList![chatindex]
-                                            !.content
+                                            .groups![index]!
+                                            .chatList![chatindex]!
+                                            .content
                                             .path
                                             .toString()
                                             .split("/")
@@ -1184,8 +1204,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Container audioWidget(GroupListProvider groupListProvider, int chatindex) {
-    Future<void> _onPlay(
-        {required String filePath, required int index}) async {
+    Future<void> _onPlay({required String filePath, required int index}) async {
       AudioPlayer audioPlayer = AudioPlayer();
       if (!_isPlaying) {
         audioPlayer.play(filePath, isLocal: true);
@@ -1229,8 +1248,8 @@ class _ChatScreenState extends State<ChatScreen> {
           IconButton(
             onPressed: () {
               _onPlay(
-                  filePath: groupListProvider
-                      .groupList.groups![index]!.chatList![chatindex]!.content.path,
+                  filePath: groupListProvider.groupList.groups![index]!
+                      .chatList![chatindex]!.content.path,
                   index: 0);
             },
             icon: _isPlaying

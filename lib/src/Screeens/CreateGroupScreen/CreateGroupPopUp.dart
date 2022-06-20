@@ -21,7 +21,7 @@ class CreateGroupPopUp extends StatefulWidget {
       required List<Contact> selectedContacts,
       @required this.publishMessage,
       required this.authProvider,
-      this.controllerText,
+      required this.controllerText,
       required this.editGroupName,
       this.groupid,
       this.mainProvider,
@@ -35,7 +35,7 @@ class CreateGroupPopUp extends StatefulWidget {
   final List<Contact> _selectedContacts;
   final AuthProvider authProvider;
   final publishMessage;
-  final String? controllerText;
+  final String controllerText;
   final bool editGroupName;
 
   final int? groupid;
@@ -48,7 +48,7 @@ class _CreateGroupPopUpState extends State<CreateGroupPopUp> {
   @override
   void initState() {
     if (widget.controllerText != "" || widget.controllerText != null) {
-      widget._groupNameController.text = widget.controllerText!;
+      widget._groupNameController.text = widget.controllerText;
     }
   }
 

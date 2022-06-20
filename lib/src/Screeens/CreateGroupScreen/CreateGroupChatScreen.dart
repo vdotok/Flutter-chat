@@ -238,22 +238,24 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                                         GroupListProvider>.value(
                                                       value: groupListProvider,
                                                       child: CreateGroupPopUp(
-                                                          handlePress: widget
-                                                              .handlePress,
-                                                          editGroupName: false,
-                                                          publishMessage:
-                                                              publishMessage,
-                                                          groupNameController:
-                                                              _groupNameController,
-                                                          contactProvider: widget
-                                                              .contactProvider,
-                                                          selectedContacts:
-                                                              selectedContacts,
-                                                          mainProvider: widget
-                                                              .mainProvider,
-                                                          // groupListProvider: groupListProvider,
-                                                          authProvider:
-                                                              authProvider),
+                                                        handlePress:
+                                                            widget.handlePress,
+                                                        editGroupName: false,
+                                                        publishMessage:
+                                                            publishMessage,
+                                                        groupNameController:
+                                                            _groupNameController,
+                                                        contactProvider: widget
+                                                            .contactProvider,
+                                                        selectedContacts:
+                                                            selectedContacts,
+                                                        mainProvider:
+                                                            widget.mainProvider,
+                                                        // groupListProvider: groupListProvider,
+                                                        authProvider:
+                                                            authProvider,
+                                                        controllerText: '',
+                                                      ),
                                                     );
                                                   });
                                             }

@@ -54,11 +54,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     groupListProvider = Provider.of<GroupListProvider>(context, listen: false);
     contactProvider = Provider.of<ContactProvider>(context, listen: false);
     _mainProvider = Provider.of<MainProvider>(context, listen: false);
-    emitter.connect(
+  emitter.connect(
         clientId: authProvider.getUser!.user_id.toString(),
         reconnectivity: true,
         refID: authProvider.getUser!.ref_id,
-        authorization_token: authProvider.getUser!.authorization_token,
+        authorization_token: authProvider.getUser!.authorization_token,  
         project_id: project_id,
         host: authProvider.host,
         port: authProvider.port);
