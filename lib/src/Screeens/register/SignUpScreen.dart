@@ -9,6 +9,7 @@ import '../../common/ReusableButton.dart';
 import '../../common/customtextfield.dart';
 import '../../common/customtext.dart';
 import '../../constants/constant.dart';
+import 'package:vdotok_wear/vdotok_wear.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -25,30 +26,48 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool passwordvalidate = false;
   bool namevalidate = false;
   Size? size;
+  final _vdotokWearPlugin = VdotokWear();
 
   handlePress() async {
-    if (_registerformkey.currentState!.validate()) {
-      AuthProvider auth = Provider.of<AuthProvider>(context, listen: false);
-      bool res = await auth.register(
-        _nameController.text,
-        _passwordController.text,
-        _emailController.text,
-      );
-      if (auth.getUser!.auth_token == null) {
-        setState(() {
-          _autoValidate = true;
+    _vdotokWearPlugin
+        .getPlatformVersion(
+            "getPlatformVersion", {"message": _nameController.text})
+        .then((value) {})
+        .catchError((onError) {
+          print("this is error $onError");
         });
-      }
-      if (res) Navigator.pop(context);
-    } else {
-      setState(() {
-        _autoValidate = true;
-      });
-    }
+    // if (_registerformkey.currentState!.validate()) {
+    //   AuthProvider auth = Provider.of<AuthProvider>(context, listen: false);
+    //   bool res = await auth.register(
+    //     _nameController.text,
+    //     _passwordController.text,
+    //     _emailController.text,
+    //   );
+    //   if (auth.getUser!.auth_token == null) {
+    //     setState(() {
+    //       _autoValidate = true;
+    //     });
+    //   }
+    //   if (res) Navigator.pop(context);
+    // } else {
+    //   setState(() {
+    //     _autoValidate = true;
+    //   });
+    // }
   }
 
   handleButton() {
     Navigator.pop(context);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      _passwordController.text = "12345678";
+      _emailController.text = "Taimoor@gmail.com";
+    });
   }
 
   @override
