@@ -27,7 +27,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool namevalidate = false;
   Size? size;
   final _vdotokWearPlugin = VdotokWear();
-
+// only commited in taimoor branch
   handlePress() async {
     _vdotokWearPlugin
         .getPlatformVersion(
