@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../constants/constant.dart';
@@ -101,9 +102,14 @@ class AddAttachmentPopUp extends StatelessWidget {
                             child: IconButton(
                                 icon: SvgPicture.asset('assets/Camera.svg'),
                                 onPressed: () {
-                                  getImage("Camera");
+                                  // getImage("Camera");
                                   //    Navigator.pop(
                                   // context);
+                                  // filePIcker();
+                                  kIsWeb
+                                      ? filePIcker('ImageAndVideo')
+                                      : getImage("Camera");
+                                  print('thisIsgetImage');
                                 }),
                           ),
                           Text(
@@ -128,8 +134,9 @@ class AddAttachmentPopUp extends StatelessWidget {
                             child: IconButton(
                                 icon: SvgPicture.asset('assets/Album.svg'),
                                 onPressed: () {
-                                  filePIcker("ImageAndVideo");
-                                  // getImage("Gallery");
+                                  kIsWeb
+                                      ? filePIcker("ImageAndVideo")
+                                      : getImage("Gallery");
                                   //    Navigator.pop(
                                   // context);
                                 }),
@@ -195,7 +202,7 @@ class AddAttachmentPopUp extends StatelessWidget {
                                 }),
                           ),
                           Text(
-                            "Loction",
+                            "Location",
                             style: TextStyle(
                               color: attachmentNameColor,
                               fontSize: 14,

@@ -12,13 +12,16 @@ import 'package:vdkFlutterChat/src/routing/routes.dart';
 import 'src/constants/constant.dart';
 
 GlobalKey<ScaffoldMessengerState>? rootScaffoldMessengerKey;
- class MyHttpOverrides extends HttpOverrides{
+
+class MyHttpOverrides extends HttpOverrides {
   @override
-  HttpClient createHttpClient(SecurityContext? context){
+  HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)
-      ..badCertificateCallback = (X509Certificate cert, String host, int port)=> true;
+      ..badCertificateCallback =
+          (X509Certificate cert, String host, int port) => true;
   }
 }
+
 void main() {
   HttpOverrides.global = new MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,15 +34,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
- 
-  StreamSubscription ?subscription;
-  
+  StreamSubscription? subscription;
 
   @override
   void initState() {
     super.initState();
     rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
-   
   }
 
   @override
@@ -48,10 +48,9 @@ class _MyAppState extends State<MyApp> {
     super.dispose();
   }
 
-  
   @override
   Widget build(BuildContext context) {
-     //  SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
+    //  SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.top]);
 
     return MultiProvider(
       providers: [
@@ -76,7 +75,6 @@ class _MyAppState extends State<MyApp> {
               if (auth.loggedInStatus == Status.Authenticating)
                 return SplashScreen();
               else if (auth.loggedInStatus == Status.LoggedIn) {
-               
                 return HomeIndex();
               } else
                 return SignInScreen();

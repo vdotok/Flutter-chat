@@ -15,6 +15,7 @@ class ChatModel {
   var isGroupMessage;
   var subtype;
   var readCount;
+  var fileExtension;
   List<int?>? participantsRead;
   ChatModel(
       {this.id,
@@ -29,6 +30,7 @@ class ChatModel {
       this.isGroupMessage,
       this.subtype,
       this.readCount,
+      this.fileExtension,
       this.participantsRead});
 
   factory ChatModel.fromJson(Map<String, dynamic> json) =>

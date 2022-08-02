@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
@@ -54,11 +55,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     groupListProvider = Provider.of<GroupListProvider>(context, listen: false);
     contactProvider = Provider.of<ContactProvider>(context, listen: false);
     _mainProvider = Provider.of<MainProvider>(context, listen: false);
-  emitter.connect(
+    emitter.connect(
         clientId: authProvider.getUser!.user_id.toString(),
         reconnectivity: true,
         refID: authProvider.getUser!.ref_id,
-        authorization_token: authProvider.getUser!.authorization_token,  
+        authorization_token: authProvider.getUser!.authorization_token,
         project_id: project_id,
         host: authProvider.host,
         port: authProvider.port);
@@ -231,10 +232,17 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 message["id"] = message["messageId"];
                 groupListProvider.recevieMsg(message);
               } else {
+                print('inelseofFirst');
                 final url = await JsManager.instance!.connect(
                     base64.decode(receiptMsg["content"]),
                     receiptMsg["fileExtension"]);
-                receiptMsg["content"] = url;
+                print('thisisUrlofFile$url');
+                if (receiptMsg["type"] == MediaType.image) {
+                  var image = base64Decode(receiptMsg['content']);
+                  receiptMsg['content'] = image;
+                } else {
+                  receiptMsg["content"] = url;
+                }
                 groupListProvider.recevieMsg(receiptMsg);
               }
               Map<String, dynamic> tempData = {
@@ -271,7 +279,14 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 final url = await JsManager.instance!.connect(
                     base64.decode(message["content"]),
                     message["fileExtension"]);
-                message["content"] = url;
+                print('thisisUrlofFile$url');
+                if (message["type"] == MediaType.image) {
+                  var image = base64Decode(message['content']);
+                  message['content'] = image;
+                } else {
+                  message["content"] = url;
+                }
+                print('thisiscontentofFile${message['content']}');
                 groupListProvider.recevieMsg(message);
               }
             }
@@ -292,7 +307,15 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
             } else {
               final url = await JsManager.instance!.connect(
                   base64.decode(message["content"]), message["fileExtension"]);
-              message["content"] = url;
+
+              if (message["type"] == MediaType.image) {
+                var image = base64Decode(message['content']);
+                print('thisis Image bytes $image');
+                message['content'] = image;
+              } else {
+                message["content"] = url;
+              }
+              print('thisiscontentofFile${message['content']}');
               groupListProvider.recevieMsg(message);
             }
           }

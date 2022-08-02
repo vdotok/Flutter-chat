@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:vdkFlutterChat/src/constants/constant.dart';
+import '../../jsManager/jsManager.dart';
 import '../models/ChatModel.dart';
 import '../models/GroupListModel.dart';
 import '../models/GroupModel.dart';
@@ -168,7 +170,6 @@ class GroupListProvider with ChangeNotifier {
 
   recevieMsg(message) {
     print("this is group list ${_groupList.groups!.length}");
-
     //find the index of channel... does it exist in grouplist?
     var index = _groupList.groups!
         .indexWhere((element) => element!.channel_key == message["key"]);
@@ -194,7 +195,6 @@ class GroupListProvider with ChangeNotifier {
         }
       }
     }
-
     notifyListeners();
   }
 
@@ -253,17 +253,53 @@ class GroupListProvider with ChangeNotifier {
     }
   }
 
-  sendMsg(index, msg) {
+  sendMsg(index, msg) async {
     if (_groupList.groups![index]!.chatList == null) {
       print("this is send message $index $msg");
-
+      if (kIsWeb == true) {
+        if (msg['type'] == MediaType.image) {
+          var image = base64Decode(msg['content']);
+          print('thisisImage$image');
+          msg['content'] = image;
+        }
+        if (kIsWeb && msg['type'] == MediaType.audio) {
+          var url = await JsManager.instance!
+              .connect(base64.decode(msg["content"]), msg["fileExtension"]);
+          print('this is url on sending end $url');
+          msg['content'] = url;
+        }
+        if (msg['type'] == MediaType.video) {
+          var url = await JsManager.instance!
+              .connect(base64.decode(msg["content"]), msg["fileExtension"]);
+          print('this is url on sending end $url');
+          msg['content'] = url;
+        }
+      }
       _groupList.groups![index]!.chatList = [];
       print("thisis json ${ChatModel.fromJson(msg)}");
       _groupList.groups![index]!.chatList!.add(ChatModel.fromJson(msg));
     } else {
+      if (kIsWeb == true) {
+        if (msg['type'] == MediaType.image) {
+          var image = base64Decode(msg['content']);
+          print('thisisImage$image');
+          msg['content'] = image;
+        }
+        if (kIsWeb && msg['type'] == MediaType.audio) {
+          var url = await JsManager.instance!
+              .connect(base64.decode(msg["content"]), msg["fileExtension"]);
+          print('this is url on sending end $url');
+          msg['content'] = url;
+        }
+        if (msg['type'] == MediaType.video) {
+          var url = await JsManager.instance!
+              .connect(base64.decode(msg["content"]), msg["fileExtension"]);
+          print('this is url on sending end $url');
+          msg['content'] = url;
+        }
+      }
       _groupList.groups![index]!.chatList!.add(ChatModel.fromJson(msg));
     }
-
     notifyListeners();
   }
 
@@ -489,4 +525,12 @@ class GroupListProvider with ChangeNotifier {
       }
     }
   }
+  // void downloadFile(String url, fileName, extension) {
+  //   html.AnchorElement anchorElement = html.AnchorElement(href: url);
+  //   anchorElement.download =
+  //       fileName.toString() + '.' + extension.toString(); //in my case is .pdf
+  //   anchorElement.click();
+  //   print("this is path ${anchorElement.baseUri}");
+  //   print("this is path ${anchorElement.href.toString()}");
+  // }
 }
