@@ -117,6 +117,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                     ),
                     onPressed: () {
                       if (strArr.last == "ChatScreen") {
+                        print(
+                            "this is mainprovider back button press in chat screen ${widget.mainProvider}");
                         widget.mainProvider!.homeScreen();
                         strArr.remove("ChatScreen");
                       }

@@ -76,8 +76,8 @@ class AddAttachmentPopUp extends StatelessWidget {
                                 icon: SvgPicture.asset('assets/File.svg'),
                                 onPressed: () {
                                   filePIcker("file");
-                                  //   Navigator.pop(
-                                  // context);
+                                    Navigator.pop(
+                                  context);
                                 }),
                           ),
                           Text(
@@ -109,6 +109,8 @@ class AddAttachmentPopUp extends StatelessWidget {
                                   kIsWeb
                                       ? filePIcker('ImageAndVideo')
                                       : getImage("Camera");
+                                         Navigator.pop(
+                                  context);
                                   print('thisIsgetImage');
                                 }),
                           ),
@@ -137,8 +139,8 @@ class AddAttachmentPopUp extends StatelessWidget {
                                   kIsWeb
                                       ? filePIcker("ImageAndVideo")
                                       : getImage("Gallery");
-                                  //    Navigator.pop(
-                                  // context);
+                                     Navigator.pop(
+                                  context);
                                 }),
                           ),
                           Text(
@@ -170,8 +172,8 @@ class AddAttachmentPopUp extends StatelessWidget {
                                 icon: SvgPicture.asset('assets/Audio.svg'),
                                 onPressed: () {
                                   filePIcker("audio");
-                                  //       Navigator.pop(
-                                  // context);
+                                        Navigator.pop(
+                                  context);
 
                                   print("close icon pressed");
                                 }),

@@ -354,6 +354,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   Future<Null> refreshList() async {
+    print("here in refresh listtttt");
     setState(() {
       renderList();
       // rendersubscribe();
@@ -381,7 +382,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   void didChangeAppLifecycleState(AppLifecycleState appLifecycleState) {
-    print("this is changeapplifecyclestate");
+    print("this is changeapplifecyclestate $appLifecycleState");
 
     switch (appLifecycleState) {
       case AppLifecycleState.resumed:
