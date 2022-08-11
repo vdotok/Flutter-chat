@@ -22,7 +22,7 @@ Now run <b>"flutter doctor"</b> in <b>Terminal/Command Prompt</b>, and make sure
 3. A toast for <b>Clone</b> will appear, containing HTTPS, SSH, and GitHub CLI  information
 4. On HTTPS section, copy repository <b>URL</b> 
 5. Open <b>Terminal/Command Prompt</b> and go to the <b>Directory</b> where you want to clone the project
-6. <b>Paste</b> copied repository URL and press <b>Enter</b> 
+6. Write git clone and <b>Paste</b> copied repository URL and press <b>Enter</b> 
 
 ## VS Code Installation: 
 
