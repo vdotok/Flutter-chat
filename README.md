@@ -43,7 +43,16 @@ Now run <b>"flutter doctor"</b> in <b>Terminal/Command Prompt</b>, and make sure
 
 1. Run this link -> https://userpanel.vdotok.com/ in Chrome. A Sign in screen will appear. Please click on the Sign Up link, as shown below: 
 
-![2](https://user-images.githubusercontent.com/86484384/139055385-c14b148c-b056-4065-9482-249c134f5651.jpg)
+![2](https://user-images.githubusercontent.com/87179594/184070841-f9b91f46-93df-4047-acfb-4739fd207aaa.jpg)
+!(https://user-images.githubusercontent.com/87179594/184070980-92e4ef0e-923f-4597-a118-dd2d661a99dc.jpg)
+!(https://user-images.githubusercontent.com/87179594/184070989-e8b26d85-6e64-4ef3-b6d7-56449738236c.jpg)
+!(https://user-images.githubusercontent.com/87179594/184070997-3247f0e0-3f6a-42fb-90cd-2d087bb25e1e.jpg)
+!(https://user-images.githubusercontent.com/87179594/184071006-9dc41271-1455-4215-99f8-14921dbe181a.jpg)
+!(https://user-images.githubusercontent.com/87179594/184071015-17165a2f-607a-4f9f-9dc5-1ba5fd3b935a.jpg)
+!(https://user-images.githubusercontent.com/87179594/184071023-8c9c02f9-c473-48e5-89b6-43399c26fa6f.jpg)
+
+!(https://user-images.githubusercontent.com/87179594/184071053-df6bd93e-ed00-46fe-9495-8d990a0ac5e9.jpg)
+!(https://user-images.githubusercontent.com/87179594/184071060-9909513b-f880-4de8-9481-6ab91ae2be95.jpg)
 
 * This will navigate to Sign Up page, where the User is required to enter the following information: <b>First Name > Last Name > Email ID > Password </b>
 
@@ -108,7 +117,8 @@ Now run <b>"flutter doctor"</b> in <b>Terminal/Command Prompt</b>, and make sure
 4. Select <b>Next</b> button
 ![MicrosoftTeams-image (2)](https://user-images.githubusercontent.com/86484384/139231712-f94b1e76-fda8-435a-9284-ccc09e4d9d96.jpg)
 
-5. Enter <b>Verification Code</b>
+5. Enter <b>Verification Code</b>![Uploading New Project (12).jpg…]()
+
 6. Select <b>Continue</b> button
 <img width="442" alt="MicrosoftTeams-image (3)" src="https://user-images.githubusercontent.com/86484384/139232081-ba1d8eed-2075-4cac-84f0-b1c3083e3079.png">
 
