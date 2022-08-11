@@ -43,15 +43,13 @@ Now run <b>"flutter doctor"</b> in <b>Terminal/Command Prompt</b>, and make sure
 
 1. Run this link -> https://vdotok.com/ in Chrome. A screen will appear. Please click on the Login link, as shown below: 
 
-![1]https://user-images.githubusercontent.com/87179594/184070841-f9b91f46-93df-4047-acfb-4739fd207aaa.jpg
+![1](https://user-images.githubusercontent.com/87179594/184070841-f9b91f46-93df-4047-acfb-4739fd207aaa.jpg)
 
-
-
-* This will navigate to Login page, where the User is required to enter the following information: <b>Email > Password. If User does not have any account then follow Sign up here link, as shown below </b>
+* This will navigate to Login page, where the User is required to enter the following information: <b>Email > Password.</b> If User does not have any account then follow Sign up here link, as shown below </b>
 
 ![2](https://user-images.githubusercontent.com/87179594/184070980-92e4ef0e-923f-4597-a118-dd2d661a99dc.jpg) 
 
-* This will navigate to Sign Up page, where the User is required to enter the following information: <b>First Name > Last Name > Email > Country > Password. Select <b>Sign Up For Free</b> button </b>
+* This will navigate to Sign Up page, where the User is required to enter the following information: <b>First Name > Last Name > Email > Country > Password.</b>Select <b>Sign Up For Free</b> button </b>
 
 ![3](https://user-images.githubusercontent.com/87179594/184070989-e8b26d85-6e64-4ef3-b6d7-56449738236c.jpg) 
 
