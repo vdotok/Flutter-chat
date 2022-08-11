@@ -44,15 +44,15 @@ Now run <b>"flutter doctor"</b> in <b>Terminal/Command Prompt</b>, and make sure
 1. Run this link -> https://userpanel.vdotok.com/ in Chrome. A Sign in screen will appear. Please click on the Sign Up link, as shown below: 
 
 ![2](https://user-images.githubusercontent.com/87179594/184070841-f9b91f46-93df-4047-acfb-4739fd207aaa.jpg)
-!(https://user-images.githubusercontent.com/87179594/184070980-92e4ef0e-923f-4597-a118-dd2d661a99dc.jpg)
-!(https://user-images.githubusercontent.com/87179594/184070989-e8b26d85-6e64-4ef3-b6d7-56449738236c.jpg)
-!(https://user-images.githubusercontent.com/87179594/184070997-3247f0e0-3f6a-42fb-90cd-2d087bb25e1e.jpg)
-!(https://user-images.githubusercontent.com/87179594/184071006-9dc41271-1455-4215-99f8-14921dbe181a.jpg)
-!(https://user-images.githubusercontent.com/87179594/184071015-17165a2f-607a-4f9f-9dc5-1ba5fd3b935a.jpg)
-!(https://user-images.githubusercontent.com/87179594/184071023-8c9c02f9-c473-48e5-89b6-43399c26fa6f.jpg)
+![3](https://user-images.githubusercontent.com/87179594/184070980-92e4ef0e-923f-4597-a118-dd2d661a99dc.jpg)
+![4](https://user-images.githubusercontent.com/87179594/184070989-e8b26d85-6e64-4ef3-b6d7-56449738236c.jpg)
+![5](https://user-images.githubusercontent.com/87179594/184070997-3247f0e0-3f6a-42fb-90cd-2d087bb25e1e.jpg)
+![6](https://user-images.githubusercontent.com/87179594/184071006-9dc41271-1455-4215-99f8-14921dbe181a.jpg)
+![7](https://user-images.githubusercontent.com/87179594/184071015-17165a2f-607a-4f9f-9dc5-1ba5fd3b935a.jpg)
+![8](https://user-images.githubusercontent.com/87179594/184071023-8c9c02f9-c473-48e5-89b6-43399c26fa6f.jpg)
 
-!(https://user-images.githubusercontent.com/87179594/184071053-df6bd93e-ed00-46fe-9495-8d990a0ac5e9.jpg)
-!(https://user-images.githubusercontent.com/87179594/184071060-9909513b-f880-4de8-9481-6ab91ae2be95.jpg)
+![9](https://user-images.githubusercontent.com/87179594/184071053-df6bd93e-ed00-46fe-9495-8d990a0ac5e9.jpg)
+![10](https://user-images.githubusercontent.com/87179594/184071060-9909513b-f880-4de8-9481-6ab91ae2be95.jpg)
 
 * This will navigate to Sign Up page, where the User is required to enter the following information: <b>First Name > Last Name > Email ID > Password </b>
 
