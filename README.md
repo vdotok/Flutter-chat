@@ -163,5 +163,4 @@ https://developer.android.com/studio/debug/dev-options
 
 After connecting your phone, run the following command in <b>Project Directory -> "flutter run"</b>. If this command runs successfully, then following screen will display on mobile phone.
 
-
-               ![(24)](https://user-images.githubusercontent.com/87179594/184534666-f6b2c50b-b186-4c05-9874-6203254dd769.jpg)
+![New Project (23)](https://user-images.githubusercontent.com/87179594/184534873-b6c1836a-89a3-4567-98ae-913ea0a97d8d.jpg)
