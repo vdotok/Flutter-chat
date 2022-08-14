@@ -32,7 +32,9 @@ Now run <b>"flutter doctor"</b> in <b>Terminal/Command Prompt</b>, and make sure
 ## Project Run Steps:
 
 1. Open Project in <b>VS Code</b>
-2. Open <b>Terminal</b> and go to <b>Project Directory</b> and run <b>“flutter pub get”</b>
+2. Open <b>Terminal</b> and go to <b>Project Directory</b> and run <b>“flutter pub get”. If this command runs successfully, then a success message <b>(exit code 0)</b> will display, as shown below:</b>
+
+![18](https://user-images.githubusercontent.com/87179594/184533024-3a4eb249-4ab0-41a2-b55e-27d42c66df89.jpg)
 
 
 ## SDK Authentication: 
@@ -159,4 +161,6 @@ https://developer.android.com/studio/debug/dev-options
 
 ## Build Project: 
 
-After connecting your phone, run the following command in <b>Project Directory -> "flutter run"</b>
+After connecting your phone, run the following command in <b>Project Directory -> "flutter run"</b>. If this command runs successfully, then following screen will display on mobile phone.
+
+![17](https://user-images.githubusercontent.com/87179594/184534112-ca844592-5a7b-47df-94e3-5b78d6f7fa06.jpg)
