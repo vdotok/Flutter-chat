@@ -194,6 +194,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
             }
           }
           break;
+        case MessageType.sensory:
+          {}
+          break;
 
         default:
           {

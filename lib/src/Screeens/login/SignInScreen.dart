@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:vdotok_wear/vdotok_wear.dart';
 import '../../common/ReusableButton.dart';
 import '../../common/loadingButton.dart';
 import '../../core/providers/auth.dart';
@@ -21,7 +22,13 @@ class _SignInScreenState extends State<SignInScreen> {
   final GlobalKey<FormState> _loginformkey = GlobalKey<FormState>();
   bool _autoValidate = false;
 
+  static const channel = const MethodChannel('myWatchChannel');
+  int _counter = 0;
+
   handlePress() async {
+    // VdotokFactory vdotokFactory = VdotokFactory();
+    // vdotokFactory.getHeartRate();
+
     if (_loginformkey.currentState!.validate()) {
       AuthProvider auth = Provider.of<AuthProvider>(context, listen: false);
       await auth.login(_emailController.text, _passwordController.text);

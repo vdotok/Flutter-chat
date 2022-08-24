@@ -10,6 +10,7 @@ import 'package:vdkFlutterChat/src/Screeens/splash/splash.dart';
 import 'package:vdkFlutterChat/src/constants/constant.dart';
 import 'package:vdkFlutterChat/src/core/providers/auth.dart';
 import 'package:vdkFlutterChat/src/routing/routes.dart';
+import 'package:vdotok_wear/vdotok_wear.dart';
 import 'src/constants/constant.dart';
 
 GlobalKey<ScaffoldMessengerState>? rootScaffoldMessengerKey;

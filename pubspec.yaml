@@ -24,7 +24,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   page_transition: ^2.0.5
   shared_preferences: ^2.0.5
-  http: ^0.13.4
+  # http: ^0.13.4
   json_annotation: ^4.5.0
   provider: ^5.0.0
   device_info: ^2.0.0
@@ -43,7 +43,8 @@ dependencies:
   open_file: ^3.2.1
   vdotok_connect: "0.0.7"
   video_player: ^2.4.5
-   #path: ../flutter-sdk-connect/
+  vdotok_wear:
+   path: ../../flutter_wear_sdk/
   
 dev_dependencies:
   flutter_test:

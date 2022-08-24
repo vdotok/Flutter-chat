@@ -13,6 +13,7 @@ import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 // import 'package:vdkFlutterChat/src/Screeens/groupChatScreen/VideoApp.dart';
 import 'package:vdkFlutterChat/src/Screeens/groupChatScreen/VideoScreenweb.dart';
+import 'package:vdkFlutterChat/src/Screeens/groupChatScreen/sensoryDialogBox/SensoryDialogBox.dart';
 import 'package:vdkFlutterChat/src/Screeens/home/home.dart';
 import 'package:vdkFlutterChat/src/core/providers/contact_provider.dart';
 import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
@@ -128,6 +129,8 @@ class _ChatScreenState extends State<ChatScreen> {
     // //   pickedFile= await
     //    if(src=="Audio Recording")
   }
+
+  getSensoryData(String type) {}
 
 //   _init() async {
 //     try {
@@ -1750,6 +1753,15 @@ class _ChatScreenState extends State<ChatScreen> {
                                     );
                                   });
                                 });
+                          },
+                        ),
+                      ),
+                      Container(
+                        child: IconButton(
+                          icon: Material(
+                              child: SvgPicture.asset('assets/AddCircle.svg')),
+                          onPressed: () {
+                            sensoryDialogBox(context, getSensoryData);
                           },
                         ),
                       ),

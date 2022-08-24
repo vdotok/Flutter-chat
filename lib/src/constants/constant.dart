@@ -95,6 +95,7 @@ class MessageType {
   static const String thumbnail = "thumbnail";
   static const String path = "path";
   static const String typing = "typing";
+  static const String sensory = "sensory";
 }
 
 //Google API key for auto places

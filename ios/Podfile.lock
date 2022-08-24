@@ -6,6 +6,8 @@ PODS:
     - ReachabilitySwift
   - device_info (0.0.1):
     - Flutter
+  - device_info_plus (0.0.1):
+    - Flutter
   - DKImagePickerController/Core (4.3.4):
     - DKImagePickerController/ImageDataManager
     - DKImagePickerController/Resource
@@ -44,6 +46,7 @@ PODS:
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
+  - FlutterVdotokWear (0.0.9)
   - image_picker_ios (0.0.1):
     - Flutter
   - open_file (0.0.1):
@@ -60,6 +63,8 @@ PODS:
   - Toast (4.0.0)
   - vdotok_connect (0.0.1):
     - Flutter
+  - vdotok_wear (0.0.1):
+    - Flutter
   - video_player_avfoundation (0.0.1):
     - Flutter
 
@@ -67,20 +72,24 @@ DEPENDENCIES:
   - audioplayers (from `.symlinks/plugins/audioplayers/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
+  - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
+  - FlutterVdotokWear (= 0.0.9)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - open_file (from `.symlinks/plugins/open_file/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
   - vdotok_connect (from `.symlinks/plugins/vdotok_connect/ios`)
+  - vdotok_wear (from `.symlinks/plugins/vdotok_wear/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/ios`)
 
 SPEC REPOS:
   trunk:
     - DKImagePickerController
     - DKPhotoGallery
+    - FlutterVdotokWear
     - ReachabilitySwift
     - SDWebImage
     - SwiftyGif
@@ -93,6 +102,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/connectivity_plus/ios"
   device_info:
     :path: ".symlinks/plugins/device_info/ios"
+  device_info_plus:
+    :path: ".symlinks/plugins/device_info_plus/ios"
   file_picker:
     :path: ".symlinks/plugins/file_picker/ios"
   Flutter:
@@ -109,6 +120,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences_ios/ios"
   vdotok_connect:
     :path: ".symlinks/plugins/vdotok_connect/ios"
+  vdotok_wear:
+    :path: ".symlinks/plugins/vdotok_wear/ios"
   video_player_avfoundation:
     :path: ".symlinks/plugins/video_player_avfoundation/ios"
 
@@ -116,11 +129,13 @@ SPEC CHECKSUMS:
   audioplayers: 455322b54050b30ea4b1af7cd9e9d105f74efa8c
   connectivity_plus: 413a8857dd5d9f1c399a39130850d02fe0feaf7e
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
+  device_info_plus: e5c5da33f982a436e103237c0c85f9031142abed
   DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
   file_picker: 817ab1d8cd2da9d2da412a417162deee3500fc95
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
+  FlutterVdotokWear: cf524487542510fe0337dd52b00b548501226e29
   image_picker_ios: b786a5dcf033a8336a657191401bfdf12017dabb
   open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
   path_provider_ios: 7d7ce634493af4477d156294792024ec3485acd5
@@ -130,8 +145,9 @@ SPEC CHECKSUMS:
   SwiftyGif: 6c3eafd0ce693cad58bb63d2b2fb9bacb8552780
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   vdotok_connect: 5ab811d5d2bb898613e45221af58378c6ecc8cf9
+  vdotok_wear: c989c6203d235bf43956ae30b5b621afb5c2939a
   video_player_avfoundation: e489aac24ef5cf7af82702979ed16f2a5ef84cff
 
-PODFILE CHECKSUM: 775997f741c536251164e3eacf6e34abf2eb7a17
+PODFILE CHECKSUM: 65a5b74de2d4d7bd51dbb8564481c0b4f0859127
 
-COCOAPODS: 1.10.1
+COCOAPODS: 1.11.3
