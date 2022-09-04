@@ -98,6 +98,13 @@ class MessageType {
   static const String sensory = "sensory";
 }
 
+const Map<String, String> sensors = {
+  "sc": "StepCounts",
+  "hr": "HeartRate",
+  "bo": "BloodOxygen",
+  "ob": "OffBody"
+};
+
 //Google API key for auto places
 //copied from internet
 // const places_API_key = 'AIzaSyAJUDV0OFr87xCIz-fb9AwirXBl3X1nvIc';

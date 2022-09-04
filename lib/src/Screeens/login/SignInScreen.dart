@@ -27,7 +27,9 @@ class _SignInScreenState extends State<SignInScreen> {
 
   handlePress() async {
     // VdotokFactory vdotokFactory = VdotokFactory();
-    // vdotokFactory.getHeartRate();
+    // vdotokFactory.getHeartRate().then((value) {
+    //   print('this is value skdkdkdkdkd $value');
+    // });
 
     if (_loginformkey.currentState!.validate()) {
       AuthProvider auth = Provider.of<AuthProvider>(context, listen: false);

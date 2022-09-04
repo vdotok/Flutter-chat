@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:email_validator/email_validator.dart';
 // import 'package:audioplayers/audioplayers.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
@@ -130,7 +131,37 @@ class _ChatScreenState extends State<ChatScreen> {
     //    if(src=="Audio Recording")
   }
 
-  getSensoryData(String type) {}
+  getSensoryData(String type, GroupListProvider groupListProvider, index) {
+    print("$type   $index    $groupListProvider");
+    var send_message = {
+      "from": authProvider.getUser!.ref_id,
+      "content": type,
+      "id":
+          generateMd5(groupListProvider.groupList.groups![index]!.channel_key),
+      "key": groupListProvider.groupList.groups![index]!.channel_key,
+      "type": MessageType.sensory,
+      "to": groupListProvider.groupList.groups![index]!.channel_name,
+      "isGroupMessage": false,
+      "date": ((DateTime.now()).millisecondsSinceEpoch).round(),
+      "status": ReceiptType.sent,
+      "size": 0.0,
+      "channel_key": groupListProvider.groupList.groups![index]!.channel_key,
+      "channel_name": groupListProvider.groupList.groups![index]!.channel_name
+    };
+
+    // if (messageController.text.isNotEmpty &&
+    //     messageController.text.trim().length != 0) {
+    //   print("This is group chat publish: dsjfjds");
+    widget.publishMessage(
+        groupListProvider.groupList.groups![index]!.channel_key,
+        groupListProvider.groupList.groups![index]!.channel_name,
+        send_message);
+    //FOR SCROLLING TO END
+    groupListProvider.sendMsg(index, send_message);
+
+    // messageController.clear();
+    // }
+  }
 
 //   _init() async {
 //     try {
@@ -1456,58 +1487,76 @@ class _ChatScreenState extends State<ChatScreen> {
                                               ),
                                             ),
                                     ))
-                                :
-                                //for file
-                                InkWell(
-                                    onTap: () {
-                                      print("i am opening file5");
+                                : groupListProvider.groupList.groups![index]!
+                                            .chatList![chatindex]!.type ==
+                                        MessageType.sensory
+                                    ? Container(
+                                        padding: EdgeInsets.only(
+                                            top: 16,
+                                            bottom: 16,
+                                            left: 20,
+                                            right: 20),
+                                        child: Text(
+                                          "Request sent for ${sensors[groupListProvider.groupList.groups![index]!.chatList![chatindex]!.content]}",
+                                          textAlign: TextAlign.left,
+                                          style: TextStyle(
+                                            color: sendMessageColoer,
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      )
+                                    :
+                                    //for file
+                                    InkWell(
+                                        onTap: () {
+                                          print("i am opening file5");
 
-                                      OpenFile.open(
-                                        groupListProvider
-                                            .groupList
-                                            .groups![index]!
-                                            .chatList![chatindex]!
-                                            .content
-                                            .path,
-                                      );
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.only(
-                                          top: 16,
-                                          bottom: 16,
-                                          left: 20,
-                                          right: 20),
-                                      child: kIsWeb
-                                          ? Text(
-                                              groupListProvider
-                                                  .groupList
-                                                  .groups![index]!
-                                                  .chatList![chatindex]!
-                                                  .fileExtension,
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                color: sendMessageColoer,
-                                                fontSize: 14,
-                                              ),
-                                            )
-                                          : Text(
-                                              groupListProvider
-                                                  .groupList
-                                                  .groups![index]!
-                                                  .chatList![chatindex]!
-                                                  .content
-                                                  .path
-                                                  .toString()
-                                                  .split("/")
-                                                  .last,
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                color: sendMessageColoer,
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                    ),
-                                  ),
+                                          OpenFile.open(
+                                            groupListProvider
+                                                .groupList
+                                                .groups![index]!
+                                                .chatList![chatindex]!
+                                                .content
+                                                .path,
+                                          );
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.only(
+                                              top: 16,
+                                              bottom: 16,
+                                              left: 20,
+                                              right: 20),
+                                          child: kIsWeb
+                                              ? Text(
+                                                  groupListProvider
+                                                      .groupList
+                                                      .groups![index]!
+                                                      .chatList![chatindex]!
+                                                      .fileExtension,
+                                                  textAlign: TextAlign.left,
+                                                  style: TextStyle(
+                                                    color: sendMessageColoer,
+                                                    fontSize: 14,
+                                                  ),
+                                                )
+                                              : Text(
+                                                  groupListProvider
+                                                      .groupList
+                                                      .groups![index]!
+                                                      .chatList![chatindex]!
+                                                      .content
+                                                      .path
+                                                      .toString()
+                                                      .split("/")
+                                                      .last,
+                                                  textAlign: TextAlign.left,
+                                                  style: TextStyle(
+                                                    color: sendMessageColoer,
+                                                    fontSize: 14,
+                                                  ),
+                                                ),
+                                        ),
+                                      ),
               ),
             ),
           ]),
@@ -1761,7 +1810,8 @@ class _ChatScreenState extends State<ChatScreen> {
                           icon: Material(
                               child: SvgPicture.asset('assets/AddCircle.svg')),
                           onPressed: () {
-                            sensoryDialogBox(context, getSensoryData);
+                            sensoryDialogBox(context, getSensoryData, index,
+                                groupListProvider);
                           },
                         ),
                       ),

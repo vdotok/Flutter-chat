@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "New Project.png",
       "idiom" : "watch",
       "role" : "notificationCenter",
       "scale" : "2x",
@@ -69,6 +70,7 @@
       "subtype" : "45mm"
     },
     {
+      "filename" : "New Project (1).png",
       "idiom" : "watch",
       "role" : "quickLook",
       "scale" : "2x",

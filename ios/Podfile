@@ -40,10 +40,10 @@ end
 #  end
  #
  #
- target 'FlutterWear WatchKit Extension' do
-   platform :watchos, '6.0'
-   pod 'FlutterVdotokWear', '0.0.9'
- end
+# target 'FlutterWear WatchKit Extension' do
+#   platform :watchos, '6.0'
+#   pod 'FlutterVdotokWear', '0.0.11'
+# end
 
 # post_install do |installer|
 #   installer.pods_project.targets.each do |target|

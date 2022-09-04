@@ -17,6 +17,7 @@ import 'package:vdkFlutterChat/src/core/config/config.dart';
 import 'package:vdkFlutterChat/src/core/providers/contact_provider.dart';
 import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
 import 'package:vdotok_connect/vdotok_connect.dart';
+import 'package:vdotok_wear/vdotok_wear.dart';
 import '../../../main.dart';
 import '../home/CustomAppBar.dart';
 import '../splash/splash.dart';
@@ -42,6 +43,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   bool isSocketConnect = true;
   late MainProvider _mainProvider;
   late ContactProvider contactProvider;
+  VdotokFactory vdotokFactory = VdotokFactory();
 
   List<Uint8List> listOfChunks = [];
   late Map<String, dynamic> header;
@@ -195,7 +197,91 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           }
           break;
         case MessageType.sensory:
-          {}
+          {
+            if (authProvider.getUser!.ref_id != message["from"]) {
+              var sendData = message;
+              print("this is sensoryData ");
+              if (message["content"] == "hr") {
+                vdotokFactory.getHeartRate().then((value) {
+                  print("this is value $value");
+                  Map<String, dynamic> data = json.decode(value);
+                  if (data["message"] != null) {
+                    // permissions not granted
+                    sendData["from"] = authProvider.getUser!.ref_id;
+                    sendData["content"] = data["message"];
+                    sendData["type"] = MessageType.text;
+                    print("this is data to send back $sendData");
+                    emitter.publish(sendData["channel_key"],
+                        sendData["channel_name"], sendData);
+                  } else {
+                    print("This is key ${data.keys.first}");
+                    sendData["from"] = authProvider.getUser!.ref_id;
+                    sendData["content"] =
+                        "${sensors[data.keys.first]} ${data[data.keys.first]}";
+                    sendData["type"] = MessageType.text;
+                    print("this is data to send back $sendData");
+                    emitter.publish(sendData["channel_key"],
+                        sendData["channel_name"], sendData);
+                  }
+                  // if()
+
+                  // replyBack = message
+                }).catchError((onError) {
+                  print("this is error on sensorydata get $onError");
+                });
+              } else if (message["content"] == "bo") {
+                vdotokFactory.getBloodOxygen().then((value) {
+                  Map<String, dynamic> data = json.decode(value);
+                  if (data["message"] != null) {
+                    // permissions not granted
+                    sendData["from"] = authProvider.getUser!.ref_id;
+                    sendData["content"] = data["message"];
+                    sendData["type"] = MessageType.text;
+                    print("this is data to send back $sendData");
+                    emitter.publish(sendData["channel_key"],
+                        sendData["channel_name"], sendData);
+                  } else {
+                    print("This is key ${data.keys.first}");
+                    sendData["from"] = authProvider.getUser!.ref_id;
+                    sendData["content"] =
+                        "${sensors[data.keys.first]} ${data[data.keys.first]}";
+                    sendData["type"] = MessageType.text;
+                    print("this is data to send back $sendData");
+                    emitter.publish(sendData["channel_key"],
+                        sendData["channel_name"], sendData);
+                  }
+                }).catchError((onError) {
+                  print("this is error on sensorydata get $onError");
+                });
+              } else if (message["content"] == "sc") {
+                vdotokFactory.getStepCounts().then((value) {
+                  Map<String, dynamic> data = json.decode(value);
+                  if (data["message"] != null) {
+                    // permissions not granted
+                    sendData["from"] = authProvider.getUser!.ref_id;
+                    sendData["content"] = data["message"];
+                    sendData["type"] = MessageType.text;
+                    print("this is data to send back $sendData");
+                    emitter.publish(sendData["channel_key"],
+                        sendData["channel_name"], sendData);
+                  } else {
+                    print("This is key ${data.keys.first}");
+                    sendData["from"] = authProvider.getUser!.ref_id;
+                    sendData["content"] =
+                        "${sensors[data.keys.first]} ${data[data.keys.first]}";
+                    sendData["type"] = MessageType.text;
+                    print("this is data to send back $sendData");
+                    emitter.publish(sendData["channel_key"],
+                        sendData["channel_name"], sendData);
+                  }
+                }).catchError((onError) {
+                  print("this is error on sensorydata get $onError");
+                });
+              } else if (message["content"] == "ob") {
+                // vdotokFactory.is();
+              } else {}
+            }
+          }
           break;
 
         default:
