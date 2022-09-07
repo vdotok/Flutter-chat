@@ -253,6 +253,11 @@ class GroupListProvider with ChangeNotifier {
     }
   }
 
+  getIndexofGroup(key) {
+    return _groupList.groups!
+        .indexWhere((element) => element?.channel_key == key);
+  }
+
   sendMsg(index, msg) async {
     if (_groupList.groups![index]!.chatList == null) {
       print("this is send message $index $msg");

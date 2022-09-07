@@ -198,6 +198,48 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           break;
         case MessageType.sensory:
           {
+            //For Chat Messages
+            if (authProvider.getUser!.ref_id != message["from"]) {
+              if (groupListProvider.currentOpendChat != null) {
+                if (groupListProvider.currentOpendChat!.channel_key ==
+                    message["key"]) {
+                  print("samee channel oppeened");
+                  Map<String, dynamic> receiptMsg = message;
+                  receiptMsg["status"] = ReceiptType.seen;
+                  Map<String, dynamic> tempData = {
+                    "date": ((DateTime.now()).millisecondsSinceEpoch).round(),
+                    "from": authProvider.getUser!.ref_id,
+                    "key": message["key"],
+                    "messageId": message["id"],
+                    "receiptType": ReceiptType.seen,
+                    "to": message["to"],
+                    // "content": utf8.decode((message["content"].toString().codeUnits))
+                  };
+                  receiptMsg["type"] = MessageType.text;
+                  // receiptMsg["content"] =
+                  //     "Requested sensor is ${sensors[receiptMsg["content"]]}";
+
+                  groupListProvider.recevieMsg(receiptMsg);
+                  emitter.publish(
+                      groupListProvider.currentOpendChat!.channel_key,
+                      groupListProvider.currentOpendChat!.channel_name,
+                      tempData);
+                } else {
+                  groupListProvider.recevieMsg(message);
+                }
+              } else {
+                var t = message;
+                t["type"] = MessageType.text;
+                print("this is eelsee");
+                groupListProvider.recevieMsg(t);
+              }
+            } else {
+              // here i'm getting my delivered message
+              groupListProvider.changeMsgStatusToDelivered(
+                  message, ReceiptType.delivered);
+            }
+
+            //To get Sensory Data
             if (authProvider.getUser!.ref_id != message["from"]) {
               var sendData = message;
               print("this is sensoryData ");
@@ -213,6 +255,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     print("this is data to send back $sendData");
                     emitter.publish(sendData["channel_key"],
                         sendData["channel_name"], sendData);
+                    groupListProvider.sendMsg(
+                        groupListProvider
+                            .getIndexofGroup(sendData["channel_key"]),
+                        sendData);
                   } else {
                     print("This is key ${data.keys.first}");
                     sendData["from"] = authProvider.getUser!.ref_id;
@@ -222,6 +268,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     print("this is data to send back $sendData");
                     emitter.publish(sendData["channel_key"],
                         sendData["channel_name"], sendData);
+                    groupListProvider.sendMsg(
+                        groupListProvider
+                            .getIndexofGroup(sendData["channel_key"]),
+                        sendData);
                   }
                   // if()
 
@@ -240,6 +290,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     print("this is data to send back $sendData");
                     emitter.publish(sendData["channel_key"],
                         sendData["channel_name"], sendData);
+
+                    groupListProvider.sendMsg(
+                        groupListProvider
+                            .getIndexofGroup(sendData["channel_key"]),
+                        sendData);
                   } else {
                     print("This is key ${data.keys.first}");
                     sendData["from"] = authProvider.getUser!.ref_id;
@@ -249,6 +304,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     print("this is data to send back $sendData");
                     emitter.publish(sendData["channel_key"],
                         sendData["channel_name"], sendData);
+                    groupListProvider.sendMsg(
+                        groupListProvider
+                            .getIndexofGroup(sendData["channel_key"]),
+                        sendData);
                   }
                 }).catchError((onError) {
                   print("this is error on sensorydata get $onError");
@@ -264,6 +323,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     print("this is data to send back $sendData");
                     emitter.publish(sendData["channel_key"],
                         sendData["channel_name"], sendData);
+                    groupListProvider.sendMsg(
+                        groupListProvider
+                            .getIndexofGroup(sendData["channel_key"]),
+                        sendData);
                   } else {
                     print("This is key ${data.keys.first}");
                     sendData["from"] = authProvider.getUser!.ref_id;
@@ -273,12 +336,50 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     print("this is data to send back $sendData");
                     emitter.publish(sendData["channel_key"],
                         sendData["channel_name"], sendData);
+                    groupListProvider.sendMsg(
+                        groupListProvider
+                            .getIndexofGroup(sendData["channel_key"]),
+                        sendData);
                   }
                 }).catchError((onError) {
                   print("this is error on sensorydata get $onError");
                 });
               } else if (message["content"] == "ob") {
-                // vdotokFactory.is();
+                if (!kIsWeb) {
+                  if (Platform.isAndroid) {
+                    vdotokFactory.getOffBody().then((value) {
+                      Map<String, dynamic> data = json.decode(value);
+                      if (data["message"] != null) {
+                        // permissions not granted
+                        sendData["from"] = authProvider.getUser!.ref_id;
+                        sendData["content"] = data["message"];
+                        sendData["type"] = MessageType.text;
+                        print("this is data to send back $sendData");
+                        emitter.publish(sendData["channel_key"],
+                            sendData["channel_name"], sendData);
+                        groupListProvider.sendMsg(
+                            groupListProvider
+                                .getIndexofGroup(sendData["channel_key"]),
+                            sendData);
+                      } else {
+                        print("This is key ${data.keys.first}");
+                        sendData["from"] = authProvider.getUser!.ref_id;
+                        sendData["content"] =
+                            "${sensors[data.keys.first]} ${data[data.keys.first]}";
+                        sendData["type"] = MessageType.text;
+                        print("this is data to send back $sendData");
+                        emitter.publish(sendData["channel_key"],
+                            sendData["channel_name"], sendData);
+                        groupListProvider.sendMsg(
+                            groupListProvider
+                                .getIndexofGroup(sendData["channel_key"]),
+                            sendData);
+                      }
+                    }).catchError((onError) {
+                      print("this is error on sensorydata get $onError");
+                    });
+                  }
+                }
               } else {}
             }
           }

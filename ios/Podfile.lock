@@ -46,6 +46,7 @@ PODS:
   - fluttertoast (0.0.2):
     - Flutter
     - Toast
+  - FlutterVdotokWear (0.0.13)
   - image_picker_ios (0.0.1):
     - Flutter
   - open_file (0.0.1):
@@ -75,6 +76,7 @@ DEPENDENCIES:
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - Flutter (from `Flutter`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
+  - FlutterVdotokWear (= 0.0.13)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - open_file (from `.symlinks/plugins/open_file/ios`)
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
@@ -87,6 +89,7 @@ SPEC REPOS:
   trunk:
     - DKImagePickerController
     - DKPhotoGallery
+    - FlutterVdotokWear
     - ReachabilitySwift
     - SDWebImage
     - SwiftyGif
@@ -132,6 +135,7 @@ SPEC CHECKSUMS:
   file_picker: 817ab1d8cd2da9d2da412a417162deee3500fc95
   Flutter: 50d75fe2f02b26cc09d224853bb45737f8b3214a
   fluttertoast: 6122fa75143e992b1d3470f61000f591a798cc58
+  FlutterVdotokWear: 9ce78c20dd570f31ec20674ac34f1192b2982303
   image_picker_ios: b786a5dcf033a8336a657191401bfdf12017dabb
   open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
   path_provider_ios: 7d7ce634493af4477d156294792024ec3485acd5
@@ -144,6 +148,6 @@ SPEC CHECKSUMS:
   vdotok_wear: c989c6203d235bf43956ae30b5b621afb5c2939a
   video_player_avfoundation: e489aac24ef5cf7af82702979ed16f2a5ef84cff
 
-PODFILE CHECKSUM: 0d86f09d29535b3e4f00f2dec3ad85e25d518d95
+PODFILE CHECKSUM: 4f67c18b7840473581887a0a8a306376c6a0d2ec
 
 COCOAPODS: 1.11.3
