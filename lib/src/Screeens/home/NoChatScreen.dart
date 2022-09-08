@@ -26,7 +26,7 @@ class NoChatScreen extends StatelessWidget {
       this.handlePress})
       : super(key: key);
 
-  final GroupListProvider ?groupListProvider;
+  final GroupListProvider? groupListProvider;
   final AuthProvider? authProvider;
   final Emitter emitter;
   final refreshList;
@@ -105,7 +105,7 @@ class NoChatScreen extends StatelessWidget {
                                   width: 3,
                                 ),
                               ),
-                              child: FlatButton(
+                              child: TextButton(
                                 onPressed: () {
                                   mainProvider?.createIndividualGroupScreen();
                                 },
@@ -142,7 +142,7 @@ class NoChatScreen extends StatelessWidget {
                         ),
                       ),
                       child: Center(
-                          child: FlatButton(
+                          child: TextButton(
                         onPressed: refreshList,
                         child: Text(
                           "Refresh",
@@ -162,7 +162,7 @@ class NoChatScreen extends StatelessWidget {
                   children: [
                     SizedBox(
                         width: 105,
-                        child: FlatButton(
+                        child: TextButton(
                           onPressed: () {
                             authProvider!.logout();
                             emitter.disconnect();

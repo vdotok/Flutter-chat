@@ -127,7 +127,8 @@ class GroupListProvider with ChangeNotifier {
   handlePresence(data) {
     //print("this is the list ${_readmodelList.length}");
     //  _readmodelList.clear();
-    print("presence in provider ${data["who"].length}  ${data}");
+    print('this is presence data $data');
+    print("presence in provider ${data["who"].length}${data}");
     if (data["event"] == "status") {
       data["who"].forEach((e) {
         print("this is each ${e["username"]}");
