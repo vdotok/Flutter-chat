@@ -76,8 +76,8 @@ class AddAttachmentPopUp extends StatelessWidget {
                                 icon: SvgPicture.asset('assets/File.svg'),
                                 onPressed: () {
                                   filePIcker("file");
-                                    Navigator.pop(
-                                  context);
+                                  //   Navigator.pop(
+                                  // context);
                                 }),
                           ),
                           Text(

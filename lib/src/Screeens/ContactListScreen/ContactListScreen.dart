@@ -402,11 +402,27 @@ class _ContactListScreenState extends State<ContactListScreen> {
 
                                                         if (res[
                                                             "is_already_created"]) {
+                                                          if (strArr.last ==
+                                                              "CreateIndividualGroup") {
+                                                            strArr.remove(
+                                                                "CreateIndividualGroup");
+                                                          } else {
+                                                            strArr.remove(
+                                                                "CreateGroupChat");
+                                                          }
                                                           widget.mainProvider
                                                               .chatScreen(
                                                                   index:
                                                                       channelIndex);
                                                         } else {
+                                                          if (strArr.last ==
+                                                              "CreateIndividualGroup") {
+                                                            strArr.remove(
+                                                                "CreateIndividualGroup");
+                                                          } else {
+                                                            strArr.remove(
+                                                                "CreateGroupChat");
+                                                          }
                                                           widget.mainProvider
                                                               .chatScreen(
                                                                   index: 0);

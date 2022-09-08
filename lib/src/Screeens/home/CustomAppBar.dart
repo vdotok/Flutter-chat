@@ -121,6 +121,9 @@ class _CustomAppBarState extends State<CustomAppBar> {
                             "this is mainprovider back button press in chat screen ${widget.mainProvider}");
                         widget.mainProvider!.homeScreen();
                         strArr.remove("ChatScreen");
+                      } else {
+                        widget.mainProvider!.homeScreen();
+                        selectedContacts.clear();
                       }
                       widget.groupListProvider!
                           .handlBacktoGroupList(widget.index);

@@ -203,8 +203,8 @@ class GroupListProvider with ChangeNotifier {
     Map<String, dynamic> jsonData = {"group_id": group_id};
     var currentData = await callAPI(jsonData, "DeleteGroup", authtoken);
     print("Current Data: $currentData");
-    print(
-        "this is model list data ########## ${GroupListModel.fromJson(currentData)}");
+    // print(
+    //     "this is model list data ########## ${GroupListModel.fromJson(currentData)}");
 
     if (currentData["status"] != 200) {
       _deleteGroupStatus = DeleteGroupStatus.Failure;

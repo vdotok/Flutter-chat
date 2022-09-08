@@ -80,7 +80,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         setState(() {
           isSocketConnect = false;
         });
-        if (isInternetConnect == true) {
+           if (authProvider.loggedInStatus == Status.LoggedOut) {
+        }
+
+      else  {if (isInternetConnect == true) {
           emitter.connect(
               clientId: authProvider.getUser!.user_id.toString(),
               reconnectivity: true,
@@ -91,7 +94,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               port: authProvider.port
               //response: sharedPref.read("authUser");
               );
-        }
+        }}
         print("this is  connectttttttttttt  after $isSocketConnect");
       }
     };

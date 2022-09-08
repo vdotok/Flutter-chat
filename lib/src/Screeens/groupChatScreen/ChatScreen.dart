@@ -75,7 +75,7 @@ class _ChatScreenState extends State<ChatScreen> {
   // MicrophoneRecorder microphoneRecorder;
   // final textController = TextEditingController();
   String? urlofVideo;
-  late VideoPlayerController? videocontroller;
+
 
   @override
   void initState() {
@@ -98,8 +98,8 @@ class _ChatScreenState extends State<ChatScreen> {
     //       .groupList.groups![index]!.chatList![index]!.content;
     //   // print('valueofPath${value.path}');
     // });
-    // microphoneRecorder.dispose();
-    videocontroller!.dispose();
+    // microphoneRecorder.dispose 
+   
     super.dispose();
   }
 
@@ -576,8 +576,10 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<bool> _onWillPop() async {
+     widget.mainProvider!.homeScreen();
+                        strArr.remove("ChatScreen");
     _groupListProvider.handlBacktoGroupList(index);
-    Navigator.pop(context);
+   // Navigator.pop(context);
     // Navigator.pop(context);
     return false;
   }
