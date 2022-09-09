@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../constants/constant.dart';
 
 class SignInButtonFile extends StatefulWidget {
-  String ?name;
+  String? name;
   final handlePress;
   bool _autoValidate = true;
   var myController = TextEditingController();
@@ -26,17 +26,17 @@ class _WidgetHeaderState extends State<SignInButtonFile> {
     return new SizedBox(
       width: 300.0,
       height: 48.0,
-      child: RaisedButton(
-        shape: new RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(5.0)),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          // primary: Colors.purple,
+          primary: redColor,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+        ),
+        // shape: new RoundedRectangleBorder(
+        //     borderRadius: new BorderRadius.circular(5.0)),
         onPressed: () async {
-          // if (widget.name == "Sign UP")
-          //   Navigator.pushNamed(context, "/register");
-          // else
           widget.handlePress();
-          // final data = await callAPI({}, "signup");
-          // print("this is response of register user $data");
-          // Navigator.pushNamed(context, "/register");
         },
         child: Text(
           "${widget.name}",
@@ -48,8 +48,8 @@ class _WidgetHeaderState extends State<SignInButtonFile> {
               color: whiteColor),
           textAlign: TextAlign.center,
         ),
-        textColor: Colors.white,
-        color: redColor,
+        // textColor: Colors.white,
+        // color: redColor,
       ),
     );
   }

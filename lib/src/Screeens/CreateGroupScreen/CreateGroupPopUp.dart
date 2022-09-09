@@ -175,8 +175,9 @@ class _CreateGroupPopUpState extends State<CreateGroupPopUp> {
                           child: Consumer<GroupListProvider>(
                             builder: (context, grouplistp, child) {
                               return Center(
-                                  child: FlatButton(
-                                padding: EdgeInsets.all(8.0),
+                                  child: TextButton(
+                                style: TextButton.styleFrom(
+                                    padding: EdgeInsets.all(8.0)),
                                 onPressed: grouplistp.creatChatStatusStatus ==
                                         CreateChatStatus.New
                                     ? () async {

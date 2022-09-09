@@ -91,14 +91,14 @@ class _GroupListScreenState extends State<GroupListScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  FlatButton(
+                  ElevatedButton(
                       onPressed: () => Navigator.of(context).pop(),
                       child: Text('CANCEL',
                           style: TextStyle(color: chatRoomColor))),
                   // Consumer2<GroupListProvider, AuthProvider>(builder:
                   //     (context, listProvider, authProvider, child) {
                   //   return
-                  FlatButton(
+                  ElevatedButton(
                       onPressed: () async {
                         Navigator.of(context).pop();
                         await widget.groupListProvider.deleteGroup(
@@ -715,7 +715,7 @@ class _GroupListScreenState extends State<GroupListScreen> {
                         children: [
                           Container(
                             // padding: const EdgeInsets.only(bottom: 60),
-                            child: FlatButton(
+                            child: TextButton(
                               onPressed: () {
                                 widget.authProvider.logout();
                                 emitter.disconnect();
