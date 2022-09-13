@@ -17,7 +17,6 @@
                         <label width="1" alignment="center" verticalAlignment="center" text="Flutter WatchOS" textAlignment="center" baselineAdjustment="alignCenters" id="Uhd-ya-weG">
                             <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         </label>
-                        <imageView width="1" height="50" alignment="center" verticalAlignment="bottom" image="Complication/Extra Large" contentMode="scaleAspectFit" id="BGM-9o-K29"/>
                     </items>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </controller>
@@ -25,7 +24,4 @@
             <point key="canvasLocation" x="-16" y="-6"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="Complication/Extra Large" width="224" height="224"/>
-    </resources>
 </document>
