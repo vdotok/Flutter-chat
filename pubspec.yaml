@@ -38,8 +38,6 @@ dependencies:
   flutter_svg: ^0.22.0
   intl: ^0.17.0
   file_picker: ^4.6.1
-  #video_player: ^1.0.1
-  # chewie: ^0.12.2
   open_file: ^3.2.1
   vdotok_connect: "0.0.8"
   video_player: ^2.4.5
