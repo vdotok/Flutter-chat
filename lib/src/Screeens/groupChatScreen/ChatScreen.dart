@@ -461,6 +461,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (result != null) {
       if (kIsWeb) {
         try {
+          //  Navigator.pop(context);
           Uint8List? uploadfile = result.files.single.bytes;
           print('upload files bytes${uploadfile}');
           if (uploadfile!.length > 6000000) {
@@ -500,11 +501,12 @@ class _ChatScreenState extends State<ChatScreen> {
               kIsWeb ? result.files.single.name.toString() : null;
           print('filepacket jebfjdb${filePacket} $index');
           _groupListProvider.sendMsg(index, filePacket);
-          Navigator.pop(context);
+         
         } catch (e) {
           print('$e');
         }
       } else {
+        //  Navigator.pop(context);
         File file = File(result.files.first.path!);
         print('path of file${file.path}');
         Uint8List bytes = await file.readAsBytes();
@@ -541,7 +543,7 @@ class _ChatScreenState extends State<ChatScreen> {
             filePacket);
         filePacket["content"] = kIsWeb ? null : file;
         _groupListProvider.sendMsg(index, filePacket);
-        Navigator.pop(context);
+      //  Navigator.pop(context);
       }
     } else {
       print("null value apear");

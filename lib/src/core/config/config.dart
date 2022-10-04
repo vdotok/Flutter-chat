@@ -1,3 +1,3 @@
-const URL = "https://q-tenant.vdotok.dev";
+const URL = "https://tenant.vdotok.com";
 const version = "/API/v0/";
-const String project_id = "115G1WZI";
+const String project_id = "265MRCUY";

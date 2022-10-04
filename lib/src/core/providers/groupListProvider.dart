@@ -73,14 +73,20 @@ class GroupListProvider with ChangeNotifier {
     var currentData = await getAPI("AllGroups", authToken);
     print(
         "Current Data: ${currentData["status"]}......${currentData["groups"]}");
-    print(
-        "this is model list data ########## ${GroupListModel.fromJson(currentData)}");
+    // print(
+    //     "this is model list data ########## ${GroupListModel.fromJson(currentData)}");
 
     if (currentData["status"] != 200) {
       _groupListStatus = ListStatus.Failure;
       _errorMsg = currentData['message'];
       notifyListeners();
-    } else {
+    } 
+   else {
+  //     if(currentData["groups"]==null){
+  //        _groupListStatus = ListStatus.Scussess;
+  //       notifyListeners();
+  //     }
+  //  else {
       _groupList = GroupListModel.fromJson(currentData);
       if (_groupList.groups!.length == 0) {
         _groupListStatus = ListStatus.Scussess;
@@ -98,8 +104,8 @@ class GroupListProvider with ChangeNotifier {
         }
         // _readmodelList = [];
         notifyListeners();
-      }
-    }
+      }}
+    //}
   }
 
   subscribeChannel(channelKey, channelName) {

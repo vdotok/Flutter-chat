@@ -373,6 +373,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   renderList() {
     if (groupListProvider.groupListStatus == ListStatus.Scussess)
       groupListProvider.getGroupList(authProvider.getUser!.auth_token);
+      
     else {
       contactProvider.getContacts(authProvider.getUser!.auth_token);
       //_selectedContacts.clear();

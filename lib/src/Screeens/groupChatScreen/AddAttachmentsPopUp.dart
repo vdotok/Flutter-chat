@@ -75,9 +75,10 @@ class AddAttachmentPopUp extends StatelessWidget {
                             child: IconButton(
                                 icon: SvgPicture.asset('assets/File.svg'),
                                 onPressed: () {
+                                     Navigator.pop(
+                                  context);
                                   filePIcker("file");
-                                  //   Navigator.pop(
-                                  // context);
+                                 
                                 }),
                           ),
                           Text(
@@ -102,6 +103,8 @@ class AddAttachmentPopUp extends StatelessWidget {
                             child: IconButton(
                                 icon: SvgPicture.asset('assets/Camera.svg'),
                                 onPressed: () {
+                                     Navigator.pop(
+                                  context);
                                   // getImage("Camera");
                                   //    Navigator.pop(
                                   // context);
@@ -109,8 +112,8 @@ class AddAttachmentPopUp extends StatelessWidget {
                                   kIsWeb
                                       ? filePIcker('ImageAndVideo')
                                       : getImage("Camera");
-                                         Navigator.pop(
-                                  context);
+                                  //        Navigator.pop(
+                                  // context);
                                   print('thisIsgetImage');
                                 }),
                           ),
@@ -136,11 +139,13 @@ class AddAttachmentPopUp extends StatelessWidget {
                             child: IconButton(
                                 icon: SvgPicture.asset('assets/Album.svg'),
                                 onPressed: () {
+                                     Navigator.pop(
+                                  context);
                                   kIsWeb
                                       ? filePIcker("ImageAndVideo")
                                       : getImage("Gallery");
-                                     Navigator.pop(
-                                  context);
+                                  //    Navigator.pop(
+                                  // context);
                                 }),
                           ),
                           Text(
@@ -171,9 +176,11 @@ class AddAttachmentPopUp extends StatelessWidget {
                             child: IconButton(
                                 icon: SvgPicture.asset('assets/Audio.svg'),
                                 onPressed: () {
-                                  filePIcker("audio");
-                                        Navigator.pop(
+                                     Navigator.pop(
                                   context);
+                                  filePIcker("audio");
+                                  //       Navigator.pop(
+                                  // context);
 
                                   print("close icon pressed");
                                 }),
