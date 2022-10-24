@@ -53,8 +53,7 @@ class _AudioWidgetState extends State<AudioWidget> {
   }
 
   durationHandler() async {
-    _audioPlayer.setUrl(kIsWeb ? widget.file : widget.file1.path,
-        isLocal: true);
+    _audioPlayer.setUrl(kIsWeb ? widget.file : widget.file1.path);
     _audioPlayer.onDurationChanged.listen((Duration duration) {
       setState(() {
         _playDuration = duration;
@@ -139,10 +138,8 @@ class _AudioWidgetState extends State<AudioWidget> {
           IconButton(
             onPressed: () async {
               if (!isPlaying) {
-                int status = await _audioPlayer.play(
-                    kIsWeb ? widget.file : widget.file1.path,
-                    isLocal: true);
-                _audioPlayer.onAudioPositionChanged.listen((Duration duration) {
+                _audioPlayer.play(widget.file1.path);
+                _audioPlayer.onDurationChanged.listen((Duration duration) {
                   setState(() {
                     _currentDuration = duration;
                     print("this is current duration $_currentDuration");
@@ -153,13 +150,13 @@ class _AudioWidgetState extends State<AudioWidget> {
                     print("current time $currentTime");
                   });
                 });
-                if (status == 1) {
-                  setState(() {
-                    isPlaying = true;
-                    isPaused = false;
-                    isResumed = false;
-                  });
-                }
+                // if (status == 1) {
+                //   setState(() {
+                //     isPlaying = true;
+                //     isPaused = false;
+                //     isResumed = false;
+                //   });
+                // }
               } else if (isPlaying) {
                 // else if (isPlaying || isResumed) {
                 _audioPlayer.pause();

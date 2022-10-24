@@ -68,9 +68,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
       backgroundColor: primaryColor,
       duration: Duration(seconds: 2),
     );
-    scaffoldKey.currentState!
-      ..hideCurrentSnackBar()
-      ..showSnackBar(snackBar);
+    scaffoldKey.currentState!;
   }
 
   @override
@@ -87,7 +85,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
               leading: IconButton(
                 icon: Icon(Icons.arrow_back),
                 onPressed: () {
-                  scaffoldKey.currentState!.removeCurrentSnackBar();
+                  scaffoldKey.currentState!;
                   Navigator.of(context).pop();
                 },
               ),

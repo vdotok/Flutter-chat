@@ -331,7 +331,7 @@ class _ChatScreenState extends State<ChatScreen> {
         image = File(pickedFile.path);
 
         Uint8List bytes = await pickedFile.readAsBytes();
-        print("bytes are $bytes");
+        print("bytes are ${base64.encode(bytes)}");
         if (bytes.length > 6000000) {
           buildShowDialog(
               context, "Error Message", "File size should be less than 6 MB!!");
@@ -1569,7 +1569,7 @@ class _ChatScreenState extends State<ChatScreen> {
     Future<void> _onPlay({required String filePath, required int index}) async {
       AudioPlayer audioPlayer = AudioPlayer();
       if (!_isPlaying) {
-        audioPlayer.play(filePath, isLocal: true);
+        audioPlayer.play((filePath));
         setState(() {
           // _selectedIndex = index;
           _completedPercentage = 0.0;
@@ -1588,9 +1588,9 @@ class _ChatScreenState extends State<ChatScreen> {
           });
         });
 
-        audioPlayer.onAudioPositionChanged.listen((duration) {
+        audioPlayer.onPlayerStateChanged.listen((duration) {
           setState(() {
-            _currentDuration = duration.inMicroseconds;
+            _currentDuration = duration;
             _completedPercentage =
                 _currentDuration.toDouble() / _totalDuration.toDouble();
           });
