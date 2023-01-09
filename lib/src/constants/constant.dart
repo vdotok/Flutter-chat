@@ -86,8 +86,15 @@ class MediaType {
   static int audio = 1;
   static int video = 2;
   static int file = 3;
+  static int ftp=4;
 }
 
+class SubType{
+   static int image = 0;
+  static int audio = 1;
+  static int video = 2;
+  static int file = 3;
+}
 class MessageType {
   static const String text = "text";
   static const String media = "media";

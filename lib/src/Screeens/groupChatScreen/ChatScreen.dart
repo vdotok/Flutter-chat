@@ -14,6 +14,7 @@ import 'package:path_provider/path_provider.dart';
 // import 'package:vdkFlutterChat/src/Screeens/groupChatScreen/VideoApp.dart';
 import 'package:vdkFlutterChat/src/Screeens/groupChatScreen/VideoScreenweb.dart';
 import 'package:vdkFlutterChat/src/Screeens/home/home.dart';
+import 'package:vdkFlutterChat/src/core/models/contactList.dart';
 import 'package:vdkFlutterChat/src/core/providers/contact_provider.dart';
 import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
 import 'package:vdotok_connect/vdotok_connect.dart';
@@ -76,7 +77,6 @@ class _ChatScreenState extends State<ChatScreen> {
   // final textController = TextEditingController();
   String? urlofVideo;
 
-
   @override
   void initState() {
     super.initState();
@@ -98,8 +98,8 @@ class _ChatScreenState extends State<ChatScreen> {
     //       .groupList.groups![index]!.chatList![index]!.content;
     //   // print('valueofPath${value.path}');
     // });
-    // microphoneRecorder.dispose 
-   
+    // microphoneRecorder.dispose
+
     super.dispose();
   }
 
@@ -305,7 +305,9 @@ class _ChatScreenState extends State<ChatScreen> {
       //   }
       // } else {
       image = File(pickedFile.path);
-
+//  ContactProvider contact = Provider.of<ContactProvider>(context, listen: false);
+// contact.sendFile(image, authProvider.getUser!.auth_token);
+ 
       Uint8List bytes = await pickedFile.readAsBytes();
       print("bytes are $bytes");
       if (bytes.length > 6000000) {
@@ -463,7 +465,7 @@ class _ChatScreenState extends State<ChatScreen> {
         try {
           //  Navigator.pop(context);
           Uint8List? uploadfile = result.files.single.bytes;
-          print('upload files bytes${uploadfile}');
+          print('upload files bytes${base64.encode(uploadfile!)}');
           if (uploadfile!.length > 6000000) {
             buildShowDialog(context, "Error Message",
                 "File size should be less than 6 MB!!");
@@ -501,7 +503,6 @@ class _ChatScreenState extends State<ChatScreen> {
               kIsWeb ? result.files.single.name.toString() : null;
           print('filepacket jebfjdb${filePacket} $index');
           _groupListProvider.sendMsg(index, filePacket);
-         
         } catch (e) {
           print('$e');
         }
@@ -543,7 +544,7 @@ class _ChatScreenState extends State<ChatScreen> {
             filePacket);
         filePacket["content"] = kIsWeb ? null : file;
         _groupListProvider.sendMsg(index, filePacket);
-      //  Navigator.pop(context);
+        //  Navigator.pop(context);
       }
     } else {
       print("null value apear");
@@ -578,10 +579,10 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Future<bool> _onWillPop() async {
-     widget.mainProvider!.homeScreen();
-                        strArr.remove("ChatScreen");
+    widget.mainProvider!.homeScreen();
+    strArr.remove("ChatScreen");
     _groupListProvider.handlBacktoGroupList(index);
-   // Navigator.pop(context);
+    // Navigator.pop(context);
     // Navigator.pop(context);
     return false;
   }
@@ -1925,4 +1926,3 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 }
-
