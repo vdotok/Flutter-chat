@@ -192,6 +192,8 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                               "-" +
                                               authProvider.getUser!.full_name;
                                       print("The Group Join: ${groupName}");
+                                      // groupListProvider
+                                      //                       .handleCreateChatState();
                                       var res = await widget.contactProvider
                                           .createGroup(
                                               groupName,
@@ -212,19 +214,45 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                         //   Navigator.pop(context, true);
                                         // Navigator.pop(context, true);
                                       } else {
-                                        groupListProvider.addGroup(groupModel);
+                                    groupListProvider.addGroup(groupModel);
                                         groupListProvider.subscribeChannel(
                                             groupModel.channel_key,
                                             groupModel.channel_name);
-                                        groupListProvider.subscribePresence(
+                                      groupListProvider.subscribePresence(
                                             groupModel.channel_key,
                                             groupModel.channel_name,
                                             true,
                                             true);
-
-                                        Navigator.pop(context, true);
-                                        Navigator.pop(context, true);
+                                              publishMessage(
+                                                            key,
+                                                            channelname,
+                                                            sendmessage) {
+                                                          print(
+                                                              "The key:$key....$channelname...$sendmessage");
+                                                          emitter.publish(
+                                                              key,
+                                                              channelname,
+                                                              sendmessage);
+                                                        }
+                                                        if (strArr.last ==
+                                                              "CreateGroupChat") {
+                                                            strArr.remove(
+                                                                "CreateGroupChat");
+                                                          } 
+                                                          widget.mainProvider
+                                                              .chatScreen(
+                                                                  index: 0);
+                                                        
+                                                        selectedContacts
+                                                            .clear();
+                                                        groupListProvider
+                                                            .handleCreateChatState();
+ 
+                                        // Navigator.pop(context, true);
+                                        // Navigator.pop(context, true);
                                       }
+                                    
+
                                     }
                                   : selectedContacts.length > 1
                                       ? selectedContacts.length <= 4

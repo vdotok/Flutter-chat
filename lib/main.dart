@@ -11,6 +11,7 @@ import 'package:vdkFlutterChat/src/constants/constant.dart';
 import 'package:vdkFlutterChat/src/core/providers/auth.dart';
 import 'package:vdkFlutterChat/src/routing/routes.dart';
 import 'src/constants/constant.dart';
+import 'src/core/providers/groupListProvider.dart';
 
 GlobalKey<ScaffoldMessengerState>? rootScaffoldMessengerKey;
 
@@ -56,6 +57,7 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => AuthProvider()..isUserLogedIn()),
+        ChangeNotifierProvider(create: (_) => GroupListProvider())
       ],
       child: MaterialApp(
         scaffoldMessengerKey: rootScaffoldMessengerKey,

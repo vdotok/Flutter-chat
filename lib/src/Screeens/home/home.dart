@@ -372,11 +372,24 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 //   }
   renderList() {
     if (groupListProvider.groupListStatus == ListStatus.Scussess)
-      groupListProvider.getGroupList(authProvider.getUser!.auth_token);
+    {  groupListProvider.getGroupList(authProvider.getUser!.auth_token);}
       
     else {
       contactProvider.getContacts(authProvider.getUser!.auth_token);
       //_selectedContacts.clear();
+    }
+     if(isSocketConnect==false && isInternetConnect){
+      print("here in refreshlist connection");
+      emitter.connect(
+              clientId: authProvider.getUser!.user_id.toString(),
+              reconnectivity: true,
+              refID: authProvider.getUser!.ref_id,
+              authorization_token: authProvider.getUser!.authorization_token,
+              project_id: project_id,
+              host: authProvider.host,
+              port: authProvider.port
+              //response: sharedPref.read("authUser");
+              );
     }
   }
 
@@ -554,6 +567,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               print("this is strarray6 $strArr");
               print("this is create group screen");
               return CreateGroupChatIndex(
+                groupListProvider: groupListProvider,
                   refreshList: refreshList,
                   mainProvider: _mainProvider,
                   contactProvider: contactProvider,
@@ -567,6 +581,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               print("this is strarray4 $strArr");
               print("this is create group screen");
               return ContactListIndex(
+                 
                 refreshList: refreshList,
                 handlePress: handleCreateGroup,
                 contactProvider: contactProvider,

@@ -354,8 +354,8 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                                                 res["group"]);
                                                         print(
                                                             "this is group index $groupIndex");
-                                                        print(
-                                                            "this is response of createGroup ${groupModel.participants![0]!.full_name}, ${groupModel.participants![1]!.full_name}");
+                                                        // print(
+                                                        //     "this is response of createGroup ${groupModel.participants![0]!.full_name}, ${groupModel.participants![1]!.full_name}");
 
                                                         int channelIndex = 0;
                                                         if (res[

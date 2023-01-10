@@ -72,7 +72,7 @@ class GroupListProvider with ChangeNotifier {
   getGroupList(authToken) async {
     var currentData = await getAPI("AllGroups", authToken);
     print(
-        "Current Data: ${currentData["status"]}......${currentData["groups"]}");
+        "Current group data: ${currentData}");
     // print(
     //     "this is model list data ########## ${GroupListModel.fromJson(currentData)}");
 
@@ -176,7 +176,7 @@ class GroupListProvider with ChangeNotifier {
   }
 
   recevieMsg(message) {
-    print("this is group list ${_groupList.groups!.length}");
+    print("this is group list ${_groupList.groups!.length} ${message}");
     //find the index of channel... does it exist in grouplist?
     var index = _groupList.groups!
         .indexWhere((element) => element!.channel_key == message["key"]);
