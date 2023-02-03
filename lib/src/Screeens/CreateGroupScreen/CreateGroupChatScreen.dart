@@ -83,7 +83,7 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
   publishMessage(key, channelname, sendmessage) {
     print("print im here ");
     print("The key:$key....$channelname...$sendmessage");
-    emitter.publish(key, channelname, sendmessage);
+    emitter.publish(key, channelname, sendmessage,0);
   }
 
   Future buildShowDialog(
@@ -232,7 +232,7 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                                           emitter.publish(
                                                               key,
                                                               channelname,
-                                                              sendmessage);
+                                                              sendmessage,0);
                                                         }
                                                         if (strArr.last ==
                                                               "CreateGroupChat") {

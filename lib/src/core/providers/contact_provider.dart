@@ -42,15 +42,15 @@ class ContactProvider with ChangeNotifier {
     }
   }
 
-//   sendFile(File image, String authToken)async{
-//  var dataRequest = {
-//     "type": "ftp",
-//     "uploadFile": image,
-//     "auth_token": authToken
-//     };
-//     final response = await callAPI(dataRequest, "s3upload", authToken);
-//     print("this is responseeee of ftp $response");
-//   }
+  sendFile(File image, String authToken)async{
+ var dataRequest = {
+    "type": "ftp",
+    "uploadFile": image,
+    "auth_token": authToken
+    };
+    final response = await callAPI(dataRequest, "s3upload", authToken);
+    print("this is responseeee of ftp $response");
+  }
 
   selectGroups(index) {
     if (contactList.users![index]!.isSelected == false ||

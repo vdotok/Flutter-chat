@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -42,6 +44,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   bool isSocketConnect = true;
   late MainProvider _mainProvider;
   late ContactProvider contactProvider;
+  bool isResumed = true;
+  bool inPaused = false;
+
+  bool inInactive = false;
 
   List<Uint8List> listOfChunks = [];
   late Map<String, dynamic> header;
@@ -80,21 +86,21 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         setState(() {
           isSocketConnect = false;
         });
-           if (authProvider.loggedInStatus == Status.LoggedOut) {
+        if (authProvider.loggedInStatus == Status.LoggedOut) {
+        } else {
+          if (isInternetConnect == true) {
+            emitter.connect(
+                clientId: authProvider.getUser!.user_id.toString(),
+                reconnectivity: true,
+                refID: authProvider.getUser!.ref_id,
+                authorization_token: authProvider.getUser!.authorization_token,
+                project_id: project_id,
+                host: authProvider.host,
+                port: authProvider.port
+                //response: sharedPref.read("authUser");
+                );
+          }
         }
-
-      else  {if (isInternetConnect == true) {
-          emitter.connect(
-              clientId: authProvider.getUser!.user_id.toString(),
-              reconnectivity: true,
-              refID: authProvider.getUser!.ref_id,
-              authorization_token: authProvider.getUser!.authorization_token,
-              project_id: project_id,
-              host: authProvider.host,
-              port: authProvider.port
-              //response: sharedPref.read("authUser");
-              );
-        }}
         print("this is  connectttttttttttt  after $isSocketConnect");
       }
     };
@@ -106,14 +112,33 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           isInternetConnect = true;
           isSocketConnect = true;
         });
+        if (isResumed) {
+          Fluttertoast.showToast(
+              msg: "Connected to Internet.",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.TOP_RIGHT,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.black,
+              textColor: Colors.white,
+              fontSize: 14.0);
+        }
         //groupListProvider.getGroupList(authProvider.getUser.auth_token);
-        showSnackbar("Internet Connected", whiteColor, Colors.green, false);
+        //showSnackbar("Internet Connected", whiteColor, Colors.green, false);
       } else {
         setState(() {
           isInternetConnect = false;
           isSocketConnect = false;
         });
-        showSnackbar("No Internet Connection", whiteColor, primaryColor, true);
+          if(isResumed)
+        { Fluttertoast.showToast(
+                        msg: "Waiting for Internet.",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.TOP_RIGHT,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.black,
+                        textColor: Colors.white,
+                        fontSize: 14.0);}
+     //   showSnackbar("No Internet Connection", whiteColor, primaryColor, true);
       }
     };
     emitter.onPresence = (res) {
@@ -135,7 +160,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     emitter.onMessage = (msg) async {
       print("this is msg on receive $msg");
       var message = json.decode(msg);
-      print("this is msg on receive ${message["content"].toString()}");
+      // print("this is msg on receive ${message["content"].toString()}");
 
       // print(
       //     "message after receiving ${utf8.decode(message["content"].toString().codeUnits)}");
@@ -146,7 +171,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               if (groupListProvider.currentOpendChat != null) {
                 if (groupListProvider.currentOpendChat!.channel_key ==
                     message["key"]) {
-                  print("samee channel oppeened");
+                  print("samee channel oppeened text");
                   var receiptMsg = message;
                   receiptMsg["status"] = ReceiptType.seen;
                   Map<String, dynamic> tempData = {
@@ -163,7 +188,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   emitter.publish(
                       groupListProvider.currentOpendChat!.channel_key,
                       groupListProvider.currentOpendChat!.channel_name,
-                      tempData);
+                      tempData,
+                      0);
                 } else {
                   groupListProvider.recevieMsg(message);
                 }
@@ -178,18 +204,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
             }
           }
           break;
-        case MessageType.media:
-          {}
-          break;
-        case MessageType.file:
-          {}
-          break;
-        case MessageType.thumbnail:
-          {}
-          break;
-        case MessageType.path:
-          {}
-          break;
+
         case MessageType.typing:
           {
             if (authProvider.getUser!.ref_id != message["from"]) {
@@ -197,137 +212,296 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
             }
           }
           break;
+        case MediaType.ftp:
+          {
+            if (authProvider.getUser!.ref_id != message["from"]) {
+              if (groupListProvider.currentOpendChat != null) {
+                //if same channel is opened
+                if (groupListProvider.currentOpendChat!.channel_key ==
+                    message["key"]) {
+                  print(
+                      "samee channel oppeeeeeeened ${message["date"]}  ${message["content"]}  ");
+                  var receiptMsg = message;
+                  receiptMsg["status"] = ReceiptType.seen;
 
+                  // groupListProvider.recevieMsg(receiptMsg);
+                  if (!kIsWeb) {
+                    print(
+                        "this is messag content ${message["content"].toString()}");
+                    //     var response = await http.get(Uri.parse(message["content"].toString()));
+                    //  print("ths is parse responseeeeeeeee ${response.bodyBytes}");
+                    var extension = message["fileExtension"];
+                    // message["fileExtension"].toString().contains(".")
+                    //     ? message["fileExtension"]
+                    //     : '.' + message["fileExtension"];
+                    print("this is tempData ${extension}");
+                    //  final tempDir = await getTemporaryDirectory();
+
+                    // File file = await File(
+                    //         '${tempDir.path}/vdktok${(new DateTime.now()).millisecondsSinceEpoch.toString().trim()}$extension')
+                    //     .create();
+                    //     print("this is filllleee ${file}");
+                    // file.writeAsBytesSync(response.bodyBytes);
+
+                    //   receiptMsg["content"] = file;
+                    // message["id"] = message["messageId"];
+                  } else {
+                    print('inelseofFirst');
+                    final url = await JsManager.instance!.connect(
+                        base64.decode(receiptMsg["content"]),
+                        receiptMsg["fileExtension"]);
+                    print('thisisUrlofFile$url');
+                    if (receiptMsg["type"] == MediaType.image) {
+                      var image = base64Decode(receiptMsg['content']);
+                      receiptMsg['content'] = image;
+                    } else {
+                      receiptMsg["content"] = url;
+                    }
+                    groupListProvider.recevieMsg(receiptMsg);
+                  }
+                  // Map<String, dynamic> tempData = {
+                  //   "date": ((DateTime.now()).millisecondsSinceEpoch).round(),
+                  //   "from": authProvider.getUser!.ref_id,
+                  //   "key": message["key"],
+                  //   "messageId": message["messageId"],
+                  //   "receiptType": ReceiptType.seen,
+                  //   "to": message["topic"]
+                  // };
+                  Map<String, dynamic> tempData = {
+                    "date": ((DateTime.now()).millisecondsSinceEpoch).round(),
+                    "from": authProvider.getUser!.ref_id,
+                    "key": message["key"],
+                    "messageId": message["id"],
+                    "receiptType": ReceiptType.seen,
+                    "to": message["to"],
+                    // "content": utf8.decode((message["content"].toString().codeUnits))
+                  };
+                  print("this is temp dataaaaaaa $tempData ");
+                  groupListProvider.recevieMsg(receiptMsg);
+                  emitter.publish(
+                      groupListProvider.currentOpendChat!.channel_key,
+                      groupListProvider.currentOpendChat!.channel_name,
+                      tempData,
+                      0);
+                }
+                // if same channel in not opened
+                else {
+                  if (!kIsWeb) {
+                    var extension =
+                        message["fileExtension"].toString().contains(".")
+                            ? message["fileExtension"]
+                            : '.' + message["fileExtension"];
+                    print(
+                        "this is extension ${message["fileExtension"].toString().contains(".") ? message["fileExtension"] : '.' + message["fileExtension"]}");
+                    final tempDir = await getTemporaryDirectory();
+                    File file = await File(
+                            '${tempDir.path}/vdotok${(new DateTime.now()).millisecondsSinceEpoch.toString().trim()}$extension')
+                        .create();
+                    //  file.writeAsBytesSync(message["content"]);
+                    message["content"] = file;
+                    groupListProvider.recevieMsg(message);
+                  } else {
+                    final url = await JsManager.instance!.connect(
+                        base64.decode(message["content"]),
+                        message["fileExtension"]);
+                    print('thisisUrlofFile$url');
+                    if (message["type"] == MediaType.image) {
+                      var image = base64Decode(message['content']);
+                      message['content'] = image;
+                    } else {
+                      message["content"] = url;
+                    }
+                    print('thisiscontentofFile${message['content']}');
+                    groupListProvider.recevieMsg(message);
+                  }
+                }
+              } else {
+                print("this is eelsee");
+                if (!kIsWeb) {
+                  print(
+                      "this is messag contentttttttt ${message["content"].toString()}");
+                  //  var response = await http.get(Uri.parse(message["content"].toString()));
+                  //  print("ths is parse response ${response.bodyBytes}");
+                  // final tempDir = await getTemporaryDirectory();
+                  // var extension =
+                  //     message["fileExtension"].toString().contains(".")
+                  //         ? message["fileExtension"]
+                  //         : '.' + message["fileExtension"];
+
+                  // File file = await File(
+                  //         '${tempDir.path}/vdotok${DateTime.now().toString().trim()}$extension')
+                  //     .create();
+                  // file.writeAsBytesSync(message["content"]);
+                  // file.writeAsBytesSync(base64.decode(base64.encode(response.bodyBytes)));
+                  // message["content"] = file;
+                  groupListProvider.recevieMsg(message);
+                } else {
+                  final url = await JsManager.instance!.connect(
+                      base64.decode(message["content"]),
+                      message["fileExtension"]);
+
+                  if (message["type"] == MediaType.image) {
+                    var image = base64Decode(message['content']);
+                    print('thisis Image bytes $image');
+                    message['content'] = image;
+                  } else {
+                    message["content"] = url;
+                  }
+                  print('thisiscontentofFile${message['content']}');
+                  groupListProvider.recevieMsg(message);
+                }
+              }
+            } else {
+              // this is sender mesgsss
+              print("hdsghdsgdhsds");
+              groupListProvider.changeMsgStatusToDelivered(
+                  message, ReceiptType.delivered);
+            }
+          }
+          break;
         default:
           {
             if (message["receiptType"] == ReceiptType.seen)
-              groupListProvider.changeMsgStatus(msg, ReceiptType.seen);
+              print("this is messggddddg $msg");
+            groupListProvider.changeMsgStatus(msg, ReceiptType.seen);
           }
           break;
       }
 
-      if (message["type"] == MediaType.audio ||
-          message["type"] == MediaType.video ||
-          message["type"] == MediaType.image ||
-          message["type"] == MediaType.file) {
-        if (authProvider.getUser!.ref_id != message["from"]) {
-          if (groupListProvider.currentOpendChat != null) {
-            //if shame channel is open
-            if (groupListProvider.currentOpendChat!.channel_key ==
-                message["key"]) {
-              print("samee channel oppeened ${message["date"]}  ${message}  ");
-              var receiptMsg = message;
-              receiptMsg["status"] = ReceiptType.seen;
+      // if (
 
-              // groupListProvider.recevieMsg(receiptMsg);
-              if (!kIsWeb) {
-                var extension =
-                    message["fileExtension"].toString().contains(".")
-                        ? message["fileExtension"]
-                        : '.' + message["fileExtension"];
-                print("this is tempData ${extension}");
-                final tempDir = await getTemporaryDirectory();
-                File file = await File(
-                        '${tempDir.path}/vdktok${(new DateTime.now()).millisecondsSinceEpoch.toString().trim()}$extension')
-                    .create();
-                file.writeAsBytesSync(base64.decode(receiptMsg["content"]));
-                receiptMsg["content"] = file;
-                message["id"] = message["messageId"];
-                groupListProvider.recevieMsg(message);
-              } else {
-                print('inelseofFirst');
-                final url = await JsManager.instance!.connect(
-                    base64.decode(receiptMsg["content"]),
-                    receiptMsg["fileExtension"]);
-                print('thisisUrlofFile$url');
-                if (receiptMsg["type"] == MediaType.image) {
-                  var image = base64Decode(receiptMsg['content']);
-                  receiptMsg['content'] = image;
-                } else {
-                  receiptMsg["content"] = url;
-                }
-                groupListProvider.recevieMsg(receiptMsg);
-              }
-              Map<String, dynamic> tempData = {
-                "date": ((DateTime.now()).millisecondsSinceEpoch).round(),
-                "from": authProvider.getUser!.ref_id,
-                "key": message["key"],
-                "messageId": message["messageId"],
-                "receiptType": ReceiptType.seen,
-                "to": message["topic"]
-              };
+      //      message["type"] == MediaType.ftp
+      //     ) {
+      //receiver side
+      // if (authProvider.getUser!.ref_id != message["from"]) {
+      //   if (groupListProvider.currentOpendChat != null) {
+      //     //if same channel is opened
+      //     if (groupListProvider.currentOpendChat!.channel_key ==
+      //         message["key"]) {
+      //       print("samee channel oppeened ${message["date"]}  ${message}  ");
+      //       var receiptMsg = message;
+      //       receiptMsg["status"] = ReceiptType.seen;
 
-              print("this is temp data $tempData ${message["to"]}");
+      //       // groupListProvider.recevieMsg(receiptMsg);
+      //       if (!kIsWeb) {
+      //         print("this is messag content ${message["content"].toString()}");
+      //       //     var response = await http.get(Uri.parse(message["content"].toString()));
+      //       //  print("ths is parse responseeeeeeeee ${response.bodyBytes}");
+      //         var extension =
+      //             message["fileExtension"].toString().contains(".")
+      //                 ? message["fileExtension"]
+      //                 : '.' + message["fileExtension"];
+      //         print("this is tempData ${extension}");
+      //         final tempDir = await getTemporaryDirectory();
+      //         File file = await File(
+      //                 '${tempDir.path}/vdktok${(new DateTime.now()).millisecondsSinceEpoch.toString().trim()}$extension')
+      //             .create();
+      //             file.writeAsBytesSync(message["content"]);
+      //        //  file.writeAsBytesSync(base64.decode(base64.encode(response.bodyBytes)));
+      //         receiptMsg["content"] = file;
+      //         message["id"] = message["messageId"];
+      //         groupListProvider.recevieMsg(message);
+      //       }
+      //       // else {
+      //       //   print('inelseofFirst');
+      //       //   final url = await JsManager.instance!.connect(
+      //       //       base64.decode(receiptMsg["content"]),
+      //       //       receiptMsg["fileExtension"]);
+      //       //   print('thisisUrlofFile$url');
+      //       //   if (receiptMsg["type"] == MediaType.image) {
+      //       //     var image = base64Decode(receiptMsg['content']);
+      //       //     receiptMsg['content'] = image;
+      //       //   } else {
+      //       //     receiptMsg["content"] = url;
+      //       //   }
+      //       //   groupListProvider.recevieMsg(receiptMsg);
+      //       // }
+      //       Map<String, dynamic> tempData = {
+      //         "date": ((DateTime.now()).millisecondsSinceEpoch).round(),
+      //         "from": authProvider.getUser!.ref_id,
+      //         "key": message["key"],
+      //         "messageId": message["messageId"],
+      //         "receiptType": ReceiptType.seen,
+      //         "to": message["topic"]
+      //       };
 
-              emitter.publish(groupListProvider.currentOpendChat!.channel_key,
-                  groupListProvider.currentOpendChat!.channel_name, tempData);
-            }
-            // if same channel in not opened
-            else {
-              if (!kIsWeb) {
-                var extension =
-                    message["fileExtension"].toString().contains(".")
-                        ? message["fileExtension"]
-                        : '.' + message["fileExtension"];
-                print(
-                    "this is extension ${message["fileExtension"].toString().contains(".") ? message["fileExtension"] : '.' + message["fileExtension"]}");
-                final tempDir = await getTemporaryDirectory();
-                File file = await File(
-                        '${tempDir.path}/vdotok${(new DateTime.now()).millisecondsSinceEpoch.toString().trim()}$extension')
-                    .create();
-                file.writeAsBytesSync(base64.decode(message["content"]));
-                message["content"] = file;
-                groupListProvider.recevieMsg(message);
-              } else {
-                final url = await JsManager.instance!.connect(
-                    base64.decode(message["content"]),
-                    message["fileExtension"]);
-                print('thisisUrlofFile$url');
-                if (message["type"] == MediaType.image) {
-                  var image = base64Decode(message['content']);
-                  message['content'] = image;
-                } else {
-                  message["content"] = url;
-                }
-                print('thisiscontentofFile${message['content']}');
-                groupListProvider.recevieMsg(message);
-              }
-            }
-          } else {
-            print("this is eelsee");
-            if (!kIsWeb) {
-              final tempDir = await getTemporaryDirectory();
-              var extension = message["fileExtension"].toString().contains(".")
-                  ? message["fileExtension"]
-                  : '.' + message["fileExtension"];
+      //       print("this is temp data $tempData ${message["to"]}");
 
-              File file = await File(
-                      '${tempDir.path}/vdotok${DateTime.now().toString().trim()}$extension')
-                  .create();
-              file.writeAsBytesSync(base64.decode(message["content"]));
-              message["content"] = file;
-              groupListProvider.recevieMsg(message);
-            } else {
-              final url = await JsManager.instance!.connect(
-                  base64.decode(message["content"]), message["fileExtension"]);
+      //       emitter.publish(groupListProvider.currentOpendChat!.channel_key,
+      //           groupListProvider.currentOpendChat!.channel_name, tempData);
+      //     }
+      //     // if same channel in not opened
+      //     else {
+      //       if (!kIsWeb) {
+      //         var extension =
+      //             message["fileExtension"].toString().contains(".")
+      //                 ? message["fileExtension"]
+      //                 : '.' + message["fileExtension"];
+      //         print(
+      //             "this is extension ${message["fileExtension"].toString().contains(".") ? message["fileExtension"] : '.' + message["fileExtension"]}");
+      //         final tempDir = await getTemporaryDirectory();
+      //         File file = await File(
+      //                 '${tempDir.path}/vdotok${(new DateTime.now()).millisecondsSinceEpoch.toString().trim()}$extension')
+      //             .create();
+      //         file.writeAsBytesSync(message["content"]);
+      //         message["content"] = file;
+      //         groupListProvider.recevieMsg(message);
+      //       }
+      //       // else {
+      //       //   final url = await JsManager.instance!.connect(
+      //       //       base64.decode(message["content"]),
+      //       //       message["fileExtension"]);
+      //       //   print('thisisUrlofFile$url');
+      //       //   if (message["type"] == MediaType.image) {
+      //       //     var image = base64Decode(message['content']);
+      //       //     message['content'] = image;
+      //       //   } else {
+      //       //     message["content"] = url;
+      //       //   }
+      //       //   print('thisiscontentofFile${message['content']}');
+      //       //   groupListProvider.recevieMsg(message);
+      //       // }
+      //     }
+      //   } else {
+      //     print("this is eelsee");
+      //     if (!kIsWeb) {
+      //       print("this is messag contentttttttt ${message["content"].toString()}");
+      //       //  var response = await http.get(Uri.parse(message["content"].toString()));
+      //       //  print("ths is parse response ${response.bodyBytes}");
+      //       final tempDir = await getTemporaryDirectory();
+      //       var extension = message["fileExtension"].toString().contains(".")
+      //           ? message["fileExtension"]
+      //           : '.' + message["fileExtension"];
 
-              if (message["type"] == MediaType.image) {
-                var image = base64Decode(message['content']);
-                print('thisis Image bytes $image');
-                message['content'] = image;
-              } else {
-                message["content"] = url;
-              }
-              print('thisiscontentofFile${message['content']}');
-              groupListProvider.recevieMsg(message);
-            }
-          }
-        } else {
-          // here i'm getting my delivered message
-          groupListProvider.changeMsgStatusToDelivered(
-              message, ReceiptType.delivered);
-        }
-      }
+      //       File file = await File(
+      //               '${tempDir.path}/vdotok${DateTime.now().toString().trim()}$extension')
+      //           .create();
+      //           file.writeAsBytesSync(message["content"]);
+      //       // file.writeAsBytesSync(base64.decode(base64.encode(response.bodyBytes)));
+      //       message["content"] = file;
+      //       groupListProvider.recevieMsg(message);
+      //     }
+      //     // else {
+      //     //   final url = await JsManager.instance!.connect(
+      //     //       base64.decode(message["content"]), message["fileExtension"]);
+
+      //     //   if (message["type"] == MediaType.image) {
+      //     //     var image = base64Decode(message['content']);
+      //     //     print('thisis Image bytes $image');
+      //     //     message['content'] = image;
+      //     //   } else {
+      //     //     message["content"] = url;
+      //     //   }
+      //     //   print('thisiscontentofFile${message['content']}');
+      //     //   groupListProvider.recevieMsg(message);
+      //     // }
+      //   }
+      // } else {
+      //   // this is sender mesgsss
+      //   groupListProvider.changeMsgStatusToDelivered(
+      //       message, ReceiptType.delivered);
+      // }
+      // }
     };
   }
 
@@ -371,66 +545,112 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 //     emitter.publish(key, channelname, sendmessage);
 //   }
   renderList() {
-    if (groupListProvider.groupListStatus == ListStatus.Scussess)
-    {  groupListProvider.getGroupList(authProvider.getUser!.auth_token);}
-      
-    else {
+    if (groupListProvider.groupListStatus == ListStatus.Scussess) {
+      groupListProvider.getGroupList(authProvider.getUser!.auth_token);
+    } else {
       contactProvider.getContacts(authProvider.getUser!.auth_token);
       //_selectedContacts.clear();
     }
-     if(isSocketConnect==false && isInternetConnect){
+    if (isSocketConnect == false && isInternetConnect) {
       print("here in refreshlist connection");
       emitter.connect(
-              clientId: authProvider.getUser!.user_id.toString(),
-              reconnectivity: true,
-              refID: authProvider.getUser!.ref_id,
-              authorization_token: authProvider.getUser!.authorization_token,
-              project_id: project_id,
-              host: authProvider.host,
-              port: authProvider.port
-              //response: sharedPref.read("authUser");
-              );
+          clientId: authProvider.getUser!.user_id.toString(),
+          reconnectivity: true,
+          refID: authProvider.getUser!.ref_id,
+          authorization_token: authProvider.getUser!.authorization_token,
+          project_id: project_id,
+          host: authProvider.host,
+          port: authProvider.port
+          //response: sharedPref.read("authUser");
+          );
     }
   }
 
   publishMessage(channelKey, channelName, send_message) {
     print("chat screen message");
-    emitter.publish(channelKey, channelName, send_message);
+    emitter.publish(channelKey, channelName, send_message, 0);
   }
 
-  void didChangeAppLifecycleState(AppLifecycleState appLifecycleState) {
+  void didChangeAppLifecycleState(AppLifecycleState appLifecycleState) async {
     print("this is changeapplifecyclestate $appLifecycleState");
 
     switch (appLifecycleState) {
       case AppLifecycleState.resumed:
         print("app in resumed");
+        isResumed = true;
+        inInactive = false;
+        inPaused = false;
         if (authProvider.loggedInStatus == Status.LoggedOut) {
-        } else if (isSocketConnect == true) {
-        } else if (isInternetConnect && isSocketConnect == false) {
-          print("here in resume");
+        } else {
+          //  print("this is variable for resume $sockett $isConnected");
+          bool status = await emitter.checkInternetConnectivity();
 
-          emitter.connect(
-              clientId: authProvider.getUser!.user_id.toString(),
-              reconnectivity: true,
-              refID: authProvider.getUser!.ref_id,
-              authorization_token: authProvider.getUser!.authorization_token,
-              project_id: project_id,
-              host: authProvider.host,
-              port: authProvider.port
-              //response: sharedPref.read("authUser");
-              );
+          if (status == false) {
+            Fluttertoast.showToast(
+                msg: "Waiting for Internet.",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.TOP_RIGHT,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.black,
+                textColor: Colors.white,
+                fontSize: 14.0);
+          } else {
+            // Fluttertoast.showToast(
+            //     msg: "Connected to Internet.",
+            //     toastLength: Toast.LENGTH_SHORT,
+            //     gravity: ToastGravity.TOP_RIGHT,
+            //     timeInSecForIosWeb: 1,
+            //     backgroundColor: Colors.black,
+            //     textColor: Colors.white,
+            //     fontSize: 14.0);
+          }
+          if (status == true && isSocketConnect == false) {
+            emitter.connect(
+                clientId: authProvider.getUser!.user_id.toString(),
+                reconnectivity: true,
+                refID: authProvider.getUser!.ref_id,
+                authorization_token: authProvider.getUser!.authorization_token,
+                project_id: project_id,
+                host: authProvider.host,
+                port: authProvider.port
+                //response: sharedPref.read("authUser");
+                );
+          }
         }
+        // else if (isSocketConnect == true) {
+        // } else if (
+
+        //   isInternetConnect && isSocketConnect == false) {
+        //   print("here in resume");
+
+        //   emitter.connect(
+        //       clientId: authProvider.getUser!.user_id.toString(),
+        //       reconnectivity: true,
+        //       refID: authProvider.getUser!.ref_id,
+        //       authorization_token: authProvider.getUser!.authorization_token,
+        //       project_id: project_id,
+        //       host: authProvider.host,
+        //       port: authProvider.port
+        //       //response: sharedPref.read("authUser");
+        //       );
+        // }
 // signalingClient.sendPing();
 
         break;
 
       case AppLifecycleState.inactive:
         print("app in inactive");
+        inInactive = true;
+        isResumed = false;
+        inPaused = false;
 
         break;
 
       case AppLifecycleState.paused:
         print("app in paused");
+        inPaused = true;
+        inInactive = false;
+        isResumed = false;
 
 // signalingClient.socketDrop();
 
@@ -480,7 +700,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       } else if (strArr.last == "NoChat") {
         return true;
         // SystemNavigator.pop();
-
       }
 
       return false;
@@ -567,7 +786,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               print("this is strarray6 $strArr");
               print("this is create group screen");
               return CreateGroupChatIndex(
-                groupListProvider: groupListProvider,
+                  groupListProvider: groupListProvider,
                   refreshList: refreshList,
                   mainProvider: _mainProvider,
                   contactProvider: contactProvider,
@@ -581,7 +800,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               print("this is strarray4 $strArr");
               print("this is create group screen");
               return ContactListIndex(
-                 
                 refreshList: refreshList,
                 handlePress: handleCreateGroup,
                 contactProvider: contactProvider,

@@ -82,11 +82,11 @@ class ReceiptType {
 }
 
 class MediaType {
-  static int image = 0;
-  static int audio = 1;
-  static int video = 2;
-  static int file = 3;
-  static int ftp=4;
+static const int image = 0;
+ static const int audio = 1;
+  static const int video = 2;
+ static const int file = 3;
+  static const int ftp=4;
 }
 
 class SubType{

@@ -363,48 +363,7 @@ class GroupListProvider with ChangeNotifier {
         }
         _groupList.groups![groupindex]!.chatList![msgindex]!.status = status;
         notifyListeners();
-        // while (_readmodelList[i].msgId !=
-        // json.decode(msg)["messageId"].toString()) {
-        // i++;
-        // print("thid is iiiiiiii $i");
-        // }
-        // if (_readmodelList[i].msgId ==
-        // json.decode(msg)["messageId"].toString()) {
-        // if (_readmodelList[i].participants.contains(participantIndex)) {
-        // } else {!
-        // _readmodelList[i].participants.add(participantIndex);
-        // _readmodelList[i].counter++;
-        // print("thos osdsdjfk counter ${_readmodelList[0].counter}");
-        // }
-        // // print("this is chat list ${groupList.groups[i].chatList.length}");
-        // }
-        // } else {
-        // messageIDD.add(json.decode(msg)["messageId"].toString());
-        // model = ReadModel(
-        // counter: 1,
-        // participants: [participantIndex],
-        // msgId: json.decode(msg)["messageId"].toString(),
-        // );
-        // print("model is ${model.msgId}");
-        // _readmodelList.add(model);
-        // for (int i = 0; i < _readmodelList.length; i++) {
-        // print("mesgid is ${_readmodelList[i].msgId}");
-        // print("counter of this mesg is ${_readmodelList[i].counter}");
-        // print(
-        // "participant of this mesg is ${_readmodelList[i].participants}");
-        // // print("this is chat list after ${groupList.groups[i].chatList.length}");
-        // }
-        // }
-        // print("this is LISTTTTTTTT afterrrrrrrr $_readmodelList");
-        // var msgindex =
-        // _groupList.groups[groupindex].chatList.indexWhere((element) {
-        // return element.id == json.decode(msg)["messageId"].toString();
-        // //return element.id == json.decode(msg)["messageId"].toString();
-        // });
-        // print("this is msg index in grouo chat $msgindex");
-        // _groupList.groups[groupindex].chatList[msgindex].status = status;
-
-        // notifyListeners();
+       
       } else {
         print("i am in personal chat");
         var msgindex =

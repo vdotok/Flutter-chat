@@ -73,7 +73,7 @@ class _GroupListScreenState extends State<GroupListScreen> {
           emitter.publish(
               widget.groupListProvider.groupList.groups![index]!.channel_key,
               widget.groupListProvider.groupList.groups![index]!.channel_name,
-              tempData);
+              tempData,0);
         }
       });
     }

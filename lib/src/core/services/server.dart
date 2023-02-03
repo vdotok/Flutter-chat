@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../core/config/config.dart';
@@ -64,3 +65,33 @@ Future<dynamic> getAPI(myurl, authToken) async {
     return response;
   }
 }
+
+
+
+
+
+Future<dynamic> loginPostPic(datarequest) async {
+ final urlpic = "https://q-tenant.vdotok.dev/s3upload/";
+  try {
+
+    print("in dioooooooooo ${datarequest['auth_token']}");
+    var dio = new Dio();
+    var file = datarequest['uploadFile'];
+    print("this is fileeee: $file");
+    String fileName = datarequest['uploadFile'].path.split('/').last;
+    FormData formData = FormData.fromMap({
+      "type": datarequest['type'],
+      "extension":datarequest["extension"],
+      "uploadFile": await MultipartFile.fromFile(file.path, filename: fileName),
+      "auth_token": datarequest['auth_token'],
+    });
+    print("this is form data ${formData}");
+    var response = await dio.post(urlpic, data: formData);
+    //return response.data['id'];
+    print("this is repkl: $response");
+    return response.data;
+  } catch (e) {
+    print(e);
+  }
+}
+

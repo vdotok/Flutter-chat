@@ -26,6 +26,7 @@ import 'package:video_player/video_player.dart';
 // import 'package:file_picker_web/file_picker_web.dart' as webPicker;
 import 'package:crypto/crypto.dart' as crypto;
 import 'package:intl/intl.dart';
+import '../../core/services/server.dart';
 import '../groupChatScreen/AddAttachmentsPopUp.dart';
 import '../home/CustomAppBar.dart';
 import '../../constants/constant.dart';
@@ -92,13 +93,6 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void dispose() {
     // getApplicationDocumentsDirectory().then((value) async {
-    //   print(
-    //       'contentonChatScreen${_groupListProvider.groupList.groups![index]!.chatList![index]!.content}');
-    //   final encodedStr = _groupListProvider
-    //       .groupList.groups![index]!.chatList![index]!.content;
-    //   // print('valueofPath${value.path}');
-    // });
-    // microphoneRecorder.dispose
 
     super.dispose();
   }
@@ -247,74 +241,40 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Future getImage(String src) async {
     print('yes im here');
-    PickedFile? pickedFile;
+    XFile? pickedFile;
 
     if (src == "Gallery") {
-      pickedFile = (await picker.getImage(source: ImageSource.gallery))!;
+      pickedFile = (await picker.pickImage(source: ImageSource.gallery));
       // pickedFile = await picker.getVideo(source: ImageSource.gallery);
       // Navigator.pop(context);
     }
     if (src == "Camera") {
-      pickedFile = (await picker.getImage(source: ImageSource.camera))!;
+      pickedFile = (await picker.pickImage(source: ImageSource.camera));
       // Navigator.pop(context);
     }
     print('Image pickedd${pickedFile!.readAsBytes()}');
     // ignore: unnecessary_null_comparison
     if (pickedFile != null) {
-      // if (kIsWeb) {
-      //   try {
-      //     Uint8List? uploadfile = await pickedFile.readAsBytes();
-      //     print('${uploadfile.length}');
-      //     print('this is uploadinfh${uploadfile}');
-      //     print('this is extension${uploadfile}');
-      //     print('pickedFileeee${pickedFile.path}');
-      //     if (uploadfile.length > 6000000) {
-      //       buildShowDialog(context, "Error Message",
-      //           "File size should be less than 6 MB!!");
-      //       return;
-      //     }
-      //     print('path of picked file${pickedFile.path}');
-      //     Map<String, dynamic> filePacket = {
-      //       "id": generateMd5(
-      //           _groupListProvider.groupList.groups![index]!.channel_key),
-      //       // "topic": _groupListProvider.groupList.groups[index].channel_name,
-      //       "to": _groupListProvider.groupList.groups![index]!.channel_name,
-      //       "key": _groupListProvider.groupList.groups![index]!.channel_key,
-      //       "from": authProvider.getUser!.ref_id,
-      //       "type": MediaType.image,
-      //       "content": base64.encode(uploadfile),
-      //       "fileExtension": (pickedFile.path.split('/').last),
-      //       "isGroupMessage": false,
-      //       "size": 0,
-      //       "date": ((DateTime.now()).millisecondsSinceEpoch).round(),
-      //       "status": ReceiptType.sent,
-      //     };
-      //     widget.publishMessage(
-      //         _groupListProvider.groupList.groups![index]!.channel_key,
-      //         _groupListProvider.groupList.groups![index]!.channel_name,
-      //         filePacket);
-      //     filePacket["content"] =
-      //         kIsWeb ? pickedFile.path : File(pickedFile.path);
-      //     print('functionFinisheddddddddd');
-      //     // image = pickedFile.openRead()
-      //     // var bytes = await ImagePicker.pickImage(source: ImageSource.gallery).readAsBytes();
-      //     //  uploadfile = pickedFile.readAsBytes();
-      //     // print('imagePicked222 ${uploadfile}');
-      //   } catch (e) {
-      //     print('this is error with kISWeb$e');
-      //   }
-      // } else {
       image = File(pickedFile.path);
-//  ContactProvider contact = Provider.of<ContactProvider>(context, listen: false);
-// contact.sendFile(image, authProvider.getUser!.auth_token);
- 
-      Uint8List bytes = await pickedFile.readAsBytes();
-      print("bytes are $bytes");
-      if (bytes.length > 6000000) {
-        buildShowDialog(
-            context, "Error Message", "File size should be less than 6 MB!!");
-        return;
-      }
+      print("this is imaggggggeeee $image");
+      //ContactProvider contact = Provider.of<ContactProvider>(context, listen: false);
+//contact.sendFile(image, authProvider.getUser!.auth_token);
+      var apiData1 = {
+        "type": "ftp",
+        "extension": (pickedFile.path.split('.').last),
+        "uploadFile": image,
+        "auth_token": authProvider.getUser!.auth_token,
+      };
+      print("this is upload image data  $apiData1");
+      var currentpic = await loginPostPic(apiData1);
+      print("this is current pic $currentpic");
+      // Uint8List bytes = await pickedFile.readAsBytes();
+      // print("bytes are $bytes");
+      // if (bytes.length > 6000000) {
+      //   buildShowDialog(
+      //       context, "Error Message", "File size should be less than 6 MB!!");
+      //   return;
+      // }
       Map<String, dynamic> filePacket = {
         "id": generateMd5(
             _groupListProvider.groupList.groups![index]!.channel_key),
@@ -322,14 +282,16 @@ class _ChatScreenState extends State<ChatScreen> {
         "to": _groupListProvider.groupList.groups![index]!.channel_name,
         "key": _groupListProvider.groupList.groups![index]!.channel_key,
         "from": authProvider.getUser!.ref_id,
-        "type": MediaType.image,
-        "content": base64.encode(bytes),
+        "type": MediaType.ftp,
+        "subtype": SubType.image,
+        "content": currentpic["file_name"],
         "fileExtension": (pickedFile.path.split('.').last),
         "isGroupMessage": false,
         "size": 0,
         "date": ((DateTime.now()).millisecondsSinceEpoch).round(),
         "status": ReceiptType.sent,
       };
+      print("this is file packett $filePacket");
       widget.publishMessage(
           _groupListProvider.groupList.groups![index]!.channel_key,
           _groupListProvider.groupList.groups![index]!.channel_name,
@@ -451,27 +413,36 @@ class _ChatScreenState extends State<ChatScreen> {
     var type;
 
     if (isVideo == true) {
-      type = MediaType.video;
+      type = SubType.video;
     } else if (isAudio == true) {
-      type = MediaType.audio;
+      type = SubType.audio;
     } else if (isImage == true) {
-      type = MediaType.image;
+      type = SubType.image;
     } else {
-      type = MediaType.file;
+      type = SubType.file;
     }
     print("this is type $type");
     if (result != null) {
       if (kIsWeb) {
         try {
-          //  Navigator.pop(context);
+          Navigator.pop(context);
           Uint8List? uploadfile = result.files.single.bytes;
           print('upload files bytes${base64.encode(uploadfile!)}');
-          if (uploadfile!.length > 6000000) {
-            buildShowDialog(context, "Error Message",
-                "File size should be less than 6 MB!!");
-            return;
-          }
+          // if (uploadfile!.length > 6000000) {
+          //   buildShowDialog(context, "Error Message",
+          //       "File size should be less than 6 MB!!");
+          //   return;
+          // }
           print("this is file ${(result.files.single.name)}");
+          var apiData1 = {
+            "type": "ftp",
+            "extension": (result.files.single.name.toString().split('.').last),
+            "uploadFile": image,
+            "auth_token": authProvider.getUser!.auth_token,
+          };
+          print("this is upload image data  $apiData1");
+          var currentpic = await loginPostPic(apiData1);
+          print("this is current pic $currentpic");
           Map<String, dynamic> filePacket = {
             "id": generateMd5(
                 _groupListProvider.groupList.groups![index]!.channel_key),
@@ -479,8 +450,8 @@ class _ChatScreenState extends State<ChatScreen> {
             "to": _groupListProvider.groupList.groups![index]!.channel_name,
             "key": _groupListProvider.groupList.groups![index]!.channel_key,
             "from": authProvider.getUser!.ref_id,
-            "type": type,
-            "content": base64.encode(uploadfile),
+            "type": MediaType.ftp,
+            "content": currentpic["file_name"],
             "fileName": result.files.single.name.toString(),
             "fileExtension":
                 (result.files.single.name.toString().split('.').last),
@@ -509,16 +480,25 @@ class _ChatScreenState extends State<ChatScreen> {
       } else {
         //  Navigator.pop(context);
         File file = File(result.files.first.path!);
-        print('path of file${file.path}');
-        Uint8List bytes = await file.readAsBytes();
-        print("bytes length ${bytes.length}");
-        if (bytes.length > 6000000) {
-          buildShowDialog(
-              context, "Error Message", "File size should be less than 6 MB!!");
-          return;
-        }
-        print("this is file ${(file.path.split('.').last)}");
-        print("this bytess${bytes}");
+        // print('path of file${file.path}');
+        // Uint8List bytes = await file.readAsBytes();
+        // print("bytes length ${bytes.length}");
+        // if (bytes.length > 6000000) {
+        //   buildShowDialog(
+        //       context, "Error Message", "File size should be less than 6 MB!!");
+        //   return;
+        // }
+        // print("this is file ${(file.path.split('.').last)}");
+        // print("this bytess${bytes}");
+        var apiData1 = {
+          "type": "ftp",
+          "extension": file.path.split('.').last,
+          "uploadFile": file,
+          "auth_token": authProvider.getUser!.auth_token,
+        };
+        print("this is upload image data  $apiData1");
+        var currentpic = await loginPostPic(apiData1);
+        print("this is current pic $currentpic");
         Map<String, dynamic> filePacket = {
           "id": generateMd5(
               _groupListProvider.groupList.groups![index]!.channel_key),
@@ -526,8 +506,8 @@ class _ChatScreenState extends State<ChatScreen> {
           "to": _groupListProvider.groupList.groups![index]!.channel_name,
           "key": _groupListProvider.groupList.groups![index]!.channel_key,
           "from": authProvider.getUser!.ref_id,
-          "type": type,
-          "content": base64.encode(bytes),
+          "type": MediaType.ftp,
+          "content": currentpic["file_name"],
           "fileExtension": (file.path.split('.').last),
           // p.extension(file.path.lastIndexOf('.')).substring(1)),
           "isGroupMessage": false,
@@ -713,7 +693,7 @@ class _ChatScreenState extends State<ChatScreen> {
     // var decode = utf8.decode(content.toString().codeUnits);
     // print("Decode is $decode");
     print(
-        "this is content of receiving mesgs${groupListProvider.groupList.groups![index]!.chatList![chatindex]!.content}");
+        "this is content of receiving mesgs ${groupListProvider.groupList.groups![index]!.chatList![chatindex]!.content} ${groupListProvider.groupList.groups![index]!.chatList![chatindex]!.subtype}");
     return Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -742,428 +722,599 @@ class _ChatScreenState extends State<ChatScreen> {
                           children: <Widget>[
                             Flexible(
                               child: Container(
-                                padding: EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  // color: groupListProvider
-                                  //             .groupList
-                                  //             .groups[index]
-                                  //             .chatList[chatindex]
-                                  //             .type ==
-                                  //         MediaType.image
-                                  //     ? Colors.white
-                                  //     : receiverMessagecolor,
-                                ),
-                                //The Text Inside Receiver Container//
-                                child: groupListProvider
-                                            .groupList
-                                            .groups![index]!
-                                            .chatList![chatindex]!
-                                            .type ==
-                                        MessageType.text
-                                    ?
-                                    //If we have type not equal to 0 then we have to show the content inside the message
-                                    Container(
-                                        decoration: BoxDecoration(
-                                          color: receiverMessagecolor,
-                                          borderRadius:
-                                              BorderRadius.circular(5.0),
-                                        ),
-                                        padding: EdgeInsets.all(8),
-                                        // color: receiverMessagecolor,
-                                        child: Text(
-                                          "${content.toString()}",
-                                          textAlign: TextAlign.left,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 14,
+                                  padding: EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    // color: groupListProvider
+                                    //             .groupList
+                                    //             .groups[index]
+                                    //             .chatList[chatindex]
+                                    //             .type ==
+                                    //         MediaType.image
+                                    //     ? Colors.white
+                                    //     : receiverMessagecolor,
+                                  ),
+                                  //The Text Inside Receiver Container//
+                                  child: groupListProvider
+                                              .groupList
+                                              .groups![index]!
+                                              .chatList![chatindex]!
+                                              .type ==
+                                          MessageType.text
+                                      ?
+                                      //If we have type not equal to 0 then we have to show the content inside the message
+                                      Container(
+                                          decoration: BoxDecoration(
+                                            color: receiverMessagecolor,
+                                            borderRadius:
+                                                BorderRadius.circular(5.0),
                                           ),
-                                        ),
-                                      )
-                                    :
-                                    //If its an image then we will check if its on web or mobile device
-                                    groupListProvider.groupList.groups![index]!
-                                                .chatList![chatindex]!.type ==
-                                            MediaType.image
-                                        ? kIsWeb
-                                            ? Container(
-                                                width: 200,
-                                                child:
-                                                    // Column(
-                                                    //   children: [
-                                                    //     IconButton(
-                                                    //       onPressed: () {
-                                                    // anchorElement.click();
-                                                    // groupListProvider.downloadFile(
-                                                    //     urlGenerated
-                                                    //         .toString(),
-                                                    //     groupListProvider
-                                                    //         .groupList
-                                                    //         .groups![index]!
-                                                    //         .chatList![
-                                                    //             chatindex]!
-                                                    //         .fileName,
-                                                    //     groupListProvider
-                                                    //         .groupList
-                                                    //         .groups![index]!
-                                                    //         .chatList![
-                                                    //             chatindex]!
-                                                    //         .fileExtension);
-                                                    //   },
-                                                    //   icon: Icon(Icons
-                                                    //       .file_download_outlined),
-                                                    // ),
-                                                    kIsWeb
-                                                        ? Image.memory(
-                                                            groupListProvider
-                                                                .groupList
-                                                                .groups![index]!
-                                                                .chatList![
-                                                                    chatindex]!
-                                                                .content,
-                                                            fit: BoxFit.fill,
-                                                          )
-                                                        : Image.file(
-                                                            groupListProvider
-                                                                .groupList
-                                                                .groups![index]!
-                                                                .chatList![
-                                                                    chatindex]!
-                                                                .content,
-                                                            fit: BoxFit.fill,
-                                                          ),
-                                                //   ],
-                                                // )
-                                              )
-                                            : Container(
-                                                padding: EdgeInsets.all(8),
-                                                width: 200,
-                                                decoration: BoxDecoration(
-                                                  color:
-                                                      searchbarContainerColor,
-                                                  //       //searchbarContainerColor,
-                                                  // border: Border.all(
-                                                  //  // color: Colors.white,
-                                                  //  // color:Colors.red
-                                                  //       //searchbarContainerColor,
-                                                  //   // width: 15,
-                                                  // ),
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          5.0),
-                                                ),
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          5.0),
-                                                  child: kIsWeb
-                                                      ? Image.memory(
-                                                          groupListProvider
-                                                              .groupList
-                                                              .groups![index]!
-                                                              .chatList![
-                                                                  chatindex]!
-                                                              .content,
-                                                        )
-                                                      : Image.file(
-                                                          groupListProvider
-                                                              .groupList
-                                                              .groups![index]!
-                                                              .chatList![
-                                                                  chatindex]!
-                                                              .content,
-                                                          fit: BoxFit.fill,
-                                                        ),
-                                                ),
-                                              )
-                                        : groupListProvider
-                                                    .groupList
-                                                    .groups![index]!
-                                                    .chatList![chatindex]!
-                                                    .type ==
-                                                MediaType.audio
-                                            ? kIsWeb
-                                                ?
-                                                //for audio
-                                                AudioWidget(
-                                                    groupListProvider:
-                                                        groupListProvider,
-                                                    chatindex: chatindex,
-                                                    index: index,
-                                                    file1: File('dummy.txt'),
-                                                    file: groupListProvider
-                                                        .groupList
-                                                        .groups![index]!
-                                                        .chatList![chatindex]!
-                                                        .content,
-                                                    isReceive: true,
-                                                  )
-                                                : AudioWidget(
-                                                    groupListProvider:
-                                                        groupListProvider,
-                                                    chatindex: chatindex,
-                                                    index: index,
-                                                    file: "",
-                                                    file1: groupListProvider
-                                                        .groupList
-                                                        .groups![index]!
-                                                        .chatList![chatindex]!
-                                                        .content,
-                                                    isReceive: true,
-                                                  )
-                                            // Text('fdgsdhg')
-                                            : groupListProvider
-                                                        .groupList
-                                                        .groups![index]!
-                                                        .chatList![chatindex]!
-                                                        .type ==
-                                                    MediaType.video
-                                                ?
-                                                //for video
-                                                InkWell(
-                                                    onTap: () {
-                                                      print(
-                                                          "i am opening file1");
-                                                      kIsWeb
-                                                          ? Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          VideoScreen(
-                                                                            text:
-                                                                                groupListProvider.groupList.groups![index]!.chatList![chatindex]!.content.toString(),
-                                                                          )))
-                                                          // ? groupListProvider.playVideo(
+                                          padding: EdgeInsets.all(8),
+                                          // color: receiverMessagecolor,
+                                          child: Text(
+                                            "${content.toString()}",
+                                            textAlign: TextAlign.left,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        )
+                                      :
+                                      //If its an image then we will check if its on web or mobile device
+                                      groupListProvider
+                                                  .groupList
+                                                  .groups![index]!
+                                                  .chatList![chatindex]!
+                                                  .type ==
+                                              MediaType.ftp
+                                          ?
+                                          // ? Container(child:Text("hehvdsghvcgdbgbvdsgvdgbgvgdb")):Container()
+                                          groupListProvider
+                                                      .groupList
+                                                      .groups![index]!
+                                                      .chatList![chatindex]!
+                                                      .subtype ==
+                                                  SubType.image
+                                              ? kIsWeb
+                                                  ? Container(
+                                                      width: 200,
+                                                      child:
+                                                          // Column(
+                                                          //   children: [
+                                                          //     IconButton(
+                                                          //       onPressed: () {
+                                                          // anchorElement.click();
+                                                          // groupListProvider.downloadFile(
+                                                          //     urlGenerated
+                                                          //         .toString(),
                                                           //     groupListProvider
                                                           //         .groupList
-                                                          //         .groups![
-                                                          //             index]!
+                                                          //         .groups![index]!
                                                           //         .chatList![
                                                           //             chatindex]!
-                                                          //         .content
-                                                          //         .toString())
-                                                          // ? VideoPlayer(videocontroller =
-                                                          //     VideoPlayerController.network(
-                                                          //         groupListProvider
-                                                          //             .groupList
-                                                          //             .groups![
-                                                          //                 index]!
-                                                          //             .chatList![
-                                                          //                 chatindex]!
-                                                          //             .content)
-                                                          //       ..addListener(() =>
-                                                          //           setState(
-                                                          //               () {}))
-                                                          //       ..setLooping(
-                                                          //           true)
-                                                          //       ..initialize()
-                                                          //           .then((_) =>
-                                                          //               videocontroller!
-                                                          //                   .play()))
-                                                          // ? OpenFile.open(
+                                                          //         .fileName,
                                                           //     groupListProvider
                                                           //         .groupList
-                                                          //         .groups![
-                                                          //             index]!
+                                                          //         .groups![index]!
                                                           //         .chatList![
                                                           //             chatindex]!
-                                                          //         .content)
-                                                          : OpenFile.open(
-                                                              groupListProvider
-                                                                  .groupList
-                                                                  .groups![
-                                                                      index]!
-                                                                  .chatList![
-                                                                      chatindex]!
-                                                                  .content
-                                                                  .path,
-                                                            );
-                                                      //  Navigator.of(context).push(
-                                                      //   new MaterialPageRoute<Null>(
-                                                      //       builder:
-                                                      //           (BuildContext context) {
-                                                      //         return DocumentViewer(
-                                                      //           file: groupListProvider
-                                                      //               .groupList
-                                                      //               .groups[index]
-                                                      //               .chatList[chatindex]
-                                                      //               .content
-                                                      //         );
-                                                      //       },
-                                                      //       fullscreenDialog: true));
-                                                    },
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        color:
-                                                            receiverMessagecolor,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5.0),
-                                                      ),
-                                                      padding: EdgeInsets.only(
-                                                          top: 16,
-                                                          bottom: 16,
-                                                          left: 15,
-                                                          right: 20),
-                                                      // width: 250,
-                                                      child: kIsWeb
-                                                          ? Text(
-                                                              groupListProvider
-                                                                  .groupList
-                                                                  .groups![
-                                                                      index]!
-                                                                  .chatList![
-                                                                      chatindex]!
-                                                                  .fileExtension,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .left,
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 14,
-                                                              ),
-                                                            )
-                                                          : Text(
-                                                              groupListProvider
-                                                                  .groupList
-                                                                  .groups![
-                                                                      index]!
-                                                                  .chatList![
-                                                                      chatindex]!
-                                                                  .content
-                                                                  .path
-                                                                  .toString()
-                                                                  .split("/")
-                                                                  .last,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .left,
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: 14,
-                                                              ),
-                                                            ),
-                                                    ),
-                                                  )
-                                                :
-                                                //for file
-                                                InkWell(
-                                                    onTap: () {
-                                                      print(
-                                                          "i am opening file2");
-                                                      OpenFile.open(
-                                                        groupListProvider
-                                                            .groupList
-                                                            .groups![index]!
-                                                            .chatList![
-                                                                chatindex]!
-                                                            .content
-                                                            .path,
-                                                      );
-                                                      //  Navigator.of(context).push(
-                                                      //   new MaterialPageRoute<Null>(
-                                                      //       builder:
-                                                      //           (BuildContext context) {
-                                                      //         return DocumentViewer(
-                                                      //           file: groupListProvider
-                                                      //               .groupList
-                                                      //               .groups[index]
-                                                      //               .chatList[chatindex]
-                                                      //               .content
-                                                      //         );
-                                                      //       },
-                                                      //       fullscreenDialog: true));
-                                                    },
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                        color:
-                                                            receiverMessagecolor,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(5.0),
-                                                      ),
-                                                      padding: EdgeInsets.only(
-                                                          top: 16,
-                                                          bottom: 16,
-                                                          left: 15,
-                                                          right: 20),
-                                                      child: kIsWeb
-                                                          ? Text(
-                                                              groupListProvider
-                                                                  .groupList
-                                                                  .groups![
-                                                                      index]!
-                                                                  .chatList![
-                                                                      chatindex]!
-                                                                  .content
-                                                                  .toString()
-                                                                  .split('/')
-                                                                  .last,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .left,
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                // color:
-                                                                //     sendMessageColoer,
-                                                                fontSize: 14,
-                                                              ),
-                                                            )
-                                                          : Text(
-                                                              groupListProvider
-                                                                  .groupList
-                                                                  .groups![
-                                                                      index]!
-                                                                  .chatList![
-                                                                      chatindex]!
-                                                                  .content
-                                                                  .toString()
-                                                                  .split('/')
-                                                                  .last,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .left,
-                                                              style: TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                                // color:
-                                                                //     sendMessageColoer,
-                                                                fontSize: 14,
-                                                              ),
-                                                            ),
-                                                      // SizedBox(
-                                                      //   height: 5,
-                                                      // ),
-                                                      // IconButton(
-                                                      //   onPressed: () {
-                                                      //     // groupListProvider.downloadFile(
-                                                      //     //     urlGenerated
-                                                      //     //         .toString(),
-                                                      //     //     groupListProvider
-                                                      //     //         .groupList
-                                                      //     //         .groups![
-                                                      //     //             index]!
-                                                      //     //         .chatList![
-                                                      //     //             chatindex]!
-                                                      //     //         .fileName,
-                                                      //     //     groupListProvider
-                                                      //     //         .groupList
-                                                      //     //         .groups![
-                                                      //     //             index]!
-                                                      //     //         .chatList![
-                                                      //     //             chatindex]!
-                                                      //     //         .fileExtension);
-                                                      //   },
-                                                      //   icon: Icon(Icons
-                                                      //       .file_download_outlined),
+                                                          //         .fileExtension);
+                                                          //   },
+                                                          //   icon: Icon(Icons
+                                                          //       .file_download_outlined),
+                                                          // ),
+                                                          kIsWeb
+                                                              ? Image.memory(
+                                                                  groupListProvider
+                                                                      .groupList
+                                                                      .groups![
+                                                                          index]!
+                                                                      .chatList![
+                                                                          chatindex]!
+                                                                      .content,
+                                                                  fit: BoxFit
+                                                                      .fill,
+                                                                )
+                                                              : Image.network(
+                                                                  groupListProvider
+                                                                      .groupList
+                                                                      .groups![
+                                                                          index]!
+                                                                      .chatList![
+                                                                          chatindex]!
+                                                                      .content,
+                                                                  fit: BoxFit
+                                                                      .fill,
+                                                                ),
+                                                      //   ],
                                                       // )
-                                                    ),
-                                                  ),
-                              ),
+                                                    )
+                                                  : Container(
+                                                      padding:
+                                                          EdgeInsets.all(8),
+                                                      width: 200,
+                                                      //
+                                                      // height: 100,
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            searchbarContainerColor,
+                                                        //       //searchbarContainerColor,
+                                                        // border: Border.all(
+                                                        //  // color: Colors.white,
+                                                        //  // color:Colors.red
+                                                        //       //searchbarContainerColor,
+                                                        //   // width: 15,
+                                                        // ),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5.0),
+                                                      ),
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(5.0),
+                                                        child: kIsWeb
+                                                            ? Image.memory(
+                                                                groupListProvider
+                                                                    .groupList
+                                                                    .groups![
+                                                                        index]!
+                                                                    .chatList![
+                                                                        chatindex]!
+                                                                    .content,
+                                                              )
+                                                            : Image.network(
+                                                                groupListProvider
+                                                                    .groupList
+                                                                    .groups![
+                                                                        index]!
+                                                                    .chatList![
+                                                                        chatindex]!
+                                                                    .content,
+                                                                loadingBuilder:
+                                                                    (context,
+                                                                        child,
+                                                                        loadingProgress) {
+                                                                  if (loadingProgress !=
+                                                                      null) {
+                                                                    return Center(
+                                                                      child:
+                                                                          CircularProgressIndicator(
+                                                                        valueColor:
+                                                                            AlwaysStoppedAnimation<Color>(chatRoomColor),
+                                                                        //  strokeWidth: 3.0,
+                                                                      ),
+                                                                    );
+                                                                    // return const Center(
+                                                                    //     child: Text(
+                                                                    //         'Loading...'));
+                                                                  } else {
+                                                                    return child;
+                                                                  }
+                                                                },
+                                                                fit:
+                                                                    BoxFit.fill,
+                                                              ),
+                                                      ),
+                                                    )
+                                              : groupListProvider
+                                                          .groupList
+                                                          .groups![index]!
+                                                          .chatList![chatindex]!
+                                                          .subtype ==
+                                                      SubType.audio
+                                                  ? kIsWeb
+                                                      ?
+                                                      //for audio
+                                                      Text("for web audio")
+                                                      : Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            color:
+                                                                receiverMessagecolor,
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        5.0),
+                                                          ),
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  top: 16,
+                                                                  bottom: 16,
+                                                                  left: 15,
+                                                                  right: 20),
+                                                          // width: 250,
+                                                          child: Text(
+                                                            groupListProvider
+                                                                .groupList
+                                                                .groups![index]!
+                                                                .chatList![
+                                                                    chatindex]!
+                                                                .content
+                                                                .toString()
+                                                                .split('/')
+                                                                .last
+                                                                .split("=")
+                                                                .last,
+                                                            // +"." +  groupListProvider
+                                                            // .groupList
+                                                            // .groups![
+                                                            //     index]!
+                                                            // .chatList![
+                                                            //     chatindex]!
+                                                            // .fileExtension,
+                                                            // .path
+                                                            // .toString()
+                                                            // .split(
+                                                            //     "/")
+                                                            // .last,
+                                                            textAlign:
+                                                                TextAlign.left,
+                                                            style: TextStyle(
+                                                              color:
+                                                                  Colors.white,
+                                                              fontSize: 14,
+                                                            ),
+                                                          ),
+                                                        )
+                                                  // Text(
+                                                  //                groupListProvider
+                                                  //                   .groupList
+                                                  //                   .groups![
+                                                  //                       index]!
+                                                  //                   .chatList![
+                                                  //                       chatindex]!
+                                                  //                   .content
+                                                  //                   .toString()
+                                                  //                   .split(
+                                                  //                       '/')
+                                                  //                   .last.split("=").last,
+                                                  //                   // +"." +  groupListProvider
+                                                  //                   // .groupList
+                                                  //                   // .groups![
+                                                  //                   //     index]!
+                                                  //                   // .chatList![
+                                                  //                   //     chatindex]!
+                                                  //                   // .fileExtension,
+                                                  //                   // .path
+                                                  //                   // .toString()
+                                                  //                   // .split(
+                                                  //                   //     "/")
+                                                  //                   // .last,
+                                                  //               textAlign:
+                                                  //                   TextAlign
+                                                  //                       .left,
+                                                  //               style:
+                                                  //                   TextStyle(
+                                                  //                 color: Colors
+                                                  //                     .white,
+                                                  //                 fontSize:
+                                                  //                     14,
+                                                  //               ),
+                                                  //             )
+                                                  // AudioWidget(
+                                                  //     groupListProvider:
+                                                  //         groupListProvider,
+                                                  //     chatindex: chatindex,
+                                                  //     index: index,
+                                                  //     file1:
+                                                  //         File('dummy.txt'),
+                                                  //     file: groupListProvider
+                                                  //         .groupList
+                                                  //         .groups![index]!
+                                                  //         .chatList![
+                                                  //             chatindex]!
+                                                  //         .content,
+                                                  //     isReceive: true,
+                                                  //   )
+                                                  // : AudioWidget(
+                                                  //     groupListProvider:
+                                                  //         groupListProvider,
+                                                  //     chatindex: chatindex,
+                                                  //     index: index,
+                                                  //     //file: "",
+                                                  //     file:  "",
+                                                  //            // file1:
+                                                  //             //File('dummy.txt'),
+                                                  //     file1:
+                                                  //         groupListProvider
+                                                  //             .groupList
+                                                  //             .groups![
+                                                  //                 index]!
+                                                  //             .chatList![
+                                                  //                 chatindex]!
+                                                  //             .content,
+                                                  //     isReceive: true,
+                                                  //   )
+                                                  // Text('fdgsdhg')
+                                                  : groupListProvider
+                                                              .groupList
+                                                              .groups![index]!
+                                                              .chatList![
+                                                                  chatindex]!
+                                                              .subtype ==
+                                                          SubType.video
+                                                      ?
+                                                      //for video
+                                                      InkWell(
+                                                          onTap: () {
+                                                            print(
+                                                                "i am opening file1");
+                                                            // kIsWeb
+                                                            //     ? Navigator.push(
+                                                            //         context,
+                                                            //         MaterialPageRoute(
+                                                            //             builder:
+                                                            //                 (context) =>
+                                                            //                     VideoScreen(
+                                                            //                       text:
+                                                            //                           groupListProvider.groupList.groups![index]!.chatList![chatindex]!.content.toString(),
+                                                            //                     )))
+                                                            //     // ? groupListProvider.playVideo(
+                                                            //     //     groupListProvider
+                                                            //     //         .groupList
+                                                            //     //         .groups![
+                                                            //     //             index]!
+                                                            //     //         .chatList![
+                                                            //     //             chatindex]!
+                                                            //     //         .content
+                                                            //     //         .toString())
+                                                            //     // ? VideoPlayer(videocontroller =
+                                                            //     //     VideoPlayerController.network(
+                                                            //     //         groupListProvider
+                                                            //     //             .groupList
+                                                            //     //             .groups![
+                                                            //     //                 index]!
+                                                            //     //             .chatList![
+                                                            //     //                 chatindex]!
+                                                            //     //             .content)
+                                                            //     //       ..addListener(() =>
+                                                            //     //           setState(
+                                                            //     //               () {}))
+                                                            //     //       ..setLooping(
+                                                            //     //           true)
+                                                            //     //       ..initialize()
+                                                            //     //           .then((_) =>
+                                                            //     //               videocontroller!
+                                                            //     //                   .play()))
+                                                            //     // ? OpenFile.open(
+                                                            //     //     groupListProvider
+                                                            //     //         .groupList
+                                                            //     //         .groups![
+                                                            //     //             index]!
+                                                            //     //         .chatList![
+                                                            //     //             chatindex]!
+                                                            //     //         .content)
+                                                            //     : OpenFile.open(
+                                                            //         groupListProvider
+                                                            //             .groupList
+                                                            //             .groups![
+                                                            //                 index]!
+                                                            //             .chatList![
+                                                            //                 chatindex]!
+                                                            //             .content
+                                                            //             .path,
+                                                            //       );
+                                                            //  Navigator.of(context).push(
+                                                            //   new MaterialPageRoute<Null>(
+                                                            //       builder:
+                                                            //           (BuildContext context) {
+                                                            //         return DocumentViewer(
+                                                            //           file: groupListProvider
+                                                            //               .groupList
+                                                            //               .groups[index]
+                                                            //               .chatList[chatindex]
+                                                            //               .content
+                                                            //         );
+                                                            //       },
+                                                            //       fullscreenDialog: true));
+                                                          },
+                                                          child: Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  receiverMessagecolor,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5.0),
+                                                            ),
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    top: 16,
+                                                                    bottom: 16,
+                                                                    left: 15,
+                                                                    right: 20),
+                                                            // width: 250,
+                                                            child: kIsWeb
+                                                                ? Text(
+                                                                    groupListProvider
+                                                                        .groupList
+                                                                        .groups![
+                                                                            index]!
+                                                                        .chatList![
+                                                                            chatindex]!
+                                                                        .fileExtension,
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .left,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          14,
+                                                                    ),
+                                                                  )
+                                                                : Text(
+                                                                    groupListProvider
+                                                                        .groupList
+                                                                        .groups![
+                                                                            index]!
+                                                                        .chatList![
+                                                                            chatindex]!
+                                                                        .content
+                                                                        .toString()
+                                                                        .split(
+                                                                            '/')
+                                                                        .last
+                                                                        .split(
+                                                                            "=")
+                                                                        .last,
+                                                                    // +"." +  groupListProvider
+                                                                    // .groupList
+                                                                    // .groups![
+                                                                    //     index]!
+                                                                    // .chatList![
+                                                                    //     chatindex]!
+                                                                    // .fileExtension,
+                                                                    // .path
+                                                                    // .toString()
+                                                                    // .split(
+                                                                    //     "/")
+                                                                    // .last,
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .left,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      fontSize:
+                                                                          14,
+                                                                    ),
+                                                                  ),
+                                                          ),
+                                                        )
+                                                      :
+                                                      //for file
+                                                      InkWell(
+                                                          onTap: () {
+                                                            print(
+                                                                "i am opening file2");
+                                                            OpenFile.open(
+                                                                groupListProvider
+                                                                    .groupList
+                                                                    .groups![
+                                                                        index]!
+                                                                    .chatList![
+                                                                        chatindex]!
+                                                                    .content);
+                                                            //  Navigator.of(context).push(
+                                                            //   new MaterialPageRoute<Null>(
+                                                            //       builder:
+                                                            //           (BuildContext context) {
+                                                            //         return DocumentViewer(
+                                                            //           file: groupListProvider
+                                                            //               .groupList
+                                                            //               .groups[index]
+                                                            //               .chatList[chatindex]
+                                                            //               .content
+                                                            //         );
+                                                            //       },
+                                                            //       fullscreenDialog: true));
+                                                          },
+                                                          child: Container(
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color:
+                                                                  receiverMessagecolor,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5.0),
+                                                            ),
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    top: 16,
+                                                                    bottom: 16,
+                                                                    left: 15,
+                                                                    right: 20),
+                                                            child: kIsWeb
+                                                                ? Text(
+                                                                    groupListProvider
+                                                                        .groupList
+                                                                        .groups![
+                                                                            index]!
+                                                                        .chatList![
+                                                                            chatindex]!
+                                                                        .content
+                                                                        .toString()
+                                                                        .split(
+                                                                            '/')
+                                                                        .last,
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .left,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      // color:
+                                                                      //     sendMessageColoer,
+                                                                      fontSize:
+                                                                          14,
+                                                                    ),
+                                                                  )
+                                                                : Text(
+                                                                    // "fjdghdfjhkdfjdfk",
+                                                                    groupListProvider
+                                                                        .groupList
+                                                                        .groups![
+                                                                            index]!
+                                                                        .chatList![
+                                                                            chatindex]!
+                                                                        .content
+                                                                        .toString()
+                                                                        .split(
+                                                                            '/')
+                                                                        .last
+                                                                        .split(
+                                                                            "=")
+                                                                        .last,
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .left,
+                                                                    style:
+                                                                        TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      // color:
+                                                                      //     sendMessageColoer,
+                                                                      fontSize:
+                                                                          14,
+                                                                    ),
+                                                                  ),
+                                                            // SizedBox(
+                                                            //   height: 5,
+                                                            // ),
+                                                            // IconButton(
+                                                            //   onPressed: () {
+                                                            //     // groupListProvider.downloadFile(
+                                                            //     //     urlGenerated
+                                                            //     //         .toString(),
+                                                            //     //     groupListProvider
+                                                            //     //         .groupList
+                                                            //     //         .groups![
+                                                            //     //             index]!
+                                                            //     //         .chatList![
+                                                            //     //             chatindex]!
+                                                            //     //         .fileName,
+                                                            //     //     groupListProvider
+                                                            //     //         .groupList
+                                                            //     //         .groups![
+                                                            //     //             index]!
+                                                            //     //         .chatList![
+                                                            //     //             chatindex]!
+                                                            //     //         .fileExtension);
+                                                            //   },
+                                                            //   icon: Icon(Icons
+                                                            //       .file_download_outlined),
+                                                            // )
+                                                          ),
+                                                        )
+                                          : Container()),
                             ),
                             Container(
                                 // margin: EdgeInsets.only(top: 25, left: 10),
@@ -1199,7 +1350,7 @@ class _ChatScreenState extends State<ChatScreen> {
     //     groupListProvider.groupList.groups[index].chatList[chatindex].from);
     print("this is chat indexxx $chatindex");
     print(
-        'chat available${groupListProvider.groupList.groups![index]!.chatList![chatindex]!.content}');
+        'chat available ${groupListProvider.groupList.groups![index]!.chatList![chatindex]!.content} ${groupListProvider.groupList.groups![index]!.chatList![chatindex]!.subtype}');
     // if (groupListProvider.groupList.groups[index].chatList.length == 0) {
     //   groupListProvider.readmodelList = [];
     // }
@@ -1311,11 +1462,13 @@ class _ChatScreenState extends State<ChatScreen> {
                       )
                     : groupListProvider.groupList.groups![index]!
                                 .chatList![chatindex]!.type ==
-                            MediaType.image
-                        ?
-                        //for image
-                        kIsWeb
-                            ? Container(
+                            MediaType.ftp
+                        ? groupListProvider.groupList.groups![index]!
+                                    .chatList![chatindex]!.subtype ==
+                                SubType.image
+                            ?
+                            //for image
+                            Container(
                                 padding: EdgeInsets.only(
                                     top: 16, bottom: 16, left: 20, right: 20),
                                 color: messageTimeColor,
@@ -1337,15 +1490,35 @@ class _ChatScreenState extends State<ChatScreen> {
                                               .groups![index]!
                                               .chatList![chatindex]!
                                               .content,
+                                          // loadingBuilder: (context, child,
+                                          //     loadingProgress) {
+                                          //   if (loadingProgress != null) {
+                                          //     return Center(
+                                          //       child:
+                                          //           CircularProgressIndicator(
+                                          //         valueColor:
+                                          //             AlwaysStoppedAnimation<
+                                          //                 Color>(chatRoomColor),
+                                          //         //  strokeWidth: 3.0,
+                                          //       ),
+                                          //     );
+                                          //     // return const Center(
+                                          //     //     child: Text(
+                                          //     //         'Loading...'));
+                                          //   } else {
+                                          //     return child;
+                                          //   }
+                                          // },
                                           fit: BoxFit.fill,
                                         ),
+                                 
                                 ))
                             : InkWell(
                                 onTap: () {
                                   print("i am opening file3");
                                   OpenFile.open(
                                     groupListProvider.groupList.groups![index]!
-                                        .chatList![chatindex]!.content.path,
+                                        .chatList![chatindex]!.content,
                                   );
                                 },
                                 child: Container(
@@ -1394,201 +1567,222 @@ class _ChatScreenState extends State<ChatScreen> {
                                                     .content,
                                                 fit: BoxFit.fill,
                                               )
-                                            : Image.file(
+                                            : Text(
+                                                // "fjdghdfjhkdfjdfk",
                                                 groupListProvider
                                                     .groupList
                                                     .groups![index]!
                                                     .chatList![chatindex]!
-                                                    .content,
-                                                fit: BoxFit.fill,
+                                                    .content
+                                                    .toString()
+                                                    .split('/')
+                                                    .last,
+                                                    // .split("=")
+                                                    // .last,
+                                                textAlign: TextAlign.left,
+                                                style: TextStyle(
+                                                  color: Colors.black,
+                                                  // color:
+                                                  //     sendMessageColoer,
+                                                  fontSize: 14,
+                                                ),
                                               ),
+
+                                    // Image.file(
+                                    //     groupListProvider
+                                    //         .groupList
+                                    //         .groups![index]!
+                                    //         .chatList![chatindex]!
+                                    //         .content,
+                                    //     fit: BoxFit.fill,
+                                    //   ),
                                     //   ],
                                     // ),
                                   ),
                                 ),
                               )
-                        : groupListProvider.groupList.groups![index]!
-                                    .chatList![chatindex]!.type ==
-                                MediaType.audio
-                            ?
-                            //for audio
-                            kIsWeb
-                                ?
-                                // ? AudioWidget(groupListProvider: groupListProvider, chatindex: chatindex, index: index, file1:, file: file, isReceive: isReceive)
-                                AudioWidget(
-                                    groupListProvider: groupListProvider,
-                                    chatindex: chatindex,
-                                    index: index,
-                                    file1: File('dummy.txt'),
-                                    file: groupListProvider
-                                        .groupList
-                                        .groups![index]!
-                                        .chatList![chatindex]!
-                                        .content,
-                                    isReceive: false,
-                                  )
-                                : AudioWidget(
-                                    groupListProvider: groupListProvider,
-                                    chatindex: chatindex,
-                                    index: index,
-                                    file: "",
-                                    file1: groupListProvider
-                                        .groupList
-                                        .groups![index]!
-                                        .chatList![chatindex]!
-                                        .content,
-                                    isReceive: false,
-                                  )
-                            : groupListProvider.groupList.groups![index]!
-                                        .chatList![chatindex]!.type ==
-                                    MediaType.video
-                                ?
-                                //for video
-                                // Container()
-                                InkWell(
-                                    onTap: () {
-                                      print("i am opening file4");
-                                      kIsWeb
-                                          ? Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      VideoScreen(
-                                                        text: groupListProvider
-                                                            .groupList
-                                                            .groups![index]!
-                                                            .chatList![
-                                                                chatindex]!
-                                                            .content
-                                                            .toString(),
-                                                      )))
-                                          : OpenFile.open(groupListProvider
-                                              .groupList
-                                              .groups![index]!
-                                              .chatList![chatindex]!
-                                              .content
-                                              .path);
-                                      // Navigator.of(context)
-                                      //     .push(new MaterialPageRoute<Null>(
-                                      //         builder: (BuildContext context) {
-                                      //           return VideoItems(
-                                      //             file: groupListProvider
-                                      //                 .groupList
-                                      //                 .groups[index]
-                                      //                 .chatList[chatindex]
-                                      //                 .content
-                                      //                 .path,
-                                      //             // videoPlayerController:
-                                      //             //     VideoPlayerController.network(
-                                      //             //         groupListProvider.groupList.groups[index].chatList[chatindex].content),
-                                      //             looping: false,
-                                      //             autoplay: true,
-                                      //           );
-                                      //         },
-                                      //         fullscreenDialog: true));
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.only(
-                                          top: 16,
-                                          bottom: 16,
-                                          left: 20,
-                                          right: 20),
-                                      child: kIsWeb
-                                          ? Text(
-                                              groupListProvider
-                                                  .groupList
-                                                  .groups![index]!
-                                                  .chatList![chatindex]!
-                                                  .fileExtension,
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                color: sendMessageColoer,
-                                                fontSize: 14,
-                                              ),
-                                            )
-                                          : Text(
-                                              groupListProvider
-                                                  .groupList
-                                                  .groups![index]!
-                                                  .chatList![chatindex]!
-                                                  .content
-                                                  .path
-                                                  .toString()
-                                                  .split("/")
-                                                  .last,
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                color: sendMessageColoer,
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                    ))
-                                :
-                                //for file
-                                InkWell(
-                                    onTap: () {
-                                      print("i am opening file5");
+                        // : groupListProvider.groupList.groups![index]!
+                        //             .chatList![chatindex]!.type ==
+                        //         MediaType.audio
+                        //     ?
+                        //     //for audio
+                        //     kIsWeb
+                        //         ?
+                        //         // ? AudioWidget(groupListProvider: groupListProvider, chatindex: chatindex, index: index, file1:, file: file, isReceive: isReceive)
+                        //         AudioWidget(
+                        //             groupListProvider: groupListProvider,
+                        //             chatindex: chatindex,
+                        //             index: index,
+                        //             file1: File('dummy.txt'),
+                        //             file: groupListProvider
+                        //                 .groupList
+                        //                 .groups![index]!
+                        //                 .chatList![chatindex]!
+                        //                 .content,
+                        //             isReceive: false,
+                        //           )
+                        //         : AudioWidget(
+                        //             groupListProvider: groupListProvider,
+                        //             chatindex: chatindex,
+                        //             index: index,
+                        //             file: "",
+                        //             file1: groupListProvider
+                        //                 .groupList
+                        //                 .groups![index]!
+                        //                 .chatList![chatindex]!
+                        //                 .content,
+                        //             isReceive: false,
+                        //           )
+                            // : groupListProvider.groupList.groups![index]!
+                            //             .chatList![chatindex]!.type ==
+                            //         MediaType.video
+                            //     ?
+                            //     //for video
+                            //     // Container()
+                            //     InkWell(
+                            //         onTap: () {
+                            //           print("i am opening file4");
+                            //           kIsWeb
+                            //               ? Navigator.push(
+                            //                   context,
+                            //                   MaterialPageRoute(
+                            //                       builder: (context) =>
+                            //                           VideoScreen(
+                            //                             text: groupListProvider
+                            //                                 .groupList
+                            //                                 .groups![index]!
+                            //                                 .chatList![
+                            //                                     chatindex]!
+                            //                                 .content
+                            //                                 .toString(),
+                            //                           )))
+                            //               : OpenFile.open(groupListProvider
+                            //                   .groupList
+                            //                   .groups![index]!
+                            //                   .chatList![chatindex]!
+                            //                   .content
+                            //                   .path);
+                            //           // Navigator.of(context)
+                            //           //     .push(new MaterialPageRoute<Null>(
+                            //           //         builder: (BuildContext context) {
+                            //           //           return VideoItems(
+                            //           //             file: groupListProvider
+                            //           //                 .groupList
+                            //           //                 .groups[index]
+                            //           //                 .chatList[chatindex]
+                            //           //                 .content
+                            //           //                 .path,
+                            //           //             // videoPlayerController:
+                            //           //             //     VideoPlayerController.network(
+                            //           //             //         groupListProvider.groupList.groups[index].chatList[chatindex].content),
+                            //           //             looping: false,
+                            //           //             autoplay: true,
+                            //           //           );
+                            //           //         },
+                            //           //         fullscreenDialog: true));
+                            //         },
+                            //         child: Container(
+                            //           padding: EdgeInsets.only(
+                            //               top: 16,
+                            //               bottom: 16,
+                            //               left: 20,
+                            //               right: 20),
+                            //           child: kIsWeb
+                            //               ? Text(
+                            //                   groupListProvider
+                            //                       .groupList
+                            //                       .groups![index]!
+                            //                       .chatList![chatindex]!
+                            //                       .fileExtension,
+                            //                   textAlign: TextAlign.left,
+                            //                   style: TextStyle(
+                            //                     color: sendMessageColoer,
+                            //                     fontSize: 14,
+                            //                   ),
+                            //                 )
+                            //               : Text(
+                            //                   groupListProvider
+                            //                       .groupList
+                            //                       .groups![index]!
+                            //                       .chatList![chatindex]!
+                            //                       .content
+                            //                       .path
+                            //                       .toString()
+                            //                       .split("/")
+                            //                       .last,
+                            //                   textAlign: TextAlign.left,
+                            //                   style: TextStyle(
+                            //                     color: sendMessageColoer,
+                            //                     fontSize: 14,
+                            //                   ),
+                            //                 ),
+                            //         ))
+                            //     :
+                            //     //for file
+                            //     InkWell(
+                            //         onTap: () {
+                            //           print("i am opening file5");
 
-                                      OpenFile.open(
-                                        groupListProvider
-                                            .groupList
-                                            .groups![index]!
-                                            .chatList![chatindex]!
-                                            .content
-                                            .path,
-                                      );
-                                      //  Navigator.of(context).push(
-                                      //   new MaterialPageRoute<Null>(
-                                      //       builder:
-                                      //           (BuildContext context) {
-                                      //         return DocumentViewer(
-                                      //           file: groupListProvider
-                                      //               .groupList
-                                      //               .groups[index]
-                                      //               .chatList[chatindex]
-                                      //               .content
-                                      //         );
-                                      //       },
-                                      //       fullscreenDialog: true));
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.only(
-                                          top: 16,
-                                          bottom: 16,
-                                          left: 20,
-                                          right: 20),
-                                      child: kIsWeb
-                                          ? Text(
-                                              groupListProvider
-                                                  .groupList
-                                                  .groups![index]!
-                                                  .chatList![chatindex]!
-                                                  .fileExtension,
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                color: sendMessageColoer,
-                                                fontSize: 14,
-                                              ),
-                                            )
-                                          : Text(
-                                              groupListProvider
-                                                  .groupList
-                                                  .groups![index]!
-                                                  .chatList![chatindex]!
-                                                  .content
-                                                  .path
-                                                  .toString()
-                                                  .split("/")
-                                                  .last,
-                                              textAlign: TextAlign.left,
-                                              style: TextStyle(
-                                                color: sendMessageColoer,
-                                                fontSize: 14,
-                                              ),
-                                            ),
-                                    ),
-                                  ),
-              ),
+                            //           OpenFile.open(
+                            //             groupListProvider
+                            //                 .groupList
+                            //                 .groups![index]!
+                            //                 .chatList![chatindex]!
+                            //                 .content
+                            //                 .path,
+                            //           );
+                            //           //  Navigator.of(context).push(
+                            //           //   new MaterialPageRoute<Null>(
+                            //           //       builder:
+                            //           //           (BuildContext context) {
+                            //           //         return DocumentViewer(
+                            //           //           file: groupListProvider
+                            //           //               .groupList
+                            //           //               .groups[index]
+                            //           //               .chatList[chatindex]
+                            //           //               .content
+                            //           //         );
+                            //           //       },
+                            //           //       fullscreenDialog: true));
+                            //         },
+                            //         child: Container(
+                            //           padding: EdgeInsets.only(
+                            //               top: 16,
+                            //               bottom: 16,
+                            //               left: 20,
+                            //               right: 20),
+                            //           child: kIsWeb
+                            //               ? Text(
+                            //                   groupListProvider
+                            //                       .groupList
+                            //                       .groups![index]!
+                            //                       .chatList![chatindex]!
+                            //                       .fileExtension,
+                            //                   textAlign: TextAlign.left,
+                            //                   style: TextStyle(
+                            //                     color: sendMessageColoer,
+                            //                     fontSize: 14,
+                            //                   ),
+                            //                 )
+                            //               : Text(
+                            //                   groupListProvider
+                            //                       .groupList
+                            //                       .groups![index]!
+                            //                       .chatList![chatindex]!
+                            //                       .content
+                            //                       .path
+                            //                       .toString()
+                            //                       .split("/")
+                            //                       .last,
+                            //                   textAlign: TextAlign.left,
+                            //                   style: TextStyle(
+                            //                     color: sendMessageColoer,
+                            //                     fontSize: 14,
+                            //                   ),
+                            //                 ),
+                            //         ),
+                            //       ),
+              :Container()),
             ),
           ]),
         ),
