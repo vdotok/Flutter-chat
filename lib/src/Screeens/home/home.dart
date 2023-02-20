@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:typed_data';
@@ -46,6 +47,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   late ContactProvider contactProvider;
   bool isResumed = true;
   bool inPaused = false;
+  late bool _permissionReady;
+  
 
   bool inInactive = false;
 
@@ -228,22 +231,26 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   if (!kIsWeb) {
                     print(
                         "this is messag content ${message["content"].toString()}");
-                    //     var response = await http.get(Uri.parse(message["content"].toString()));
-                    //  print("ths is parse responseeeeeeeee ${response.bodyBytes}");
-                    var extension = message["fileExtension"];
-                    // message["fileExtension"].toString().contains(".")
-                    //     ? message["fileExtension"]
-                    //     : '.' + message["fileExtension"];
-                    print("this is tempData ${extension}");
-                    //  final tempDir = await getTemporaryDirectory();
+  
+  //                         final List<int> codeUnits = message["content"].codeUnits;
+  // final Uint8List unit8List = Uint8List.fromList(codeUnits);
+  // print("unit8list $unit8List");
+  //                   //     var response = await http.get(Uri.parse(message["content"].toString()));
+  //                   //  print("ths is parse responseeeeeeeee ${response.bodyBytes}");
+  //                   var extension = message["fileExtension"];
+  //                   message["fileExtension"].toString().contains(".")
+  //                       ? message["fileExtension"]
+  //                       : '.' + message["fileExtension"];
+  //                   print("this is tempData ${extension}");
+  //                  final tempDir = await getTemporaryDirectory();
 
-                    // File file = await File(
-                    //         '${tempDir.path}/vdktok${(new DateTime.now()).millisecondsSinceEpoch.toString().trim()}$extension')
-                    //     .create();
-                    //     print("this is filllleee ${file}");
-                    // file.writeAsBytesSync(response.bodyBytes);
+  //                   File file = await File(
+  //                           '${tempDir.path}/vdktok${(new DateTime.now()).millisecondsSinceEpoch.toString().trim()}$extension')
+  //                       .create();
+  //                       print("this is filllleee ${file}");
+  //                   file.writeAsBytesSync(unit8List);
 
-                    //   receiptMsg["content"] = file;
+  //                   receiptMsg["content"] = file;
                     // message["id"] = message["messageId"];
                   } else {
                     print('inelseofFirst');
@@ -287,18 +294,18 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 // if same channel in not opened
                 else {
                   if (!kIsWeb) {
-                    var extension =
-                        message["fileExtension"].toString().contains(".")
-                            ? message["fileExtension"]
-                            : '.' + message["fileExtension"];
-                    print(
-                        "this is extension ${message["fileExtension"].toString().contains(".") ? message["fileExtension"] : '.' + message["fileExtension"]}");
-                    final tempDir = await getTemporaryDirectory();
-                    File file = await File(
-                            '${tempDir.path}/vdotok${(new DateTime.now()).millisecondsSinceEpoch.toString().trim()}$extension')
-                        .create();
-                    //  file.writeAsBytesSync(message["content"]);
-                    message["content"] = file;
+                    // var extension =
+                    //     message["fileExtension"].toString().contains(".")
+                    //         ? message["fileExtension"]
+                    //         : '.' + message["fileExtension"];
+                    // print(
+                    //     "this is extension ${message["fileExtension"].toString().contains(".") ? message["fileExtension"] : '.' + message["fileExtension"]}");
+                    // final tempDir = await getTemporaryDirectory();
+                    // File file = await File(
+                    //         '${tempDir.path}/vdotok${(new DateTime.now()).millisecondsSinceEpoch.toString().trim()}$extension')
+                    //     .create();
+                    // //  file.writeAsBytesSync(message["content"]);
+                    // message["content"] = file;
                     groupListProvider.recevieMsg(message);
                   } else {
                     final url = await JsManager.instance!.connect(
@@ -320,20 +327,24 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 if (!kIsWeb) {
                   print(
                       "this is messag contentttttttt ${message["content"].toString()}");
-                  //  var response = await http.get(Uri.parse(message["content"].toString()));
-                  //  print("ths is parse response ${response.bodyBytes}");
-                  // final tempDir = await getTemporaryDirectory();
-                  // var extension =
-                  //     message["fileExtension"].toString().contains(".")
-                  //         ? message["fileExtension"]
-                  //         : '.' + message["fileExtension"];
+  //                     final List<int> codeUnits = message["content"].codeUnits;
+  // final Uint8List unit8List = Uint8List.fromList(codeUnits);
+  //                 //  var response = await http.get(Uri.parse(message["content"].toString()));
+  //                 //  print("ths is parse response ${response.bodyBytes}");
+  //                  final tempDir = await getTemporaryDirectory();
+  //                 var extension =
+  //                     message["fileExtension"].toString().contains(".")
+  //                         ? message["fileExtension"]
+  //                         : '.' + message["fileExtension"];
 
-                  // File file = await File(
-                  //         '${tempDir.path}/vdotok${DateTime.now().toString().trim()}$extension')
-                  //     .create();
-                  // file.writeAsBytesSync(message["content"]);
-                  // file.writeAsBytesSync(base64.decode(base64.encode(response.bodyBytes)));
-                  // message["content"] = file;
+  //                 File file = await File(
+  //                         '${tempDir.path}/vdotok${DateTime.now().toString().trim()}$extension')
+  //                     .create();
+  //                 file.writeAsBytesSync(unit8List);
+                    
+               
+  //                 message["content"] = file;
+
                   groupListProvider.recevieMsg(message);
                 } else {
                   final url = await JsManager.instance!.connect(
@@ -353,7 +364,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               }
             } else {
               // this is sender mesgsss
-              print("hdsghdsgdhsds");
+              print("hdsghdsgdhsds $message");
               groupListProvider.changeMsgStatusToDelivered(
                   message, ReceiptType.delivered);
             }

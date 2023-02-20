@@ -1,29 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
-// import 'package:universal_io/io.dart';
 import 'dart:io';
-import 'dart:typed_data';
 import 'package:audioplayers/audioplayers.dart';
-// import 'package:audioplayers/audioplayers.dart';
+import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
-// import 'package:vdkFlutterChat/src/Screeens/groupChatScreen/VideoApp.dart';
-import 'package:vdkFlutterChat/src/Screeens/groupChatScreen/VideoScreenweb.dart';
 import 'package:vdkFlutterChat/src/Screeens/home/home.dart';
-import 'package:vdkFlutterChat/src/core/models/contactList.dart';
 import 'package:vdkFlutterChat/src/core/providers/contact_provider.dart';
 import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
 import 'package:vdotok_connect/vdotok_connect.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:video_player/video_player.dart';
-// import 'package:path/path.dart' as p;
-// import 'package:file_picker_web/file_picker_web.dart' as webPicker;
 import 'package:crypto/crypto.dart' as crypto;
 import 'package:intl/intl.dart';
 import '../../core/services/server.dart';
@@ -32,8 +24,6 @@ import '../home/CustomAppBar.dart';
 import '../../constants/constant.dart';
 import '../../core/providers/auth.dart';
 import '../../core/providers/groupListProvider.dart';
-import '../groupChatScreen/AudioWidget.dart';
-import '../groupChatScreen/videoPlayer.dart';
 
 class ChatScreen extends StatefulWidget {
   final int index;
@@ -58,6 +48,7 @@ class _ChatScreenState extends State<ChatScreen> {
   late AuthProvider authProvider;
   late GroupListProvider _groupListProvider;
   late ScrollController secondcontroller;
+  late String _localPath;
   //AutoScrollController controller;
   ScrollController controller = ScrollController();
   final TextEditingController messageController = TextEditingController();
@@ -70,6 +61,9 @@ class _ChatScreenState extends State<ChatScreen> {
   var _completedPercentage = 0.0;
   var _totalDuration;
   var _currentDuration;
+  // late DownloaderUtils options;
+  // late DownloaderCore core;
+  // late final String path;
   late File image;
   // FlutterAudioRecorder _recorder;
   // Recording _current;
@@ -95,6 +89,69 @@ class _ChatScreenState extends State<ChatScreen> {
     // getApplicationDocumentsDirectory().then((value) async {
 
     super.dispose();
+  }
+
+  bool downloading = false;
+  String progress = '0';
+  bool isDownloaded = false;
+  // file name that you desire to keep
+
+  Future<void> downloadFile(uri) async {
+    showdialog();
+    String extension = uri.toString().split(".").last;
+    print("This is extension $extension");
+    setState(() {
+      downloading = true;
+    });
+    String filename = (DateTime.now()).millisecondsSinceEpoch.toString() +
+        "." +
+        '${extension}';
+    print("this is file name in downloadddd $filename");
+    //'.$extension';
+    String savePath = await getFilePath(filename);
+    Dio dio = Dio();
+    dio.download(
+      uri,
+      savePath,
+      onReceiveProgress: (rcv, total) {
+        print(
+            'received: ${rcv.toStringAsFixed(0)} out of total: ${total.toStringAsFixed(0)}');
+        setState(() {
+          progress = ((rcv / total) * 100).toStringAsFixed(0);
+        });
+        if (progress == '100') {
+          setState(() {
+            isDownloaded = true;
+          });
+        } else if (double.parse(progress) < 100) {}
+      },
+      deleteOnError: true,
+    ).then((_) {
+      setState(() {
+        if (progress == '100') {
+          isDownloaded = true;
+        }
+        downloading = false;
+      });
+      Navigator.pop(context);
+    });
+  }
+
+  //gets the applicationDirectory and path for the to-be downloaded file
+  // which will be used to save the file to that path in the downloadFile method
+  Future<String> getFilePath(uniqueFileName) async {
+    String path = '';
+    Directory? dir = await getExternalStorageDirectory();
+    path = '${dir!.path}/$uniqueFileName';
+    print("pathhhhhh $path");
+    return path;
+  }
+
+  Future<String?> _getSavedDir() async {
+    Directory directory = await getTemporaryDirectory();
+    String appDocPath = directory.path;
+    print("this is appdocpath $appDocPath $directory");
+    return appDocPath;
   }
 
   Future buildShowDialog(
@@ -305,6 +362,7 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   filePIcker(String fileType) async {
+    print("filetype $fileType");
     FilePickerResult? result;
     if (fileType == "file")
       result = (await FilePicker.platform
@@ -417,6 +475,7 @@ class _ChatScreenState extends State<ChatScreen> {
     } else if (isAudio == true) {
       type = SubType.audio;
     } else if (isImage == true) {
+      print("image block");
       type = SubType.image;
     } else {
       type = SubType.file;
@@ -442,7 +501,8 @@ class _ChatScreenState extends State<ChatScreen> {
           };
           print("this is upload image data  $apiData1");
           var currentpic = await loginPostPic(apiData1);
-          print("this is current pic $currentpic");
+          print(
+              "this is current picccccccccc $currentpic ${result.files.single.name.toString().split('.').last}");
           Map<String, dynamic> filePacket = {
             "id": generateMd5(
                 _groupListProvider.groupList.groups![index]!.channel_key),
@@ -469,9 +529,11 @@ class _ChatScreenState extends State<ChatScreen> {
               filePacket);
           var abc = base64Encode(uploadfile);
           print('abcdeeffff$abc');
+           
           filePacket["content"] = kIsWeb ? abc : null;
           filePacket["fileExtension"] =
               kIsWeb ? result.files.single.name.toString() : null;
+             
           print('filepacket jebfjdb${filePacket} $index');
           _groupListProvider.sendMsg(index, filePacket);
         } catch (e) {
@@ -480,6 +542,7 @@ class _ChatScreenState extends State<ChatScreen> {
       } else {
         //  Navigator.pop(context);
         File file = File(result.files.first.path!);
+        print("file from file $file");
         // print('path of file${file.path}');
         // Uint8List bytes = await file.readAsBytes();
         // print("bytes length ${bytes.length}");
@@ -498,7 +561,7 @@ class _ChatScreenState extends State<ChatScreen> {
         };
         print("this is upload image data  $apiData1");
         var currentpic = await loginPostPic(apiData1);
-        print("this is current pic $currentpic");
+        print("this is current pic $currentpic ${file.path.split('.').last}");
         Map<String, dynamic> filePacket = {
           "id": generateMd5(
               _groupListProvider.groupList.groups![index]!.channel_key),
@@ -522,7 +585,8 @@ class _ChatScreenState extends State<ChatScreen> {
             _groupListProvider.groupList.groups![index]!.channel_key,
             _groupListProvider.groupList.groups![index]!.channel_name,
             filePacket);
-        filePacket["content"] = kIsWeb ? null : file;
+             filePacket["content"] = kIsWeb ? null : File(file.path);
+       // filePacket["content"] = kIsWeb ? null : currentpic["file_name"];
         _groupListProvider.sendMsg(index, filePacket);
         //  Navigator.pop(context);
       }
@@ -566,7 +630,46 @@ class _ChatScreenState extends State<ChatScreen> {
     // Navigator.pop(context);
     return false;
   }
-
+showdialog() {
+    showDialog(
+        barrierColor: Color.fromARGB(194, 248, 248, 255),
+        barrierDismissible: false,
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(builder: (context, setState) {
+            return Dialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(20.0)), //this right here
+                child: GestureDetector(
+                  onTapDown: (TapDownDetails tapDownDetails) {
+                    FocusManager.instance.primaryFocus?.unfocus();
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: dividerColor,
+                          blurRadius: 10,
+                          offset: Offset(0, 1),
+                        )
+                      ],
+                      borderRadius: BorderRadius.circular(7),
+                    ),
+                    height: 153,
+                    width: 262,
+                    child: isDownloaded == false
+                        ? Container(
+                            height: 100,
+                            width: 100,
+                            child: Center(child: CircularProgressIndicator(color:receiverMessagecolor)))
+                        :Container(),
+                  ),
+                ));
+          });
+        });
+  }
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -880,10 +983,14 @@ class _ChatScreenState extends State<ChatScreen> {
                                                                       null) {
                                                                     return Center(
                                                                       child:
-                                                                          CircularProgressIndicator(
-                                                                        valueColor:
-                                                                            AlwaysStoppedAnimation<Color>(chatRoomColor),
-                                                                        //  strokeWidth: 3.0,
+                                                                          Container(
+                                                                        //   height: 20,
+                                                                        child:
+                                                                            CircularProgressIndicator(
+                                                                          valueColor:
+                                                                              AlwaysStoppedAnimation<Color>(chatRoomColor),
+                                                                          //  strokeWidth: 3.0,
+                                                                        ),
                                                                       ),
                                                                     );
                                                                     // return const Center(
@@ -908,53 +1015,69 @@ class _ChatScreenState extends State<ChatScreen> {
                                                       ?
                                                       //for audio
                                                       Text("for web audio")
-                                                      : Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            color:
-                                                                receiverMessagecolor,
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        5.0),
-                                                          ),
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  top: 16,
-                                                                  bottom: 16,
-                                                                  left: 15,
-                                                                  right: 20),
-                                                          // width: 250,
-                                                          child: Text(
-                                                            groupListProvider
-                                                                .groupList
-                                                                .groups![index]!
-                                                                .chatList![
-                                                                    chatindex]!
-                                                                .content
-                                                                .toString()
-                                                                .split('/')
-                                                                .last
-                                                                .split("=")
-                                                                .last,
-                                                            // +"." +  groupListProvider
-                                                            // .groupList
-                                                            // .groups![
-                                                            //     index]!
-                                                            // .chatList![
-                                                            //     chatindex]!
-                                                            // .fileExtension,
-                                                            // .path
-                                                            // .toString()
-                                                            // .split(
-                                                            //     "/")
-                                                            // .last,
-                                                            textAlign:
-                                                                TextAlign.left,
-                                                            style: TextStyle(
+                                                      : InkWell(
+                                                          onTap: () {
+                                                            print(
+                                                                "in audio file case");
+                                                            downloadFile(
+                                                                groupListProvider
+                                                                    .groupList
+                                                                    .groups![
+                                                                        index]!
+                                                                    .chatList![
+                                                                        chatindex]!
+                                                                    .content);
+                                                          },
+                                                          child: Container(
+                                                            decoration:
+                                                                BoxDecoration(
                                                               color:
-                                                                  Colors.white,
-                                                              fontSize: 14,
+                                                                  receiverMessagecolor,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5.0),
+                                                            ),
+                                                            padding:
+                                                                EdgeInsets.only(
+                                                                    top: 16,
+                                                                    bottom: 16,
+                                                                    left: 15,
+                                                                    right: 20),
+                                                            // width: 250,
+                                                            child: Text(
+                                                              groupListProvider
+                                                                  .groupList
+                                                                  .groups![
+                                                                      index]!
+                                                                  .chatList![
+                                                                      chatindex]!
+                                                                  .content
+                                                                  .toString()
+                                                                  .split('/')
+                                                                  .last
+                                                                  .split("=")
+                                                                  .last,
+                                                              // +"." +  groupListProvider
+                                                              // .groupList
+                                                              // .groups![
+                                                              //     index]!
+                                                              // .chatList![
+                                                              //     chatindex]!
+                                                              // .fileExtension,
+                                                              // .path
+                                                              // .toString()
+                                                              // .split(
+                                                              //     "/")
+                                                              // .last,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .left,
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 14,
+                                                              ),
                                                             ),
                                                           ),
                                                         )
@@ -1190,30 +1313,128 @@ class _ChatScreenState extends State<ChatScreen> {
                                                       :
                                                       //for file
                                                       InkWell(
-                                                          onTap: () {
+                                                          onTap: () async {
                                                             print(
-                                                                "i am opening file2");
-                                                            OpenFile.open(
-                                                                groupListProvider
+                                                                "i am opening file2 ${groupListProvider.groupList.groups![index]!.chatList![chatindex]!.content}");
+
+                                                            await downloadFile(groupListProvider
+                                                                    .groupList
+                                                                    .groups![
+                                                                        index]!
+                                                                    .chatList![
+                                                                        chatindex]!
+                                                                    .content)
+                                                                .then(
+                                                              (value) {
+                                                                OpenFile.open(groupListProvider
                                                                     .groupList
                                                                     .groups![
                                                                         index]!
                                                                     .chatList![
                                                                         chatindex]!
                                                                     .content);
-                                                            //  Navigator.of(context).push(
-                                                            //   new MaterialPageRoute<Null>(
-                                                            //       builder:
-                                                            //           (BuildContext context) {
-                                                            //         return DocumentViewer(
-                                                            //           file: groupListProvider
-                                                            //               .groupList
-                                                            //               .groups[index]
-                                                            //               .chatList[chatindex]
-                                                            //               .content
-                                                            //         );
-                                                            //       },
-                                                            //       fullscreenDialog: true));
+                                                              },
+                                                            ).catchError((onError){
+                                                              print("this is catch error $onError");
+                                                            
+                                                            });
+
+                                                            // _downloadFile(groupListProvider
+                                                            // .groupList
+                                                            // .groups![
+                                                            //     index]!
+                                                            // .chatList![
+                                                            //     chatindex]!
+                                                            // .content);
+                                                            // _downloadFile(groupListProvider.groupList.groups![index]!.chatList![chatindex]!.content,"abcd");
+// String result=await createFolder(groupListProvider
+//                                                                     .groupList
+//                                                                     .groups![
+//                                                                         index]!
+//                                                                     .chatList![
+//                                                                         chatindex]!
+//                                                                     .content);
+// print("this is result $result");
+
+                                                            // _localPath =
+                                                            //     (await _getSavedDir())!;
+                                                            // var dio = Dio();
+                                                            // await dio.download(
+                                                            //     groupListProvider
+                                                            //         .groupList
+                                                            //         .groups![
+                                                            //             index]!
+                                                            //         .chatList![
+                                                            //             chatindex]!
+                                                            //         .content,
+                                                            //     _localPath);
+                                                            // //                                       _localPath =
+                                                            //                                           (await _getSavedDir())!;
+                                                            //                                           print("This is loxcal path $_localPath ${groupListProvider
+                                                            //                                               .groupList
+                                                            //                                               .groups![
+                                                            //                                                   index]!
+                                                            //                                               .chatList![
+                                                            //                                                   chatindex]!
+                                                            //                                               .content}");
+                                                            //                                                 File file = await File(
+                                                            //     '${_localPath}/vdotok${DateTime.now().toString().trim()}')
+                                                            // .create();
+                                                            // file.writeAsString(file.toString());
+
+                                                            //   var file = await File(groupListProvider
+                                                            // .groupList
+                                                            // .groups![
+                                                            //     index]!
+                                                            // .chatList![
+                                                            //     chatindex]!
+                                                            // .content).writeAsString('some content');
+                                                            // final fileName = path.basename(
+                                                            //     groupListProvider
+                                                            //         .groupList
+                                                            //         .groups![
+                                                            //             index]!
+                                                            //         .chatList![
+                                                            //             chatindex]!
+                                                            //         .content);
+                                                            // File localImage =
+                                                            //     await file.copy(
+                                                            //         "$_localPath/$fileName");
+                                                            // print(
+                                                            //     "local image $localImage");
+
+                                                            // print("this is finalname $fileName");
+                                                            // options =
+                                                            //     DownloaderUtils(
+                                                            //   progressCallback:
+                                                            //       (current,
+                                                            //           total) {
+                                                            //     final progress =
+                                                            //         (current /
+                                                            //                 total) *
+                                                            //             100;
+                                                            //     print(
+                                                            //         'Downloading: $progress');
+                                                            //   },
+                                                            //   file: File(
+                                                            //       '$_localPath/200MB.zip'),
+                                                            //   progress:
+                                                            //       ProgressImplementation(),
+                                                            //   onDone: () => print(
+                                                            //       'COMPLETE'),
+                                                            //   deleteOnCancel:
+                                                            //       true,
+                                                            // );
+                                                            // core = await Flowder.download(
+                                                            //     groupListProvider
+                                                            //         .groupList
+                                                            //         .groups![
+                                                            //             index]!
+                                                            //         .chatList![
+                                                            //             chatindex]!
+                                                            //         .content
+                                                            //       ,
+                                                            //     options);
                                                           },
                                                           child: Container(
                                                             decoration:
@@ -1350,7 +1571,7 @@ class _ChatScreenState extends State<ChatScreen> {
     //     groupListProvider.groupList.groups[index].chatList[chatindex].from);
     print("this is chat indexxx $chatindex");
     print(
-        'chat available ${groupListProvider.groupList.groups![index]!.chatList![chatindex]!.content} ${groupListProvider.groupList.groups![index]!.chatList![chatindex]!.subtype}');
+        'chat available  ${groupListProvider.groupList.groups![index]!.chatList![chatindex]!.content}');
     // if (groupListProvider.groupList.groups[index].chatList.length == 0) {
     //   groupListProvider.readmodelList = [];
     // }
@@ -1439,350 +1660,334 @@ class _ChatScreenState extends State<ChatScreen> {
             SizedBox(width: 16),
             Flexible(
               child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: searchbarContainerColor,
-                ),
-                child: groupListProvider.groupList.groups![index]!
-                            .chatList![chatindex]!.type ==
-                        MessageType.text
-                    ?
-                    //for text
-                    Container(
-                        padding: EdgeInsets.only(
-                            top: 16, bottom: 16, left: 20, right: 20),
-                        child: Text(
-                          "${groupListProvider.groupList.groups![index]!.chatList![chatindex]!.content}",
-                          textAlign: TextAlign.left,
-                          style: TextStyle(
-                            color: sendMessageColoer,
-                            fontSize: 14,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: searchbarContainerColor,
+                  ),
+                  child: groupListProvider.groupList.groups![index]!
+                              .chatList![chatindex]!.type ==
+                          MessageType.text
+                      ?
+                      //for text
+                      Container(
+                          padding: EdgeInsets.only(
+                              top: 16, bottom: 16, left: 20, right: 20),
+                          child: Text(
+                            "${groupListProvider.groupList.groups![index]!.chatList![chatindex]!.content}",
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                              color: sendMessageColoer,
+                              fontSize: 14,
+                            ),
                           ),
-                        ),
-                      )
-                    : groupListProvider.groupList.groups![index]!
-                                .chatList![chatindex]!.type ==
-                            MediaType.ftp
-                        ? groupListProvider.groupList.groups![index]!
-                                    .chatList![chatindex]!.subtype ==
-                                SubType.image
-                            ?
-                            //for image
-                            Container(
-                                padding: EdgeInsets.only(
-                                    top: 16, bottom: 16, left: 20, right: 20),
-                                color: messageTimeColor,
-                                width: 200,
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(5.0),
-                                  child: kIsWeb
-                                      ? Image.memory(
-                                          groupListProvider
-                                              .groupList
-                                              .groups![index]!
-                                              .chatList![chatindex]!
-                                              .content,
-                                          fit: BoxFit.fill,
-                                        )
-                                      : Image.file(
-                                          groupListProvider
-                                              .groupList
-                                              .groups![index]!
-                                              .chatList![chatindex]!
-                                              .content,
-                                          // loadingBuilder: (context, child,
-                                          //     loadingProgress) {
-                                          //   if (loadingProgress != null) {
-                                          //     return Center(
-                                          //       child:
-                                          //           CircularProgressIndicator(
-                                          //         valueColor:
-                                          //             AlwaysStoppedAnimation<
-                                          //                 Color>(chatRoomColor),
-                                          //         //  strokeWidth: 3.0,
-                                          //       ),
-                                          //     );
-                                          //     // return const Center(
-                                          //     //     child: Text(
-                                          //     //         'Loading...'));
-                                          //   } else {
-                                          //     return child;
-                                          //   }
-                                          // },
-                                          fit: BoxFit.fill,
-                                        ),
-                                 
-                                ))
-                            : InkWell(
-                                onTap: () {
-                                  print("i am opening file3");
-                                  OpenFile.open(
-                                    groupListProvider.groupList.groups![index]!
-                                        .chatList![chatindex]!.content,
-                                  );
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.all(8),
-                                  // color: messageTimeColor,
+                        )
+                      : groupListProvider.groupList.groups![index]!
+                                  .chatList![chatindex]!.type ==
+                              MediaType.ftp
+                          ? groupListProvider.groupList.groups![index]!
+                                      .chatList![chatindex]!.subtype ==
+                                  SubType.image
+                              ?
+                              //for image
+                              Container(
+                                  padding: EdgeInsets.only(
+                                      top: 16, bottom: 16, left: 20, right: 20),
+                                  color: messageTimeColor,
                                   width: 200,
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: searchbarContainerColor,
-                                      // width: 15,
-                                    ),
-                                  ),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(5.0),
-                                    child:
-                                        // Column(
-                                        //   children: [
-                                        // IconButton(
-                                        //   onPressed: () {
-                                        //     // anchorElement.click();
-                                        //     // groupListProvider.downloadFile(
-                                        //     //     urlGenerated
-                                        //     //         .toString(),
-                                        //     //     groupListProvider
-                                        //     //         .groupList
-                                        //     //         .groups![index]!
-                                        //     //         .chatList![
-                                        //     //             chatindex]!
-                                        //     //         .fileName,
-                                        //     //     groupListProvider
-                                        //     //         .groupList
-                                        //     //         .groups![index]!
-                                        //     //         .chatList![
-                                        //     //             chatindex]!
-                                        //     //         .fileExtension);
-                                        //   },
-                                        //   icon: Icon(
-                                        //       Icons.file_download_outlined),
-                                        // ),
-                                        kIsWeb
-                                            ? Image.memory(
-                                                groupListProvider
-                                                    .groupList
-                                                    .groups![index]!
-                                                    .chatList![chatindex]!
-                                                    .content,
-                                                fit: BoxFit.fill,
-                                              )
-                                            : Text(
-                                                // "fjdghdfjhkdfjdfk",
-                                                groupListProvider
-                                                    .groupList
-                                                    .groups![index]!
-                                                    .chatList![chatindex]!
-                                                    .content
-                                                    .toString()
-                                                    .split('/')
-                                                    .last,
-                                                    // .split("=")
-                                                    // .last,
-                                                textAlign: TextAlign.left,
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  // color:
-                                                  //     sendMessageColoer,
-                                                  fontSize: 14,
+                                    child: kIsWeb
+                                        ? Image.memory(
+                                            groupListProvider
+                                                .groupList
+                                                .groups![index]!
+                                                .chatList![chatindex]!
+                                                .content,
+                                            fit: BoxFit.fill,
+                                          )
+                                       // : Text("djfkghjf")
+                                       : Image.file(
+                                            groupListProvider
+                                                .groupList
+                                                .groups![index]!
+                                                .chatList![chatindex]!
+                                                .content,
+                                            fit: BoxFit.fill,
+                                          ),
+                                  ))
+                              : InkWell(
+                                  onTap: () {
+                                    print("i am opening file3");
+                                    OpenFile.open(
+                                      groupListProvider
+                                          .groupList
+                                          .groups![index]!
+                                          .chatList![chatindex]!
+                                          .content,
+                                    );
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(8),
+                                    // color: messageTimeColor,
+                                    width: 200,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                        color: searchbarContainerColor,
+                                        // width: 15,
+                                      ),
+                                    ),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(5.0),
+                                      child:
+                                          // Column(
+                                          //   children: [
+                                          // IconButton(
+                                          //   onPressed: () {
+                                          //     // anchorElement.click();
+                                          //     // groupListProvider.downloadFile(
+                                          //     //     urlGenerated
+                                          //     //         .toString(),
+                                          //     //     groupListProvider
+                                          //     //         .groupList
+                                          //     //         .groups![index]!
+                                          //     //         .chatList![
+                                          //     //             chatindex]!
+                                          //     //         .fileName,
+                                          //     //     groupListProvider
+                                          //     //         .groupList
+                                          //     //         .groups![index]!
+                                          //     //         .chatList![
+                                          //     //             chatindex]!
+                                          //     //         .fileExtension);
+                                          //   },
+                                          //   icon: Icon(
+                                          //       Icons.file_download_outlined),
+                                          // ),
+                                          kIsWeb
+                                              ? Image.memory(
+                                                  groupListProvider
+                                                      .groupList
+                                                      .groups![index]!
+                                                      .chatList![chatindex]!
+                                                      .content,
+                                                  fit: BoxFit.fill,
+                                                )
+                                              : Text(
+                                                  // "fjdghdfjhkdfjdfk",
+                                                  groupListProvider
+                                                      .groupList
+                                                      .groups![index]!
+                                                      .chatList![chatindex]!
+                                                      .content
+                                                      .toString().split("/").last.split("'").first,
+                                                  // .split('/')
+                                                  // .last,
+                                                  // .split("=")
+                                                  // .last,
+                                                  textAlign: TextAlign.left,
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                    // color:
+                                                    //     sendMessageColoer,
+                                                    fontSize: 14,
+                                                  ),
                                                 ),
-                                              ),
 
-                                    // Image.file(
-                                    //     groupListProvider
-                                    //         .groupList
-                                    //         .groups![index]!
-                                    //         .chatList![chatindex]!
-                                    //         .content,
-                                    //     fit: BoxFit.fill,
-                                    //   ),
-                                    //   ],
-                                    // ),
+                                      // Image.file(
+                                      //     groupListProvider
+                                      //         .groupList
+                                      //         .groups![index]!
+                                      //         .chatList![chatindex]!
+                                      //         .content,
+                                      //     fit: BoxFit.fill,
+                                      //   ),
+                                      //   ],
+                                      // ),
+                                    ),
                                   ),
-                                ),
-                              )
-                        // : groupListProvider.groupList.groups![index]!
-                        //             .chatList![chatindex]!.type ==
-                        //         MediaType.audio
-                        //     ?
-                        //     //for audio
-                        //     kIsWeb
-                        //         ?
-                        //         // ? AudioWidget(groupListProvider: groupListProvider, chatindex: chatindex, index: index, file1:, file: file, isReceive: isReceive)
-                        //         AudioWidget(
-                        //             groupListProvider: groupListProvider,
-                        //             chatindex: chatindex,
-                        //             index: index,
-                        //             file1: File('dummy.txt'),
-                        //             file: groupListProvider
-                        //                 .groupList
-                        //                 .groups![index]!
-                        //                 .chatList![chatindex]!
-                        //                 .content,
-                        //             isReceive: false,
-                        //           )
-                        //         : AudioWidget(
-                        //             groupListProvider: groupListProvider,
-                        //             chatindex: chatindex,
-                        //             index: index,
-                        //             file: "",
-                        //             file1: groupListProvider
-                        //                 .groupList
-                        //                 .groups![index]!
-                        //                 .chatList![chatindex]!
-                        //                 .content,
-                        //             isReceive: false,
-                        //           )
-                            // : groupListProvider.groupList.groups![index]!
-                            //             .chatList![chatindex]!.type ==
-                            //         MediaType.video
-                            //     ?
-                            //     //for video
-                            //     // Container()
-                            //     InkWell(
-                            //         onTap: () {
-                            //           print("i am opening file4");
-                            //           kIsWeb
-                            //               ? Navigator.push(
-                            //                   context,
-                            //                   MaterialPageRoute(
-                            //                       builder: (context) =>
-                            //                           VideoScreen(
-                            //                             text: groupListProvider
-                            //                                 .groupList
-                            //                                 .groups![index]!
-                            //                                 .chatList![
-                            //                                     chatindex]!
-                            //                                 .content
-                            //                                 .toString(),
-                            //                           )))
-                            //               : OpenFile.open(groupListProvider
-                            //                   .groupList
-                            //                   .groups![index]!
-                            //                   .chatList![chatindex]!
-                            //                   .content
-                            //                   .path);
-                            //           // Navigator.of(context)
-                            //           //     .push(new MaterialPageRoute<Null>(
-                            //           //         builder: (BuildContext context) {
-                            //           //           return VideoItems(
-                            //           //             file: groupListProvider
-                            //           //                 .groupList
-                            //           //                 .groups[index]
-                            //           //                 .chatList[chatindex]
-                            //           //                 .content
-                            //           //                 .path,
-                            //           //             // videoPlayerController:
-                            //           //             //     VideoPlayerController.network(
-                            //           //             //         groupListProvider.groupList.groups[index].chatList[chatindex].content),
-                            //           //             looping: false,
-                            //           //             autoplay: true,
-                            //           //           );
-                            //           //         },
-                            //           //         fullscreenDialog: true));
-                            //         },
-                            //         child: Container(
-                            //           padding: EdgeInsets.only(
-                            //               top: 16,
-                            //               bottom: 16,
-                            //               left: 20,
-                            //               right: 20),
-                            //           child: kIsWeb
-                            //               ? Text(
-                            //                   groupListProvider
-                            //                       .groupList
-                            //                       .groups![index]!
-                            //                       .chatList![chatindex]!
-                            //                       .fileExtension,
-                            //                   textAlign: TextAlign.left,
-                            //                   style: TextStyle(
-                            //                     color: sendMessageColoer,
-                            //                     fontSize: 14,
-                            //                   ),
-                            //                 )
-                            //               : Text(
-                            //                   groupListProvider
-                            //                       .groupList
-                            //                       .groups![index]!
-                            //                       .chatList![chatindex]!
-                            //                       .content
-                            //                       .path
-                            //                       .toString()
-                            //                       .split("/")
-                            //                       .last,
-                            //                   textAlign: TextAlign.left,
-                            //                   style: TextStyle(
-                            //                     color: sendMessageColoer,
-                            //                     fontSize: 14,
-                            //                   ),
-                            //                 ),
-                            //         ))
-                            //     :
-                            //     //for file
-                            //     InkWell(
-                            //         onTap: () {
-                            //           print("i am opening file5");
+                                )
+                          // : groupListProvider.groupList.groups![index]!
+                          //             .chatList![chatindex]!.type ==
+                          //         MediaType.audio
+                          //     ?
+                          //     //for audio
+                          //     kIsWeb
+                          //         ?
+                          //         // ? AudioWidget(groupListProvider: groupListProvider, chatindex: chatindex, index: index, file1:, file: file, isReceive: isReceive)
+                          //         AudioWidget(
+                          //             groupListProvider: groupListProvider,
+                          //             chatindex: chatindex,
+                          //             index: index,
+                          //             file1: File('dummy.txt'),
+                          //             file: groupListProvider
+                          //                 .groupList
+                          //                 .groups![index]!
+                          //                 .chatList![chatindex]!
+                          //                 .content,
+                          //             isReceive: false,
+                          //           )
+                          //         : AudioWidget(
+                          //             groupListProvider: groupListProvider,
+                          //             chatindex: chatindex,
+                          //             index: index,
+                          //             file: "",
+                          //             file1: groupListProvider
+                          //                 .groupList
+                          //                 .groups![index]!
+                          //                 .chatList![chatindex]!
+                          //                 .content,
+                          //             isReceive: false,
+                          //           )
+                          // : groupListProvider.groupList.groups![index]!
+                          //             .chatList![chatindex]!.type ==
+                          //         MediaType.video
+                          //     ?
+                          //     //for video
+                          //     // Container()
+                          //     InkWell(
+                          //         onTap: () {
+                          //           print("i am opening file4");
+                          //           kIsWeb
+                          //               ? Navigator.push(
+                          //                   context,
+                          //                   MaterialPageRoute(
+                          //                       builder: (context) =>
+                          //                           VideoScreen(
+                          //                             text: groupListProvider
+                          //                                 .groupList
+                          //                                 .groups![index]!
+                          //                                 .chatList![
+                          //                                     chatindex]!
+                          //                                 .content
+                          //                                 .toString(),
+                          //                           )))
+                          //               : OpenFile.open(groupListProvider
+                          //                   .groupList
+                          //                   .groups![index]!
+                          //                   .chatList![chatindex]!
+                          //                   .content
+                          //                   .path);
+                          //           // Navigator.of(context)
+                          //           //     .push(new MaterialPageRoute<Null>(
+                          //           //         builder: (BuildContext context) {
+                          //           //           return VideoItems(
+                          //           //             file: groupListProvider
+                          //           //                 .groupList
+                          //           //                 .groups[index]
+                          //           //                 .chatList[chatindex]
+                          //           //                 .content
+                          //           //                 .path,
+                          //           //             // videoPlayerController:
+                          //           //             //     VideoPlayerController.network(
+                          //           //             //         groupListProvider.groupList.groups[index].chatList[chatindex].content),
+                          //           //             looping: false,
+                          //           //             autoplay: true,
+                          //           //           );
+                          //           //         },
+                          //           //         fullscreenDialog: true));
+                          //         },
+                          //         child: Container(
+                          //           padding: EdgeInsets.only(
+                          //               top: 16,
+                          //               bottom: 16,
+                          //               left: 20,
+                          //               right: 20),
+                          //           child: kIsWeb
+                          //               ? Text(
+                          //                   groupListProvider
+                          //                       .groupList
+                          //                       .groups![index]!
+                          //                       .chatList![chatindex]!
+                          //                       .fileExtension,
+                          //                   textAlign: TextAlign.left,
+                          //                   style: TextStyle(
+                          //                     color: sendMessageColoer,
+                          //                     fontSize: 14,
+                          //                   ),
+                          //                 )
+                          //               : Text(
+                          //                   groupListProvider
+                          //                       .groupList
+                          //                       .groups![index]!
+                          //                       .chatList![chatindex]!
+                          //                       .content
+                          //                       .path
+                          //                       .toString()
+                          //                       .split("/")
+                          //                       .last,
+                          //                   textAlign: TextAlign.left,
+                          //                   style: TextStyle(
+                          //                     color: sendMessageColoer,
+                          //                     fontSize: 14,
+                          //                   ),
+                          //                 ),
+                          //         ))
+                          //     :
+                          //     //for file
+                          //     InkWell(
+                          //         onTap: () {
+                          //           print("i am opening file5");
 
-                            //           OpenFile.open(
-                            //             groupListProvider
-                            //                 .groupList
-                            //                 .groups![index]!
-                            //                 .chatList![chatindex]!
-                            //                 .content
-                            //                 .path,
-                            //           );
-                            //           //  Navigator.of(context).push(
-                            //           //   new MaterialPageRoute<Null>(
-                            //           //       builder:
-                            //           //           (BuildContext context) {
-                            //           //         return DocumentViewer(
-                            //           //           file: groupListProvider
-                            //           //               .groupList
-                            //           //               .groups[index]
-                            //           //               .chatList[chatindex]
-                            //           //               .content
-                            //           //         );
-                            //           //       },
-                            //           //       fullscreenDialog: true));
-                            //         },
-                            //         child: Container(
-                            //           padding: EdgeInsets.only(
-                            //               top: 16,
-                            //               bottom: 16,
-                            //               left: 20,
-                            //               right: 20),
-                            //           child: kIsWeb
-                            //               ? Text(
-                            //                   groupListProvider
-                            //                       .groupList
-                            //                       .groups![index]!
-                            //                       .chatList![chatindex]!
-                            //                       .fileExtension,
-                            //                   textAlign: TextAlign.left,
-                            //                   style: TextStyle(
-                            //                     color: sendMessageColoer,
-                            //                     fontSize: 14,
-                            //                   ),
-                            //                 )
-                            //               : Text(
-                            //                   groupListProvider
-                            //                       .groupList
-                            //                       .groups![index]!
-                            //                       .chatList![chatindex]!
-                            //                       .content
-                            //                       .path
-                            //                       .toString()
-                            //                       .split("/")
-                            //                       .last,
-                            //                   textAlign: TextAlign.left,
-                            //                   style: TextStyle(
-                            //                     color: sendMessageColoer,
-                            //                     fontSize: 14,
-                            //                   ),
-                            //                 ),
-                            //         ),
-                            //       ),
-              :Container()),
+                          //           OpenFile.open(
+                          //             groupListProvider
+                          //                 .groupList
+                          //                 .groups![index]!
+                          //                 .chatList![chatindex]!
+                          //                 .content
+                          //                 .path,
+                          //           );
+                          //           //  Navigator.of(context).push(
+                          //           //   new MaterialPageRoute<Null>(
+                          //           //       builder:
+                          //           //           (BuildContext context) {
+                          //           //         return DocumentViewer(
+                          //           //           file: groupListProvider
+                          //           //               .groupList
+                          //           //               .groups[index]
+                          //           //               .chatList[chatindex]
+                          //           //               .content
+                          //           //         );
+                          //           //       },
+                          //           //       fullscreenDialog: true));
+                          //         },
+                          //         child: Container(
+                          //           padding: EdgeInsets.only(
+                          //               top: 16,
+                          //               bottom: 16,
+                          //               left: 20,
+                          //               right: 20),
+                          //           child: kIsWeb
+                          //               ? Text(
+                          //                   groupListProvider
+                          //                       .groupList
+                          //                       .groups![index]!
+                          //                       .chatList![chatindex]!
+                          //                       .fileExtension,
+                          //                   textAlign: TextAlign.left,
+                          //                   style: TextStyle(
+                          //                     color: sendMessageColoer,
+                          //                     fontSize: 14,
+                          //                   ),
+                          //                 )
+                          //               : Text(
+                          //                   groupListProvider
+                          //                       .groupList
+                          //                       .groups![index]!
+                          //                       .chatList![chatindex]!
+                          //                       .content
+                          //                       .path
+                          //                       .toString()
+                          //                       .split("/")
+                          //                       .last,
+                          //                   textAlign: TextAlign.left,
+                          //                   style: TextStyle(
+                          //                     color: sendMessageColoer,
+                          //                     fontSize: 14,
+                          //                   ),
+                          //                 ),
+                          //         ),
+                          //       ),
+                          : Container()),
             ),
           ]),
         ),

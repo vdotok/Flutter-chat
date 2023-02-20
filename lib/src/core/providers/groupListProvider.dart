@@ -305,6 +305,8 @@ class GroupListProvider with ChangeNotifier {
           msg['content'] = url;
         }
       }
+    
+
       _groupList.groups![index]!.chatList!.add(ChatModel.fromJson(msg));
     }
     notifyListeners();
