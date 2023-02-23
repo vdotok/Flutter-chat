@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:vdkFlutterChat/src/Screeens/CreateGroupScreen/CreateGroupChatScreen.dart';
+import 'package:vdkFlutterChat/src/Screeens/home/home.dart';
 import 'package:vdkFlutterChat/src/core/models/GroupModel.dart';
 import 'package:vdkFlutterChat/src/core/providers/groupListProvider.dart';
 import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
-import 'package:vdotok_connect/vdotok_connect.dart';
+
 import '../../constants/constant.dart';
 import '../../core/models/contact.dart';
 import '../../core/providers/auth.dart';
@@ -216,7 +217,29 @@ class _CreateGroupPopUpState extends State<CreateGroupPopUp> {
                                                     widget._selectedContacts,
                                                     widget.authProvider.getUser!
                                                         .auth_token);
-
+if (res["status"] == 200) {
+                                              List<String> refIDList = [];
+                                              for (int i = 0;
+                                                  i <                                                      widget._selectedContacts
+                                                          .length;
+                                                  i++) {
+                                                refIDList.add(widget
+                                                    ._selectedContacts[i]
+                                                    .ref_id!);
+                                              }
+                                              var tempdata = {
+                                                "from": widget
+                                                    .authProvider
+                                                    .getUser!
+                                                    .ref_id, //ref_id who send this packet
+                                                "id": ((DateTime.now())
+                                                        .millisecondsSinceEpoch)
+                                                    .round(),
+                                                "type":
+                                                    "create", //type (create/Delete/Update)
+                                                "users": refIDList
+                                              };
+                                         emitter.publishNotification(tempdata);
                                             // grouplistp.getGroupList(
                                             //     authProvider.getUser.auth_token);
                                             GroupModel groupModel =
@@ -245,6 +268,9 @@ class _CreateGroupPopUpState extends State<CreateGroupPopUp> {
                                             grouplistp.handleCreateChatState();
                                             Navigator.pop(context);
                                             selectedContacts.clear();
+                                          }else{
+                                            
+                                          }
                                           }
                                         }
                                       }

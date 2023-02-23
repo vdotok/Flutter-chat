@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter_downloader/flutter_downloader.dart';
+// import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:typed_data';
@@ -214,6 +214,12 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               groupListProvider.updateTypingStatus(msg);
             }
           }
+          break;
+          case MessageType.notification:
+          {
+            print("notificationssssss");
+            }
+          
           break;
         case MediaType.ftp:
           {

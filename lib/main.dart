@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
+// import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:provider/provider.dart';
 import 'package:vdkFlutterChat/src/Screeens/home/homeIndex.dart';
 import 'package:vdkFlutterChat/src/Screeens/login/SignInScreen.dart';
@@ -13,6 +13,7 @@ import 'package:vdkFlutterChat/src/core/providers/auth.dart';
 import 'package:vdkFlutterChat/src/routing/routes.dart';
 import 'src/constants/constant.dart';
 import 'src/core/providers/groupListProvider.dart';
+
 
 GlobalKey<ScaffoldMessengerState>? rootScaffoldMessengerKey;
 
@@ -31,10 +32,10 @@ void main()async {
  //  WidgetsFlutterBinding.ensureInitialized();
 
   // Plugin must be initialized before using
-  await FlutterDownloader.initialize(
-    debug: true, // optional: set to false to disable printing logs to console (default: true)
-    ignoreSsl: true // option: set to false to disable working with http links (default: false)
-  );
+  // await FlutterDownloader.initialize(
+  //   debug: true, // optional: set to false to disable printing logs to console (default: true)
+  //   ignoreSsl: true // option: set to false to disable working with http links (default: false)
+  // );
   //FlutterDownloader.registerCallback
   runApp(MyApp());
 }

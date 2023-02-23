@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+
 import 'package:vdkFlutterChat/src/Screeens/home/home.dart';
 import 'package:vdkFlutterChat/src/core/providers/contact_provider.dart';
 import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
@@ -17,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:crypto/crypto.dart' as crypto;
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import '../../core/services/server.dart';
 import '../groupChatScreen/AddAttachmentsPopUp.dart';
@@ -24,6 +27,9 @@ import '../home/CustomAppBar.dart';
 import '../../constants/constant.dart';
 import '../../core/providers/auth.dart';
 import '../../core/providers/groupListProvider.dart';
+
+// typedef DownloadingProgress = void Function(
+//     int total, int download, double prog);
 
 class ChatScreen extends StatefulWidget {
   final int index;
@@ -92,11 +98,93 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   bool downloading = false;
-  String progress = '0';
+  var progress = "0";
   bool isDownloaded = false;
   // file name that you desire to keep
 
-  Future<void> downloadFile(uri) async {
+  //  _valuableProgress(context) async {
+  //   ProgressDialog pd = ProgressDialog(context: context);
+
+  //   pd.show(
+  //     max: 100,
+  //     msg: 'File Downloading...',
+
+  //     /// Assign the type of progress bar.
+  //     progressType: ProgressType.valuable,
+  //   );
+  //   for (int i = 0; i <= 100; i++) {
+  //     pd.update(value: i);
+  //     i++;
+  //     await Future.delayed(Duration(milliseconds: 100));
+  //   }
+  // }
+// Future <Uint8List>downloader( uri,DownloadingProgress downloadingProgress){
+//   final compelter = Completer<Uint8List>();
+//     final client = http.Client();
+//     final request = http.Request('GET', Uri.parse(uri));
+//     final response = client.send(request);
+//     int downloadBytes = 0;
+//     List<List<int>> chunksList = [];
+//     response.asStream().listen((http.StreamedResponse streamedResponse) {
+//       streamedResponse.stream.listen((chunk) {
+//         final contentLength = streamedResponse.contentLength ?? 0;
+//         final percentage = (downloadBytes / contentLength) * 100;
+//         downloadingProgress(contentLength, downloadBytes, percentage);
+//         chunksList.add(chunk);
+//         downloadBytes += chunk.length;
+//       }, onDone: () {
+//         final contentLength = streamedResponse.contentLength ?? 0;
+//         final percentage = (downloadBytes / contentLength) * 100;
+//         downloadingProgress(contentLength, downloadBytes, percentage);
+
+//         int start=0;
+//         final bytes =Uint8List(contentLength);
+//         for (var chunk in chunksList){
+//           bytes.setRange(start, start+chunk.length, chunk);
+//           start +=chunk.length;
+//         }compelter.complete(bytes);
+
+//       },
+//       onError: (error){
+//          compelter.completeError(error);
+//       }
+//       );
+//     });
+//     print(compelter.future);
+
+//     return compelter.future;
+
+// }
+
+  var downloadProgress = 0.0;
+
+  // _normalProgress(context) async {
+  //   /// Create progress dialog
+  //   ProgressDialog pd = ProgressDialog(context: context);
+
+  //   /// Set options
+  //   /// Max and msg required
+  //   pd.show(
+  //     max: 100,
+  //     msg: 'File Downloading...',
+  //     progressBgColor: Colors.transparent,
+  //     cancel: Cancel(
+  //       cancelClicked: () {
+  //         /// ex: cancel the download
+  //       },
+  //     ),
+  //   );
+  //   for (int i = 0; i <= downloadProgress.floor(); i++) {
+  //     /// You don't need to update state, just pass the value.
+  //     /// Only value required
+  //     pd.update(value: i);
+  //     i++;
+  //     await Future.delayed(Duration(milliseconds: 100));
+  //   }
+  // }
+
+ Future<void> downloadFile(uri) async {
+    print('this is uri==== $uri ');
     showdialog();
     String extension = uri.toString().split(".").last;
     print("This is extension $extension");
@@ -108,25 +196,33 @@ class _ChatScreenState extends State<ChatScreen> {
         '${extension}';
     print("this is file name in downloadddd $filename");
     //'.$extension';
-    String savePath = await getFilePath(filename);
-    Dio dio = Dio();
-    dio.download(
-      uri,
-      savePath,
-      onReceiveProgress: (rcv, total) {
-        print(
-            'received: ${rcv.toStringAsFixed(0)} out of total: ${total.toStringAsFixed(0)}');
-        setState(() {
-          progress = ((rcv / total) * 100).toStringAsFixed(0);
-        });
-        if (progress == '100') {
-          setState(() {
-            isDownloaded = true;
-          });
-        } else if (double.parse(progress) < 100) {}
-      },
-      deleteOnError: true,
-    ).then((_) {
+    if (Platform.isAndroid) {
+      String savePath = await getFilePath();
+      final response = await http.get(Uri.parse(uri));
+      print('ressssponse === $response');
+      print('response===byteess=${response.bodyBytes}');
+      String filePath = '$savePath/$filename';
+      File file = File(filePath);
+      file.writeAsBytesSync(response.bodyBytes);
+      // Navigator.pop(context);
+      // Dio dio = Dio();
+      // dio.download(
+      //   uri,
+      //   savePath,
+      //   onReceiveProgress: (rcv, total) {
+      //     print(
+      //         'received: ${rcv.toStringAsFixed(0)} out of total: ${total.toStringAsFixed(0)}');
+      //     setState(() {
+      //       progress = ((rcv / total) * 100).toStringAsFixed(0);
+      //     });
+      //     if (progress == '100') {
+      //       setState(() {
+      //         isDownloaded = true;
+      //       });
+      //     } else if (double.parse(progress) < 100) {}
+      //   },
+      //   deleteOnError: true,
+      // ).then((_) {
       setState(() {
         if (progress == '100') {
           isDownloaded = true;
@@ -134,18 +230,88 @@ class _ChatScreenState extends State<ChatScreen> {
         downloading = false;
       });
       Navigator.pop(context);
-    });
+      // });
+    } else {
+      String savePath = await getDocumentDirectoryPath();
+      // Dio dio = Dio();
+      print('dio initializedd==$savePath=');
+      final response = await http.get(Uri.parse(uri));
+      print('ressssponse === $response');
+      print('response===byteess=${response.bodyBytes}');
+      String filePath = '$savePath/$filename';
+      File file = File(filePath);
+      file.writeAsBytesSync(response.bodyBytes);
+      // Navigator.pop(context);
+      // dio.download(
+      //   uri,
+      //   savePath,
+      //   onReceiveProgress: (rcv, total) {
+      //     print(
+      //         'received: ${rcv.toStringAsFixed(0)} out of total: ${total.toStringAsFixed(0)}');
+      //     setState(() {
+      //       progress = ((rcv / total) * 100).toStringAsFixed(0);
+      //     });
+      //     if (progress == '100') {
+      //       setState(() {
+      //         isDownloaded = true;
+      //       });
+      //     } else if (double.parse(progress) < 100) {}
+      //   },
+      //   deleteOnError: true,
+      // ).then((_) {
+      setState(() {
+        if (progress == '100') {
+          isDownloaded = true;
+        }
+        downloading = false;
+      });
+      // });
+    }
   }
-
   //gets the applicationDirectory and path for the to-be downloaded file
   // which will be used to save the file to that path in the downloadFile method
-  Future<String> getFilePath(uniqueFileName) async {
+  Future<String> getFilePath() async {
     String path = '';
     Directory? dir = await getExternalStorageDirectory();
-    path = '${dir!.path}/$uniqueFileName';
+    // path = '${dir!.path}/$uniqueFileName';
+    path = dir!.path;
     print("pathhhhhh $path");
     return path;
   }
+  // Future<String?> _getSavedDir() async {
+  //   Directory directory = await getTemporaryDirectory();
+  //   String appDocPath = directory.path;
+  //   print("this is appdocpath $appDocPath $directory");
+  //   return appDocPath;
+  // }
+  Future<String> getDocumentDirectoryPath() async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
+  //gets the applicationDirectory and path for the to-be downloaded file
+  // which will be used to save the file to that path in the downloadFile method
+//   Future<String> getFilePath(uniqueFileName) async {
+//     String path = '';
+//     // Directory? dir = await getExternalStorageDirectory();
+//     // path = '${dir!.path}/$uniqueFileName';
+//     // print("pathhhhhh $path");
+
+// // var externalDir;
+//     if (Platform.isIOS) {
+//       // Platform is imported from 'dart:io' package
+//       Directory? dir = await getApplicationDocumentsDirectory();
+//       path = '${dir!.path}/$uniqueFileName';
+//       print("pathhhhhh $path");
+//       return path;
+//     } else if (Platform.isAndroid) {
+//       Directory? dir = await getExternalStorageDirectory();
+//       path = '${dir!.path}/$uniqueFileName';
+//       print("pathhhhhh $path");
+//       return path;
+//     }
+//     print("this is path of dir $path");
+//     return path;
+//   }
 
   Future<String?> _getSavedDir() async {
     Directory directory = await getTemporaryDirectory();
@@ -355,7 +521,6 @@ class _ChatScreenState extends State<ChatScreen> {
           filePacket);
       filePacket["content"] = kIsWeb ? pickedFile.path : File(pickedFile.path);
       _groupListProvider.sendMsg(index, filePacket);
-      // }
     } else {
       print('No image selected.');
     }
@@ -529,11 +694,11 @@ class _ChatScreenState extends State<ChatScreen> {
               filePacket);
           var abc = base64Encode(uploadfile);
           print('abcdeeffff$abc');
-           
+
           filePacket["content"] = kIsWeb ? abc : null;
           filePacket["fileExtension"] =
               kIsWeb ? result.files.single.name.toString() : null;
-             
+
           print('filepacket jebfjdb${filePacket} $index');
           _groupListProvider.sendMsg(index, filePacket);
         } catch (e) {
@@ -585,8 +750,8 @@ class _ChatScreenState extends State<ChatScreen> {
             _groupListProvider.groupList.groups![index]!.channel_key,
             _groupListProvider.groupList.groups![index]!.channel_name,
             filePacket);
-             filePacket["content"] = kIsWeb ? null : File(file.path);
-       // filePacket["content"] = kIsWeb ? null : currentpic["file_name"];
+        filePacket["content"] = kIsWeb ? null : File(file.path);
+        // filePacket["content"] = kIsWeb ? null : currentpic["file_name"];
         _groupListProvider.sendMsg(index, filePacket);
         //  Navigator.pop(context);
       }
@@ -630,7 +795,8 @@ class _ChatScreenState extends State<ChatScreen> {
     // Navigator.pop(context);
     return false;
   }
-showdialog() {
+
+  showdialog() {
     showDialog(
         barrierColor: Color.fromARGB(194, 248, 248, 255),
         barrierDismissible: false,
@@ -660,16 +826,14 @@ showdialog() {
                     height: 153,
                     width: 262,
                     child: isDownloaded == false
-                        ? Container(
-                            height: 100,
-                            width: 100,
-                            child: Center(child: CircularProgressIndicator(color:receiverMessagecolor)))
-                        :Container(),
+                        ? Column(crossAxisAlignment: CrossAxisAlignment.center,mainAxisAlignment: MainAxisAlignment.center,children: [Center(child: Text("Downloading.......",style: TextStyle(color: receiverMessagecolor),),),SizedBox(height: 20,),CircularProgressIndicator(color:receiverMessagecolor),],)
+                        : Container(),
                   ),
                 ));
           });
         });
   }
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -1334,9 +1498,10 @@ showdialog() {
                                                                         chatindex]!
                                                                     .content);
                                                               },
-                                                            ).catchError((onError){
-                                                              print("this is catch error $onError");
-                                                            
+                                                            ).catchError(
+                                                                    (onError) {
+                                                              print(
+                                                                  "this is catch error $onError");
                                                             });
 
                                                             // _downloadFile(groupListProvider
@@ -1705,8 +1870,8 @@ showdialog() {
                                                 .content,
                                             fit: BoxFit.fill,
                                           )
-                                       // : Text("djfkghjf")
-                                       : Image.file(
+                                        // : Text("djfkghjf")
+                                        : Image.file(
                                             groupListProvider
                                                 .groupList
                                                 .groups![index]!
@@ -1779,7 +1944,11 @@ showdialog() {
                                                       .groups![index]!
                                                       .chatList![chatindex]!
                                                       .content
-                                                      .toString().split("/").last.split("'").first,
+                                                      .toString()
+                                                      .split("/")
+                                                      .last
+                                                      .split("'")
+                                                      .first,
                                                   // .split('/')
                                                   // .last,
                                                   // .split("=")

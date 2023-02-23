@@ -44,10 +44,11 @@ dependencies:
   video_player: ^2.4.5
   dio: ^4.0.6
   fluttertoast: ^8.1.1
-  flutter_downloader: ^1.10.1+2
-  flowder: ^0.2.0
-  permission_handler:
-  flutter_file_downloader: ^1.1.0+1
+  flutter_slidable: ^2.0.0
+
+
+  
+  
   
 dev_dependencies:
   flutter_test:
