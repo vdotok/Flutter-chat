@@ -15,6 +15,7 @@ import '../../core/providers/contact_provider.dart';
 class CreateGroupPopUp extends StatefulWidget {
   final MainProvider? mainProvider;
   final handlePress;
+  final index;
   const CreateGroupPopUp(
       {Key? key,
       required TextEditingController groupNameController,
@@ -26,7 +27,7 @@ class CreateGroupPopUp extends StatefulWidget {
       required this.editGroupName,
       this.groupid,
       this.mainProvider,
-      this.handlePress})
+      this.handlePress, this.index})
       : _groupNameController = groupNameController,
         _selectedContacts = selectedContacts,
         super(key: key);
@@ -183,7 +184,7 @@ class _CreateGroupPopUpState extends State<CreateGroupPopUp> {
                                         CreateChatStatus.New
                                     ? () async {
                                         if (widget.editGroupName) {
-                                          print("here");
+                                          print("eeeeeeeeeee");
 
                                           await grouplistp.editGroupName(
                                               widget._groupNameController.text,
@@ -193,6 +194,27 @@ class _CreateGroupPopUpState extends State<CreateGroupPopUp> {
                                           if (grouplistp.editGroupNameStatus ==
                                               EditGroupNameStatus.Success) {
                                             showSnakbar(grouplistp.successMsg);
+                                              List<String> refIDList = [];
+                            grouplistp.groupList.groups![widget.index]!.participants!.forEach((element) {
+                             if( element!.ref_id != widget.authProvider.getUser!.ref_id)
+                             { print("elementtttttttt is ${element.ref_id}");
+                             refIDList.add(element.ref_id);
+                             }
+                            });
+                                              var tempdata = {
+                                                "from": widget
+                                                    .authProvider
+                                                    .getUser!
+                                                    .ref_id, //ref_id who send this packet
+                                                "id": ((DateTime.now())
+                                                        .millisecondsSinceEpoch)
+                                                    .round(),
+                                                "type":
+                                                    "rename", //type (create/Delete/Update)
+                                                "users": refIDList
+                                              };
+                                              emitter.publishNotification(
+                                                  tempdata);
                                           } else if (grouplistp
                                                   .editGroupNameStatus ==
                                               EditGroupNameStatus.Failure) {
@@ -217,10 +239,11 @@ class _CreateGroupPopUpState extends State<CreateGroupPopUp> {
                                                     widget._selectedContacts,
                                                     widget.authProvider.getUser!
                                                         .auth_token);
-if (res["status"] == 200) {
+                                            if (res["status"] == 200) {
                                               List<String> refIDList = [];
                                               for (int i = 0;
-                                                  i <                                                      widget._selectedContacts
+                                                  i <
+                                                      widget._selectedContacts
                                                           .length;
                                                   i++) {
                                                 refIDList.add(widget
@@ -239,38 +262,38 @@ if (res["status"] == 200) {
                                                     "create", //type (create/Delete/Update)
                                                 "users": refIDList
                                               };
-                                         emitter.publishNotification(tempdata);
-                                            // grouplistp.getGroupList(
-                                            //     authProvider.getUser.auth_token);
-                                            GroupModel groupModel =
-                                                GroupModel.fromJson(
-                                                    res["group"]);
-                                            print(
-                                                "this is response of createGroup ${groupModel.channel_key}, ${groupModel.channel_name}");
+                                              emitter.publishNotification(
+                                                  tempdata);
+                                              // grouplistp.getGroupList(
+                                              //     authProvider.getUser.auth_token);
+                                              GroupModel groupModel =
+                                                  GroupModel.fromJson(
+                                                      res["group"]);
+                                              print(
+                                                  "this is response of createGroup ${groupModel.channel_key}, ${groupModel.channel_name}");
 
-                                            grouplistp.addGroup(groupModel);
-                                            grouplistp.subscribeChannel(
-                                                groupModel.channel_key,
-                                                groupModel.channel_name);
-                                            grouplistp.subscribePresence(
-                                                groupModel.channel_key,
-                                                groupModel.channel_name,
-                                                true,
-                                                true);
+                                              grouplistp.addGroup(groupModel);
+                                              grouplistp.subscribeChannel(
+                                                  groupModel.channel_key,
+                                                  groupModel.channel_name);
+                                              grouplistp.subscribePresence(
+                                                  groupModel.channel_key,
+                                                  groupModel.channel_name,
+                                                  true,
+                                                  true);
 
-                                            print("here on done button");
-                                            widget.mainProvider!
-                                                .chatScreen(index: 0);
+                                              print("here on done button");
+                                              widget.mainProvider!
+                                                  .chatScreen(index: 0);
 
-                                            // strArr.remove("CreateGroupChat");
-                                            // strArr.remove(
-                                            //     "CreateIndividualGroupActiveCall");
-                                            grouplistp.handleCreateChatState();
-                                            Navigator.pop(context);
-                                            selectedContacts.clear();
-                                          }else{
-                                            
-                                          }
+                                              // strArr.remove("CreateGroupChat");
+                                              // strArr.remove(
+                                              //     "CreateIndividualGroupActiveCall");
+                                              grouplistp
+                                                  .handleCreateChatState();
+                                              Navigator.pop(context);
+                                              selectedContacts.clear();
+                                            } else {}
                                           }
                                         }
                                       }

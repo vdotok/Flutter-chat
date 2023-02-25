@@ -102,9 +102,13 @@ class MessageType {
   static const String thumbnail = "thumbnail";
   static const String path = "path";
   static const String typing = "typing";
-  static const String notification="notification";
+  
 }
-
+class NotificationType {
+static const String createGroup ="CreateGroup";
+static const String deleteGroup ="DeleteGroup";
+static const String renameGroup ="RenameGroup";
+}
 //Google API key for auto places
 //copied from internet
 // const places_API_key = 'AIzaSyAJUDV0OFr87xCIz-fb9AwirXBl3X1nvIc';

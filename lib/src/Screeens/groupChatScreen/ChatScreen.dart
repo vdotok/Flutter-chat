@@ -183,7 +183,7 @@ class _ChatScreenState extends State<ChatScreen> {
   //   }
   // }
 
- Future<void> downloadFile(uri) async {
+  Future<void> downloadFile(uri) async {
     print('this is uri==== $uri ');
     showdialog();
     String extension = uri.toString().split(".").last;
@@ -195,79 +195,84 @@ class _ChatScreenState extends State<ChatScreen> {
         "." +
         '${extension}';
     print("this is file name in downloadddd $filename");
+    String savePath;
     //'.$extension';
     if (Platform.isAndroid) {
-      String savePath = await getFilePath();
-      final response = await http.get(Uri.parse(uri));
-      print('ressssponse === $response');
-      print('response===byteess=${response.bodyBytes}');
-      String filePath = '$savePath/$filename';
-      File file = File(filePath);
-      file.writeAsBytesSync(response.bodyBytes);
-      // Navigator.pop(context);
-      // Dio dio = Dio();
-      // dio.download(
-      //   uri,
-      //   savePath,
-      //   onReceiveProgress: (rcv, total) {
-      //     print(
-      //         'received: ${rcv.toStringAsFixed(0)} out of total: ${total.toStringAsFixed(0)}');
-      //     setState(() {
-      //       progress = ((rcv / total) * 100).toStringAsFixed(0);
-      //     });
-      //     if (progress == '100') {
-      //       setState(() {
-      //         isDownloaded = true;
-      //       });
-      //     } else if (double.parse(progress) < 100) {}
-      //   },
-      //   deleteOnError: true,
-      // ).then((_) {
-      setState(() {
-        if (progress == '100') {
-          isDownloaded = true;
-        }
-        downloading = false;
-      });
-      Navigator.pop(context);
-      // });
+      savePath = await getFilePath();
     } else {
-      String savePath = await getDocumentDirectoryPath();
-      // Dio dio = Dio();
-      print('dio initializedd==$savePath=');
-      final response = await http.get(Uri.parse(uri));
-      print('ressssponse === $response');
-      print('response===byteess=${response.bodyBytes}');
-      String filePath = '$savePath/$filename';
-      File file = File(filePath);
-      file.writeAsBytesSync(response.bodyBytes);
-      // Navigator.pop(context);
-      // dio.download(
-      //   uri,
-      //   savePath,
-      //   onReceiveProgress: (rcv, total) {
-      //     print(
-      //         'received: ${rcv.toStringAsFixed(0)} out of total: ${total.toStringAsFixed(0)}');
-      //     setState(() {
-      //       progress = ((rcv / total) * 100).toStringAsFixed(0);
-      //     });
-      //     if (progress == '100') {
-      //       setState(() {
-      //         isDownloaded = true;
-      //       });
-      //     } else if (double.parse(progress) < 100) {}
-      //   },
-      //   deleteOnError: true,
-      // ).then((_) {
-      setState(() {
-        if (progress == '100') {
-          isDownloaded = true;
-        }
-        downloading = false;
-      });
-      // });
+      savePath = await getDocumentDirectoryPath();
     }
+    final response = await http.get(Uri.parse(uri));
+    print('ressssponse === $response');
+    print('response===byteess=${response.bodyBytes}');
+    String filePath = '$savePath/$filename';
+    File file = File(filePath);
+    file.writeAsBytesSync(response.bodyBytes);
+     Navigator.pop(context);
+    // Dio dio = Dio();
+    // dio.download(
+    //   uri,
+    //   savePath,
+    //   onReceiveProgress: (rcv, total) {
+    //     print(
+    //         'received: ${rcv.toStringAsFixed(0)} out of total: ${total.toStringAsFixed(0)}');
+    //     setState(() {
+    //       progress = ((rcv / total) * 100).toStringAsFixed(0);
+    //     });
+    //     if (progress == '100') {
+    //       setState(() {
+    //         isDownloaded = true;
+    //       });
+    //     } else if (double.parse(progress) < 100) {}
+    //   },
+    //   deleteOnError: true,
+    // ).then((_) {
+    // setState(() {
+    //   if (progress == '100') {
+    //     isDownloaded = true;
+    //   }
+    //   downloading = false;
+    // });
+    // Navigator.pop(context);
+    // // });
+    // } else {
+
+    //   // Dio dio = Dio();
+    //   print('dio initializedd==$savePath=');
+    //   final response = await http.get(Uri.parse(uri));
+    //   print('ressssponse === $response');
+    //   print('response===byteess=${response.bodyBytes}');
+    //   String filePath = '$savePath/$filename';
+    //   File file = File(filePath);
+    //   file.writeAsBytesSync(response.bodyBytes);
+    //   Navigator.pop(context);
+    //   // dio.download(
+    //   //   uri,
+    //   //   savePath,
+    //   //   onReceiveProgress: (rcv, total) {
+    //   //     print(
+    //   //         'received: ${rcv.toStringAsFixed(0)} out of total: ${total.toStringAsFixed(0)}');
+    //   //     setState(() {
+    //   //       progress = ((rcv / total) * 100).toStringAsFixed(0);
+    //   //     });
+    //   //     if (progress == '100') {
+    //   //       setState(() {
+    //   //         isDownloaded = true;
+    //   //       });
+    //   //     } else if (double.parse(progress) < 100) {}
+    //   //   },
+    //   //   deleteOnError: true,
+    //   // ).then((_) {
+    //   // setState(() {
+    //   //   if (progress == '100') {
+    //   //     isDownloaded = true;
+    //   //   }
+    //   //   downloading = false;
+    //   // });
+    //   // });
+    // }
   }
+
   //gets the applicationDirectory and path for the to-be downloaded file
   // which will be used to save the file to that path in the downloadFile method
   Future<String> getFilePath() async {
@@ -278,6 +283,7 @@ class _ChatScreenState extends State<ChatScreen> {
     print("pathhhhhh $path");
     return path;
   }
+
   // Future<String?> _getSavedDir() async {
   //   Directory directory = await getTemporaryDirectory();
   //   String appDocPath = directory.path;
@@ -826,7 +832,23 @@ class _ChatScreenState extends State<ChatScreen> {
                     height: 153,
                     width: 262,
                     child: isDownloaded == false
-                        ? Column(crossAxisAlignment: CrossAxisAlignment.center,mainAxisAlignment: MainAxisAlignment.center,children: [Center(child: Text("Downloading.......",style: TextStyle(color: receiverMessagecolor),),),SizedBox(height: 20,),CircularProgressIndicator(color:receiverMessagecolor),],)
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Center(
+                                child: Text(
+                                  "Downloading.......",
+                                  style: TextStyle(color: receiverMessagecolor),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              CircularProgressIndicator(
+                                  color: receiverMessagecolor),
+                            ],
+                          )
                         : Container(),
                   ),
                 ));
@@ -1148,14 +1170,29 @@ class _ChatScreenState extends State<ChatScreen> {
                                                                     return Center(
                                                                       child:
                                                                           Container(
-                                                                        //   height: 20,
-                                                                        child:
-                                                                            CircularProgressIndicator(
-                                                                          valueColor:
-                                                                              AlwaysStoppedAnimation<Color>(chatRoomColor),
-                                                                          //  strokeWidth: 3.0,
+                                                                        child: Transform
+                                                                            .scale(
+                                                                          scale:
+                                                                              0.75,
+                                                                          child:
+                                                                              CircularProgressIndicator(
+                                                                            valueColor:
+                                                                                AlwaysStoppedAnimation<Color>(chatRoomColor),
+                                                                            strokeWidth:
+                                                                                3.0,
+                                                                          ),
                                                                         ),
                                                                       ),
+
+                                                                      //     Container(
+                                                                      //   //   height: 20,
+                                                                      //   child:
+                                                                      //       CircularProgressIndicator(
+                                                                      //     valueColor:
+                                                                      //         AlwaysStoppedAnimation<Color>(chatRoomColor),
+                                                                      //     //  strokeWidth: 3.0,
+                                                                      //   ),
+                                                                      // ),
                                                                     );
                                                                     // return const Center(
                                                                     //     child: Text(
@@ -1328,6 +1365,14 @@ class _ChatScreenState extends State<ChatScreen> {
                                                           onTap: () {
                                                             print(
                                                                 "i am opening file1");
+                                                            downloadFile(
+                                                                groupListProvider
+                                                                    .groupList
+                                                                    .groups![
+                                                                        index]!
+                                                                    .chatList![
+                                                                        chatindex]!
+                                                                    .content);
                                                             // kIsWeb
                                                             //     ? Navigator.push(
                                                             //         context,

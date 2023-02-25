@@ -48,7 +48,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
   bool isResumed = true;
   bool inPaused = false;
   late bool _permissionReady;
-  
 
   bool inInactive = false;
 
@@ -132,16 +131,17 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           isInternetConnect = false;
           isSocketConnect = false;
         });
-          if(isResumed)
-        { Fluttertoast.showToast(
-                        msg: "Waiting for Internet.",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.TOP_RIGHT,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.black,
-                        textColor: Colors.white,
-                        fontSize: 14.0);}
-     //   showSnackbar("No Internet Connection", whiteColor, primaryColor, true);
+        if (isResumed) {
+          Fluttertoast.showToast(
+              msg: "Waiting for Internet.",
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.TOP_RIGHT,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.black,
+              textColor: Colors.white,
+              fontSize: 14.0);
+        }
+        //   showSnackbar("No Internet Connection", whiteColor, primaryColor, true);
       }
     };
     emitter.onPresence = (res) {
@@ -215,12 +215,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
             }
           }
           break;
-          case MessageType.notification:
-          {
-            print("notificationssssss");
-            }
-          
-          break;
+
         case MediaType.ftp:
           {
             if (authProvider.getUser!.ref_id != message["from"]) {
@@ -237,26 +232,26 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   if (!kIsWeb) {
                     print(
                         "this is messag content ${message["content"].toString()}");
-  
-  //                         final List<int> codeUnits = message["content"].codeUnits;
-  // final Uint8List unit8List = Uint8List.fromList(codeUnits);
-  // print("unit8list $unit8List");
-  //                   //     var response = await http.get(Uri.parse(message["content"].toString()));
-  //                   //  print("ths is parse responseeeeeeeee ${response.bodyBytes}");
-  //                   var extension = message["fileExtension"];
-  //                   message["fileExtension"].toString().contains(".")
-  //                       ? message["fileExtension"]
-  //                       : '.' + message["fileExtension"];
-  //                   print("this is tempData ${extension}");
-  //                  final tempDir = await getTemporaryDirectory();
 
-  //                   File file = await File(
-  //                           '${tempDir.path}/vdktok${(new DateTime.now()).millisecondsSinceEpoch.toString().trim()}$extension')
-  //                       .create();
-  //                       print("this is filllleee ${file}");
-  //                   file.writeAsBytesSync(unit8List);
+                    //                         final List<int> codeUnits = message["content"].codeUnits;
+                    // final Uint8List unit8List = Uint8List.fromList(codeUnits);
+                    // print("unit8list $unit8List");
+                    //                   //     var response = await http.get(Uri.parse(message["content"].toString()));
+                    //                   //  print("ths is parse responseeeeeeeee ${response.bodyBytes}");
+                    //                   var extension = message["fileExtension"];
+                    //                   message["fileExtension"].toString().contains(".")
+                    //                       ? message["fileExtension"]
+                    //                       : '.' + message["fileExtension"];
+                    //                   print("this is tempData ${extension}");
+                    //                  final tempDir = await getTemporaryDirectory();
 
-  //                   receiptMsg["content"] = file;
+                    //                   File file = await File(
+                    //                           '${tempDir.path}/vdktok${(new DateTime.now()).millisecondsSinceEpoch.toString().trim()}$extension')
+                    //                       .create();
+                    //                       print("this is filllleee ${file}");
+                    //                   file.writeAsBytesSync(unit8List);
+
+                    //                   receiptMsg["content"] = file;
                     // message["id"] = message["messageId"];
                   } else {
                     print('inelseofFirst');
@@ -333,23 +328,22 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 if (!kIsWeb) {
                   print(
                       "this is messag contentttttttt ${message["content"].toString()}");
-  //                     final List<int> codeUnits = message["content"].codeUnits;
-  // final Uint8List unit8List = Uint8List.fromList(codeUnits);
-  //                 //  var response = await http.get(Uri.parse(message["content"].toString()));
-  //                 //  print("ths is parse response ${response.bodyBytes}");
-  //                  final tempDir = await getTemporaryDirectory();
-  //                 var extension =
-  //                     message["fileExtension"].toString().contains(".")
-  //                         ? message["fileExtension"]
-  //                         : '.' + message["fileExtension"];
+                  //                     final List<int> codeUnits = message["content"].codeUnits;
+                  // final Uint8List unit8List = Uint8List.fromList(codeUnits);
+                  //                 //  var response = await http.get(Uri.parse(message["content"].toString()));
+                  //                 //  print("ths is parse response ${response.bodyBytes}");
+                  //                  final tempDir = await getTemporaryDirectory();
+                  //                 var extension =
+                  //                     message["fileExtension"].toString().contains(".")
+                  //                         ? message["fileExtension"]
+                  //                         : '.' + message["fileExtension"];
 
-  //                 File file = await File(
-  //                         '${tempDir.path}/vdotok${DateTime.now().toString().trim()}$extension')
-  //                     .create();
-  //                 file.writeAsBytesSync(unit8List);
-                    
-               
-  //                 message["content"] = file;
+                  //                 File file = await File(
+                  //                         '${tempDir.path}/vdotok${DateTime.now().toString().trim()}$extension')
+                  //                     .create();
+                  //                 file.writeAsBytesSync(unit8List);
+
+                  //                 message["content"] = file;
 
                   groupListProvider.recevieMsg(message);
                 } else {
@@ -378,9 +372,51 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           break;
         default:
           {
-            if (message["receiptType"] == ReceiptType.seen)
-              print("this is messggddddg $msg");
-            groupListProvider.changeMsgStatus(msg, ReceiptType.seen);
+            switch (message["notification"]) {
+              case NotificationType.createGroup:
+                {
+                  print("notificationssssss create group");
+                   groupListProvider.getGroupList(authProvider.getUser!.auth_token);
+   
+                  //refreshList();
+                  //     groupListProvider
+                  //                                           .handleCreateChatState();
+                  // groupListProvider.updateGroupStatus();
+                  
+                }
+                break;
+                 case NotificationType.deleteGroup:
+                {
+                  print("notificationssssss delete group");
+                   groupListProvider.getGroupList(authProvider.getUser!.auth_token);
+    
+                  //     groupListProvider
+                  //                                           .handleCreateChatState();
+                  // groupListProvider.updateGroupStatus();
+                  
+                }
+                break;
+                    case NotificationType.renameGroup:
+                {
+                  print("notificationssssss rename group");
+                   groupListProvider.getGroupList(authProvider.getUser!.auth_token);
+    
+                  //     groupListProvider
+                  //                                           .handleCreateChatState();
+                  // groupListProvider.updateGroupStatus();
+                  
+                }
+
+
+                break;
+              default:
+                {
+                  if (message["receiptType"] == ReceiptType.seen)
+                    print("this is messggddddg $msg");
+                  groupListProvider.changeMsgStatus(msg, ReceiptType.seen);
+                }
+                break;
+            }
           }
           break;
       }

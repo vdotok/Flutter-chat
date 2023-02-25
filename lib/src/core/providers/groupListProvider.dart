@@ -68,7 +68,10 @@ class GroupListProvider with ChangeNotifier {
 
     notifyListeners();
   }
-
+updateGroupStatus(){
+   _groupListStatus = ListStatus.Scussess;
+   notifyListeners();
+}
   getGroupList(authToken) async {
     var currentData = await getAPI("AllGroups", authToken);
     print(
@@ -205,7 +208,7 @@ class GroupListProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  deleteGroup(group_id, authtoken) async {
+ deleteGroup(group_id, authtoken) async {
     print("group id is $group_id");
     Map<String, dynamic> jsonData = {"group_id": group_id};
     var currentData = await callAPI(jsonData, "DeleteGroup", authtoken);
@@ -226,9 +229,10 @@ class GroupListProvider with ChangeNotifier {
       // _deleteGroupStatus = DeleteGroupStatus.Loading;
 
       getGroupList(authtoken);
-
+   
       notifyListeners();
     }
+  //  return currentData;
   }
 
   editGroupName(grouptitle, group_id, authtoken) async {
@@ -238,9 +242,9 @@ class GroupListProvider with ChangeNotifier {
       "group_id": group_id
     };
     var currentData = await callAPI(jsonData, "RenameGroup", authtoken);
-    print("Current Data: $currentData");
-    print(
-        "this is model list data ########## ${GroupListModel.fromJson(currentData)}");
+    print("Current Dataaaaaaa: $currentData");
+    // print(
+    //     "this is model list data ########## ${GroupListModel.fromJson(currentData)}");
 
     if (currentData["status"] != 200) {
       _editGroupNameStatus = EditGroupNameStatus.Failure;
@@ -370,6 +374,7 @@ class GroupListProvider with ChangeNotifier {
         print("i am in personal chat");
         var msgindex =
             _groupList.groups![groupindex]!.chatList!.indexWhere((element) {
+              
           print("this is id ${json.decode(msg)["messageId"].toString()}");
           // print("participant index is $participantIndex");
           print("element is ${element!.id}");
@@ -378,7 +383,8 @@ class GroupListProvider with ChangeNotifier {
         print("this is msg index $msgindex");
         // print(
         //     "this is status ${_groupList.groups[groupindex].chatList[msgindex].status}");
-        _groupList.groups![groupindex]!.chatList![msgindex]!.status = status;
+        if(msgindex!=-1)
+      {  _groupList.groups![groupindex]!.chatList![msgindex]!.status = status;}
 
         notifyListeners();
       }

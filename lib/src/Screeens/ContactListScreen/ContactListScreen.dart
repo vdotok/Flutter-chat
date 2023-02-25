@@ -345,6 +345,29 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                                                 authProvider
                                                                     .getUser!
                                                                     .auth_token);
+
+                                                                    if (res["status"] == 200) {
+                                              List<String> refIDList = [];
+                                              for (int i = 0;
+                                                  i <                                                      selectedContacts
+                                                          .length;
+                                                  i++) {
+                                                refIDList.add(selectedContacts[i]
+                                                    .ref_id!);
+                                              }
+                                              var tempdata = {
+                                                "from": 
+                                                    authProvider
+                                                    .getUser!
+                                                    .ref_id, //ref_id who send this packet
+                                                "id": ((DateTime.now())
+                                                        .millisecondsSinceEpoch)
+                                                    .round(),
+                                                "type":
+                                                    "create", //type (create/Delete/Update)
+                                                "users": refIDList
+                                              };
+                                         emitter.publishNotification(tempdata);
                                                         // var getGroups=await
 
                                                         print(
@@ -410,6 +433,9 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                                             strArr.remove(
                                                                 "CreateGroupChat");
                                                           }
+                                                          //  widget.mainProvider
+                                                          //     .chatScreen(
+                                                          //       index: 0);
                                                           widget.mainProvider
                                                               .chatScreen(
                                                                   index:
@@ -435,6 +461,10 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                                           loading = false;
                                                         });
                                                       }
+                                                      else{
+
+                                                      }
+                                                    }
                                                     : () {},
                                             child: Container(
                                               margin:
@@ -442,6 +472,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                               child: SvgPicture.asset(
                                                   'assets/messageicon.svg'),
                                             )),
+                                
                                       )
                                     ],
                                   );
