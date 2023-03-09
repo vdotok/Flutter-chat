@@ -389,6 +389,8 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 {
                   print("notificationssssss delete group");
                    groupListProvider.getGroupList(authProvider.getUser!.auth_token);
+                  _mainProvider.homeScreen();
+                //   print("this is grouplistsss ${groupListProvider.groupListStatus}");
     
                   //     groupListProvider
                   //                                           .handleCreateChatState();

@@ -1753,7 +1753,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 child: Text(
                                   DateFormat().add_jm().format(
                                       DateTime.fromMillisecondsSinceEpoch(
-                                          groupListProvider
+                                         groupListProvider
                                               .groupList
                                               .groups![index]!
                                               .chatList![chatindex]!
@@ -2396,7 +2396,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             "key": groupListProvider
                                 .groupList.groups![index]!.channel_key,
                             "from": authProvider.getUser!.ref_id,
-                            //"type": MessageType.text,
+                            "type": MessageType.typing,
                             "content": "0",
                             "size": 0,
                             "isGroupMessage": false,
