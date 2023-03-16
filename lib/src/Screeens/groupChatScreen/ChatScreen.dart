@@ -511,8 +511,8 @@ class _ChatScreenState extends State<ChatScreen> {
         "to": _groupListProvider.groupList.groups![index]!.channel_name,
         "key": _groupListProvider.groupList.groups![index]!.channel_key,
         "from": authProvider.getUser!.ref_id,
-        "type": MediaType.ftp,
-        "subtype": SubType.image,
+        "type": MessageType.ftp,
+        "subtype": MediaType.image,
         "content": currentpic["file_name"],
         "fileExtension": (pickedFile.path.split('.').last),
         "isGroupMessage": false,
@@ -642,14 +642,14 @@ class _ChatScreenState extends State<ChatScreen> {
     var type;
 
     if (isVideo == true) {
-      type = SubType.video;
+      type = MediaType.video;
     } else if (isAudio == true) {
-      type = SubType.audio;
+      type = MediaType.audio;
     } else if (isImage == true) {
       print("image block");
-      type = SubType.image;
+      type = MediaType.image;
     } else {
-      type = SubType.file;
+      type = MediaType.file;
     }
     print("this is type $type");
     if (result != null) {
@@ -681,7 +681,7 @@ class _ChatScreenState extends State<ChatScreen> {
             "to": _groupListProvider.groupList.groups![index]!.channel_name,
             "key": _groupListProvider.groupList.groups![index]!.channel_key,
             "from": authProvider.getUser!.ref_id,
-            "type": MediaType.ftp,
+            "type": MessageType.ftp,
             "content": currentpic["file_name"],
             "fileName": result.files.single.name.toString(),
             "fileExtension":
@@ -740,7 +740,7 @@ class _ChatScreenState extends State<ChatScreen> {
           "to": _groupListProvider.groupList.groups![index]!.channel_name,
           "key": _groupListProvider.groupList.groups![index]!.channel_key,
           "from": authProvider.getUser!.ref_id,
-          "type": MediaType.ftp,
+          "type": MessageType.ftp,
           "content": currentpic["file_name"],
           "fileExtension": (file.path.split('.').last),
           // p.extension(file.path.lastIndexOf('.')).substring(1)),
@@ -1056,7 +1056,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                   .groups![index]!
                                                   .chatList![chatindex]!
                                                   .type ==
-                                              MediaType.ftp
+                                              MessageType.ftp
                                           ?
                                           // ? Container(child:Text("hehvdsghvcgdbgbvdsgvdgbgvgdb")):Container()
                                           groupListProvider
@@ -1064,7 +1064,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                       .groups![index]!
                                                       .chatList![chatindex]!
                                                       .subtype ==
-                                                  SubType.image
+                                                  MediaType.image
                                               ? kIsWeb
                                                   ? Container(
                                                       width: 200,
@@ -1211,7 +1211,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                           .groups![index]!
                                                           .chatList![chatindex]!
                                                           .subtype ==
-                                                      SubType.audio
+                                                      MediaType.audio
                                                   ? kIsWeb
                                                       ?
                                                       //for audio
@@ -1358,7 +1358,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                                               .chatList![
                                                                   chatindex]!
                                                               .subtype ==
-                                                          SubType.video
+                                                          MediaType.video
                                                       ?
                                                       //for video
                                                       InkWell(
@@ -1893,10 +1893,10 @@ class _ChatScreenState extends State<ChatScreen> {
                         )
                       : groupListProvider.groupList.groups![index]!
                                   .chatList![chatindex]!.type ==
-                              MediaType.ftp
+                              MessageType.ftp
                           ? groupListProvider.groupList.groups![index]!
                                       .chatList![chatindex]!.subtype ==
-                                  SubType.image
+                                  MediaType.image
                               ?
                               //for image
                               Container(

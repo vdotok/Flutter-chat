@@ -81,20 +81,21 @@ class ReceiptType {
   static var seen = 3;
 }
 
-class MediaType {
-static const int image = 0;
- static const int audio = 1;
-  static const int video = 2;
- static const int file = 3;
-  static const int ftp=4;
-}
+// class MediaType {
+// static const int image = 0;
+//  static const int audio = 1;
+//   static const int video = 2;
+//  static const int file = 3;
+//   static const int ftp=4;
+// }
 
-class SubType{
-   static int image = 0;
+class MediaType {
+  static int image = 0;
   static int audio = 1;
   static int video = 2;
   static int file = 3;
 }
+
 class MessageType {
   static const String text = "text";
   static const String media = "media";
@@ -102,12 +103,15 @@ class MessageType {
   static const String thumbnail = "thumbnail";
   static const String path = "path";
   static const String typing = "typing";
-  
+  static const String ftp = "ftp";
+  static const String acknowledge = "acknowledge";
+  static const String receipts = "receipts";
 }
+
 class NotificationType {
-static const String createGroup ="CreateGroup";
-static const String deleteGroup ="DeleteGroup";
-static const String renameGroup ="RenameGroup";
+  static const String createGroup = "CreateGroup";
+  static const String deleteGroup = "DeleteGroup";
+  static const String renameGroup = "RenameGroup";
 }
 //Google API key for auto places
 //copied from internet

@@ -211,12 +211,17 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         case MessageType.typing:
           {
             if (authProvider.getUser!.ref_id != message["from"]) {
-              groupListProvider.updateTypingStatus(msg);
+              if (message["content"] == "1") {
+                groupListProvider.updateTypingStatus(msg);
+              }
+              else{
+                
+              }
             }
           }
           break;
 
-        case MediaType.ftp:
+        case MessageType.ftp:
           {
             if (authProvider.getUser!.ref_id != message["from"]) {
               if (groupListProvider.currentOpendChat != null) {
@@ -376,39 +381,38 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               case NotificationType.createGroup:
                 {
                   print("notificationssssss create group");
-                   groupListProvider.getGroupList(authProvider.getUser!.auth_token);
-   
+                  groupListProvider
+                      .getGroupList(authProvider.getUser!.auth_token);
+
                   //refreshList();
                   //     groupListProvider
                   //                                           .handleCreateChatState();
                   // groupListProvider.updateGroupStatus();
-                  
                 }
                 break;
-                 case NotificationType.deleteGroup:
+              case NotificationType.deleteGroup:
                 {
                   print("notificationssssss delete group");
-                   groupListProvider.getGroupList(authProvider.getUser!.auth_token);
+                  groupListProvider
+                      .getGroupList(authProvider.getUser!.auth_token);
                   _mainProvider.homeScreen();
-                //   print("this is grouplistsss ${groupListProvider.groupListStatus}");
-    
+                  //   print("this is grouplistsss ${groupListProvider.groupListStatus}");
+
                   //     groupListProvider
                   //                                           .handleCreateChatState();
                   // groupListProvider.updateGroupStatus();
-                  
                 }
                 break;
-                    case NotificationType.renameGroup:
+              case NotificationType.renameGroup:
                 {
                   print("notificationssssss rename group");
-                   groupListProvider.getGroupList(authProvider.getUser!.auth_token);
-    
+                  groupListProvider
+                      .getGroupList(authProvider.getUser!.auth_token);
+
                   //     groupListProvider
                   //                                           .handleCreateChatState();
                   // groupListProvider.updateGroupStatus();
-                  
                 }
-
 
                 break;
               default:
