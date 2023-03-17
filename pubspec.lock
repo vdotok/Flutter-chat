@@ -888,10 +888,11 @@ packages:
   vdotok_connect:
     dependency: "direct main"
     description:
-      path: "../flutter-sdk-connect"
-      relative: true
-    source: path
-    version: "0.0.8"
+      name: vdotok_connect
+      sha256: e5d2d1dfb3ccc0f440687d3a7cb0ba6554f0d7ead627ab777b3ece97db209f01
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.9"
   vector_math:
     dependency: transitive
     description:

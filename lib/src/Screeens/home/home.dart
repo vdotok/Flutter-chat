@@ -642,7 +642,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
         if (authProvider.loggedInStatus == Status.LoggedOut) {
         } else {
           //  print("this is variable for resume $sockett $isConnected");
-          bool status = await emitter.checkInternetConnectivity();
+          bool status = await emitter.getInternetStatus();
 
           if (status == false) {
             Fluttertoast.showToast(
