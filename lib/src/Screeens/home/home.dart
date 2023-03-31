@@ -604,12 +604,12 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
 //     emitter.publish(key, channelname, sendmessage);
 //   }
   renderList() {
-    if (groupListProvider.groupListStatus == ListStatus.Scussess) {
-      groupListProvider.getGroupList(authProvider.getUser!.auth_token);
-    } else {
-      contactProvider.getContacts(authProvider.getUser!.auth_token);
-      //_selectedContacts.clear();
-    }
+    // if (groupListProvider.groupListStatus == ListStatus.Scussess) {
+    //   groupListProvider.getGroupList(authProvider.getUser!.auth_token);
+    // } else {
+    //   contactProvider.getContacts(authProvider.getUser!.auth_token);
+    //   //_selectedContacts.clear();
+    // }
     if (isSocketConnect == false && isInternetConnect) {
       print("here in refreshlist connection");
       emitter.connect(
