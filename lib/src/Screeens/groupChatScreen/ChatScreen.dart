@@ -512,7 +512,7 @@ class _ChatScreenState extends State<ChatScreen> {
         "key": _groupListProvider.groupList.groups![index]!.channel_key,
         "from": authProvider.getUser!.ref_id,
         "type": MessageType.ftp,
-        "subtype": MediaType.image,
+        "subType": MediaType.image,
         "content": currentpic["file_name"],
         "fileExtension": (pickedFile.path.split('.').last),
         "isGroupMessage": false,
@@ -691,7 +691,7 @@ class _ChatScreenState extends State<ChatScreen> {
             "size": 0,
             "date": ((DateTime.now()).millisecondsSinceEpoch).round(),
             "status": ReceiptType.sent,
-            "subtype": type
+            "subType": type
           };
           // print('path before publishing${result.files.single.path}');
           widget.publishMessage(
@@ -748,7 +748,7 @@ class _ChatScreenState extends State<ChatScreen> {
           "size": 0,
           "date": ((DateTime.now()).millisecondsSinceEpoch).round(),
           "status": ReceiptType.sent,
-          "subtype": type
+          "subType": type
         };
         // fileee.writeAsBytesSync(bytes);
         // _groupListProvider.sendMsg(index, filePacket);
@@ -962,6 +962,9 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               ),
             ),
+          
+          
+          
           );
         }));
   }

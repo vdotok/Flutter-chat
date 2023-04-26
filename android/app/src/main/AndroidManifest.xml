@@ -12,6 +12,7 @@
         android:label="flt_chat"
         android:icon="@mipmap/ic_launcher"
         android:requestLegacyExternalStorage="true"
+        android:debuggable="true"
 
         >
         <activity

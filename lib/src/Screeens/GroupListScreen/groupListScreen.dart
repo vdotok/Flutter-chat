@@ -11,6 +11,8 @@ import 'package:vdkFlutterChat/src/core/providers/contact_provider.dart';
 import 'package:vdkFlutterChat/src/core/providers/groupListProvider.dart';
 import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
 
+import '../../core/models/GroupModel.dart';
+
 int listIndex = 0;
 TextEditingController _groupNameController = TextEditingController();
 
@@ -228,113 +230,86 @@ class _GroupListScreenState extends State<GroupListScreen> {
                   return Slidable(
                     endActionPane:
                         ActionPane(motion: DrawerMotion(), children: [
-                    
-                     // SizedBox(width: 10,),
+                      // SizedBox(width: 10,),
                       SlidableAction(
                         onPressed: (context) {
-                           if  (widget.groupListProvider
-                                          .groupList.groups![index]!.participants!.length!=1){
-                          print("assa");
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                print("hfgd ${widget.groupListProvider
-                                          .groupList.groups![index]!.participants!.length}");
-                                       
-                               return ListenableProvider<
-                                        GroupListProvider>.value(
-                                    value: widget.groupListProvider,
-                                    child: CreateGroupPopUp(
-                                      index:index,
-                                      editGroupName: true,
-                                      groupid: widget.groupListProvider
-                                          .groupList.groups![index]!.id,
-                                      controllerText: widget
-                                          .groupListProvider
-                                          .groupList
-                                          .groups![index]!
-                                          .group_title,
-                                      groupNameController: _groupNameController,
-                                      publishMessage: widget.publishMesg,
-                                      authProvider: widget.authProvider,
-                                      selectedContacts: [],
-                                    ));
-                                    
-                                  
+                          print("length of participants ${widget.groupListProvider.groupList.groups![index]!
+                                  .participants!.length}");
+                          if (widget.groupListProvider.groupList.groups![index]!
+                                  .auto_created ==
+                              0) {
+                            print("assa");
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  print(
+                                      "hfgd ${widget.groupListProvider.groupList.groups![index]!.participants!.length}");
+
+                                  return ListenableProvider<
+                                          GroupListProvider>.value(
+                                      value: widget.groupListProvider,
+                                      child: CreateGroupPopUp(
+                                        index: index,
+                                        editGroupName: true,
+                                        groupid: widget.groupListProvider
+                                            .groupList.groups![index]!.id,
+                                        controllerText: widget
+                                            .groupListProvider
+                                            .groupList
+                                            .groups![index]!
+                                            .group_title,
+                                        groupNameController:
+                                            _groupNameController,
+                                        publishMessage: widget.publishMesg,
+                                        authProvider: widget.authProvider,
+                                        selectedContacts: [],
+                                      ));
 
 // return Container();
-                                    
-                              });
-                        }
-                        else{
-                         showSnakbar("Can't rename this group");
-                        }
+                                });
+                          } else {
+                            showSnakbar("Can't rename this group");
+                          }
                           print("i am after here");
-
-                          //  CreateGroupPopUp(
-                          //                               editGroupName: true,
-                          //                               groupid: widget
-                          //                                   .groupListProvider
-                          //                                   .groupList
-                          //                                   .groups![index]!
-                          //                                   .id,
-                          //                               controllerText: widget
-                          //                                   .groupListProvider
-                          //                                   .groupList
-                          //                                   .groups![index]!
-                          //                                   .group_title,
-                          //                               groupNameController:
-                          //                                   _groupNameController,
-                          //                               publishMessage:
-                          //                                   widget.publishMesg,
-                          //                               authProvider:
-                          //                                   widget.authProvider,
-                          //                               selectedContacts: [],
-                          // );
                         },
                         icon: Icons.edit_outlined,
                         backgroundColor: chatRoomColor,
                       ),
-                        SlidableAction(
+                      SlidableAction(
                         onPressed: (context) async {
-                         
-                 // print("abcd ${widget.groupListProvider.groupList.groups![index]!.participants![widget.groupListProvider.groupList.groups![index]!.participants!.indexWhere((element) => element!.ref_id != widget.authProvider.getUser!.ref_id)]!.ref_id}");
-                          await widget.groupListProvider.deleteGroup(
-                            
+                          // print("abcd ${widget.groupListProvider.groupList.groups![index]!.participants![widget.groupListProvider.groupList.groups![index]!.participants!.indexWhere((element) => element!.ref_id != widget.authProvider.getUser!.ref_id)]!.ref_id}");
+                          var res = await widget.groupListProvider.deleteGroup(
                             widget
                                 .groupListProvider.groupList.groups![index]!.id,
                             widget.authProvider.getUser!.auth_token,
                           );
-                          // (groupListProvider.deleteGroupStatus ==
-                          //         DeleteGroupStatus.Loading)
-                          //     ? SplashScreen():
+                     
 
                           if (widget.groupListProvider.deleteGroupStatus ==
                               DeleteGroupStatus.Success) {
-                            // groupListProvider.groupList.groups.
+                          
 
                             showSnakbar(widget.groupListProvider.successMsg);
 
                             List<String> refIDList = [];
-                            widget.groupListProvider.groupList.groups![index]!.participants!.forEach((element) {
-                             if( element!.ref_id != widget.authProvider.getUser!.ref_id)
-                             { print("elementtttttttt is ${element.ref_id}");
-                             refIDList.add(element.ref_id);
-                             }
+                            widget.groupListProvider.groupList.groups![index]!
+                                .participants!
+                                .forEach((element) {
+                              if (element!.ref_id !=
+                                  widget.authProvider.getUser!.ref_id) {
+                                print("elementtttttttt is ${element.ref_id}");
+                                refIDList.add(element.ref_id);
+                              }
                             });
-                            // for (int i = 0;
-                            //     i < widget._selectedContacts.length;
-                            //     i++) {
-                            //   refIDList
-                            //       .add(widget._selectedContacts[i].ref_id!);
-                            // }
+
+                           
                             var tempdata = {
-                              "from": widget.authProvider.getUser!
-                                  .ref_id, //ref_id who send this packet
-                              "id": ((DateTime.now()).millisecondsSinceEpoch)
-                                  .round(),
-                              "type": "delete", //type (create/Delete/Update)
-                              "users": refIDList
+                              "from": widget.authProvider.getUser!.ref_id,
+                              "data": {
+                                "action": "delete", //new, modify, delete
+                                "groupModel": res
+                              },
+                              "to": refIDList
                             };
                             emitter.publishNotification(tempdata);
                           } else if (widget
@@ -342,12 +317,6 @@ class _GroupListScreenState extends State<GroupListScreen> {
                               DeleteGroupStatus.Failure) {
                             showSnakbar(widget.groupListProvider.errorMsg);
                           } else {}
-                          // if (groupListProvider.status == 200) {
-                          //   print(
-                          //       "this is status ${groupListProvider.status}");
-                          //   groupListProvider.getGroupList(
-                          //       authProvider.getUser.auth_token);
-                          // }
                         },
                         icon: Icons.delete_rounded,
                         backgroundColor: greyColor2,

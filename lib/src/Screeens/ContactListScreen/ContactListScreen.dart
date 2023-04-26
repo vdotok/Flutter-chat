@@ -346,125 +346,148 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                                                     .getUser!
                                                                     .auth_token);
 
-                                                                    if (res["status"] == 200) {
-                                              List<String> refIDList = [];
-                                              for (int i = 0;
-                                                  i <                                                      selectedContacts
-                                                          .length;
-                                                  i++) {
-                                                refIDList.add(selectedContacts[i]
-                                                    .ref_id!);
-                                              }
-                                              var tempdata = {
-                                                "from": 
-                                                    authProvider
-                                                    .getUser!
-                                                    .ref_id, //ref_id who send this packet
-                                                "id": ((DateTime.now())
-                                                        .millisecondsSinceEpoch)
-                                                    .round(),
-                                                "type":
-                                                    "create", //type (create/Delete/Update)
-                                                "users": refIDList
-                                              };
-                                         emitter.publishNotification(tempdata);
-                                                        // var getGroups=await
+                                                        if (res["status"] ==
+                                                            200) {
+                                                          List<String>
+                                                              refIDList = [];
+                                                          for (int i = 0;
+                                                              i <
+                                                                  selectedContacts
+                                                                      .length;
+                                                              i++) {
+                                                            refIDList.add(
+                                                                selectedContacts[
+                                                                        i]
+                                                                    .ref_id!);
+                                                          }
+                                                           GroupModel
+                                                              groupModel =
+                                                              GroupModel
+                                                                  .fromJson(res[
+                                                                      "group"]);
+                                                          var tempdata = {
+                                                            "from": authProvider
+                                                                .getUser!
+                                                                .ref_id,
+                                                            "data": {
+                                                              "action":
+                                                                  "new", //new, modify, delete
+                                                              "groupModel":
+                                                                groupModel
+                                                            },
+                                                            "to": refIDList
 
-                                                        print(
-                                                            "this is already created index ${res["is_already_created"]}");
-                                                        GroupModel groupModel =
-                                                            GroupModel.fromJson(
-                                                                res["group"]);
-                                                        print(
-                                                            "this is group index $groupIndex");
-                                                        // print(
-                                                        //     "this is response of createGroup ${groupModel.participants![0]!.full_name}, ${groupModel.participants![1]!.full_name}");
-
-                                                        int channelIndex = 0;
-                                                        if (res[
-                                                            "is_already_created"]) {
-                                                          channelIndex = groupListProvider
-                                                              .groupList.groups!
-                                                              .indexWhere((element) =>
-                                                                  element!
-                                                                      .channel_key ==
-                                                                  res["group"][
-                                                                      "channel_key"]);
+                                                            // "from":
+                                                            //     authProvider
+                                                            //     .getUser!
+                                                            //     .ref_id, //ref_id who send this packet
+                                                            // "id": ((DateTime.now())
+                                                            //         .millisecondsSinceEpoch)
+                                                            //     .round(),
+                                                            // "type":
+                                                            //     "create", //type (create/Delete/Update)
+                                                            // "users": refIDList
+                                                          };
+                                                          emitter
+                                                              .publishNotification(
+                                                                  tempdata);
+                                                          // var getGroups=await
 
                                                           print(
-                                                              "this is already created index $channelIndex");
-                                                        } else {
-                                                          groupListProvider
-                                                              .addGroup(
-                                                                  groupModel);
-                                                          groupListProvider.subscribeChannel(
-                                                              groupModel
-                                                                  .channel_key,
-                                                              groupModel
-                                                                  .channel_name);
-                                                          groupListProvider.subscribePresence(
-                                                              groupModel
-                                                                  .channel_key,
-                                                              groupModel
-                                                                  .channel_name,
-                                                              true,
-                                                              true);
-                                                        }
-
-                                                        publishMessage(
-                                                            key,
-                                                            channelname,
-                                                            sendmessage) {
+                                                              "this is already created index ${res["is_already_created"]}");
+                                                         
                                                           print(
-                                                              "The key:$key....$channelname...$sendmessage");
-                                                          emitter.publish(
+                                                              "this is group index $groupIndex");
+                                                          // print(
+                                                          //     "this is response of createGroup ${groupModel.participants![0]!.full_name}, ${groupModel.participants![1]!.full_name}");
+
+                                                          int channelIndex = 0;
+                                                          if (res[
+                                                              "is_already_created"]) {
+                                                            channelIndex = groupListProvider
+                                                                .groupList
+                                                                .groups!
+                                                                .indexWhere((element) =>
+                                                                    element!
+                                                                        .channel_key ==
+                                                                    res["group"]
+                                                                        [
+                                                                        "channel_key"]);
+
+                                                            print(
+                                                                "this is already created index $channelIndex");
+                                                          } else {
+                                                            groupListProvider
+                                                                .addGroup(
+                                                                    groupModel);
+                                                            groupListProvider
+                                                                .subscribeChannel(
+                                                                    groupModel
+                                                                        .channel_key,
+                                                                    groupModel
+                                                                        .channel_name);
+                                                            groupListProvider
+                                                                .subscribePresence(
+                                                                    groupModel
+                                                                        .channel_key,
+                                                                    groupModel
+                                                                        .channel_name,
+                                                                    true,
+                                                                    true);
+                                                          }
+
+                                                          publishMessage(
                                                               key,
                                                               channelname,
-                                                              sendmessage,0);
-                                                        }
-
-                                                        if (res[
-                                                            "is_already_created"]) {
-                                                          if (strArr.last ==
-                                                              "CreateIndividualGroup") {
-                                                            strArr.remove(
-                                                                "CreateIndividualGroup");
-                                                          } else {
-                                                            strArr.remove(
-                                                                "CreateGroupChat");
+                                                              sendmessage) {
+                                                            print(
+                                                                "The key:$key....$channelname...$sendmessage");
+                                                            emitter.publish(
+                                                                key,
+                                                                channelname,
+                                                                sendmessage,
+                                                                0);
                                                           }
-                                                          //  widget.mainProvider
-                                                          //     .chatScreen(
-                                                          //       index: 0);
-                                                          widget.mainProvider
-                                                              .chatScreen(
-                                                                  index:
-                                                                      channelIndex);
-                                                        } else {
-                                                          if (strArr.last ==
-                                                              "CreateIndividualGroup") {
-                                                            strArr.remove(
-                                                                "CreateIndividualGroup");
-                                                          } else {
-                                                            strArr.remove(
-                                                                "CreateGroupChat");
-                                                          }
-                                                          widget.mainProvider
-                                                              .chatScreen(
-                                                                  index: 0);
-                                                        }
-                                                        selectedContacts
-                                                            .clear();
-                                                        groupListProvider
-                                                            .handleCreateChatState();
-                                                        setState(() {
-                                                          loading = false;
-                                                        });
-                                                      }
-                                                      else{
 
+                                                          if (res[
+                                                              "is_already_created"]) {
+                                                            if (strArr.last ==
+                                                                "CreateIndividualGroup") {
+                                                              strArr.remove(
+                                                                  "CreateIndividualGroup");
+                                                            } else {
+                                                              strArr.remove(
+                                                                  "CreateGroupChat");
+                                                            }
+                                                            //  widget.mainProvider
+                                                            //     .chatScreen(
+                                                            //       index: 0);
+                                                            widget.mainProvider
+                                                                .chatScreen(
+                                                                    index:
+                                                                        channelIndex);
+                                                          } else {
+                                                            if (strArr.last ==
+                                                                "CreateIndividualGroup") {
+                                                              strArr.remove(
+                                                                  "CreateIndividualGroup");
+                                                            } else {
+                                                              strArr.remove(
+                                                                  "CreateGroupChat");
+                                                            }
+                                                            widget.mainProvider
+                                                                .chatScreen(
+                                                                    index: 0);
+                                                          }
+                                                          selectedContacts
+                                                              .clear();
+                                                          groupListProvider
+                                                              .handleCreateChatState();
+                                                          setState(() {
+                                                            loading = false;
+                                                          });
+                                                        } else {}
                                                       }
-                                                    }
                                                     : () {},
                                             child: Container(
                                               margin:
@@ -472,7 +495,6 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                               child: SvgPicture.asset(
                                                   'assets/messageicon.svg'),
                                             )),
-                                
                                       )
                                     ],
                                   );

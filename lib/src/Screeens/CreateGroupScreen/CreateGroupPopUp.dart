@@ -27,7 +27,8 @@ class CreateGroupPopUp extends StatefulWidget {
       required this.editGroupName,
       this.groupid,
       this.mainProvider,
-      this.handlePress, this.index})
+      this.handlePress,
+      this.index})
       : _groupNameController = groupNameController,
         _selectedContacts = selectedContacts,
         super(key: key);
@@ -186,35 +187,46 @@ class _CreateGroupPopUpState extends State<CreateGroupPopUp> {
                                         if (widget.editGroupName) {
                                           print("eeeeeeeeeee");
 
-                                          await grouplistp.editGroupName(
-                                              widget._groupNameController.text,
-                                              widget.groupid,
-                                              widget.authProvider.getUser!
-                                                  .auth_token);
+                                          var res =
+                                              await grouplistp.editGroupName(
+                                                  widget._groupNameController
+                                                      .text,
+                                                  widget.groupid,
+                                                  widget.authProvider.getUser!
+                                                      .auth_token);
                                           if (grouplistp.editGroupNameStatus ==
                                               EditGroupNameStatus.Success) {
                                             showSnakbar(grouplistp.successMsg);
-                                              List<String> refIDList = [];
-                            grouplistp.groupList.groups![widget.index]!.participants!.forEach((element) {
-                             if( element!.ref_id != widget.authProvider.getUser!.ref_id)
-                             { print("elementtttttttt is ${element.ref_id}");
-                             refIDList.add(element.ref_id);
-                             }
-                            });
-                                              var tempdata = {
-                                                "from": widget
-                                                    .authProvider
-                                                    .getUser!
-                                                    .ref_id, //ref_id who send this packet
-                                                "id": ((DateTime.now())
-                                                        .millisecondsSinceEpoch)
-                                                    .round(),
-                                                "type":
-                                                    "rename", //type (create/Delete/Update)
-                                                "users": refIDList
-                                              };
-                                              emitter.publishNotification(
-                                                  tempdata);
+                                            List<String> refIDList = [];
+                                            grouplistp
+                                                .groupList
+                                                .groups![widget.index]!
+                                                .participants!
+                                                .forEach((element) {
+                                              if (element!.ref_id !=
+                                                  widget.authProvider.getUser!
+                                                      .ref_id) {
+                                                print(
+                                                    "response of modifying $res");
+                                                refIDList.add(element.ref_id);
+                                              }
+                                            });
+                                            GroupModel groupModel =
+                                                GroupModel.fromJson(
+                                                    res["group"]);
+                                            var tempdata = {
+                                              "from": widget
+                                                  .authProvider.getUser!.ref_id,
+                                              "data": {
+                                                "action":
+                                                    "modify", //new, modify, delete
+                                                "groupModel": res
+                                              },
+                                              "to": refIDList
+                                            };
+
+                                            emitter
+                                                .publishNotification(tempdata);
                                           } else if (grouplistp
                                                   .editGroupNameStatus ==
                                               EditGroupNameStatus.Failure) {
@@ -242,33 +254,28 @@ class _CreateGroupPopUpState extends State<CreateGroupPopUp> {
                                             if (res["status"] == 200) {
                                               List<String> refIDList = [];
                                               for (int i = 0;
-                                                  i <
-                                                      widget._selectedContacts
-                                                          .length;
+                                                  i < selectedContacts.length;
                                                   i++) {
-                                                refIDList.add(widget
-                                                    ._selectedContacts[i]
-                                                    .ref_id!);
+                                                refIDList.add(
+                                                    selectedContacts[i]
+                                                        .ref_id!);
                                               }
-                                              var tempdata = {
-                                                "from": widget
-                                                    .authProvider
-                                                    .getUser!
-                                                    .ref_id, //ref_id who send this packet
-                                                "id": ((DateTime.now())
-                                                        .millisecondsSinceEpoch)
-                                                    .round(),
-                                                "type":
-                                                    "create", //type (create/Delete/Update)
-                                                "users": refIDList
-                                              };
-                                              emitter.publishNotification(
-                                                  tempdata);
-                                              // grouplistp.getGroupList(
-                                              //     authProvider.getUser.auth_token);
                                               GroupModel groupModel =
                                                   GroupModel.fromJson(
                                                       res["group"]);
+                                              var tempdata = {
+                                                "from": widget.authProvider
+                                                    .getUser!.ref_id,
+                                                "data": {
+                                                  "action":
+                                                      "new", //new, modify, delete
+                                                  "groupModel": groupModel
+                                                },
+                                                "to": refIDList
+                                              };
+                                              emitter.publishNotification(
+                                                  tempdata);
+
                                               print(
                                                   "this is response of createGroup ${groupModel.channel_key}, ${groupModel.channel_name}");
 
