@@ -83,7 +83,7 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
   publishMessage(key, channelname, sendmessage) {
     print("print im here ");
     print("The key:$key....$channelname...$sendmessage");
-    emitter.publish(key, channelname, sendmessage,0);
+    emitter.publish(key, channelname, sendmessage, 0);
   }
 
   Future buildShowDialog(
@@ -192,8 +192,7 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                               "-" +
                                               authProvider.getUser!.full_name;
                                       print("The Group Join: ${groupName}");
-                                      // groupListProvider
-                                      //                       .handleCreateChatState();
+
                                       var res = await widget.contactProvider
                                           .createGroup(
                                               groupName,
@@ -201,58 +200,70 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                               authProvider.getUser!.auth_token);
                                       // groupListProvider.getGroupList(
                                       //     authProvider.getUser.auth_token);
-                                      GroupModel groupModel =
-                                          GroupModel.fromJson(res["group"]);
-                                      // print(
-                                      //     "this is response of createGroup ${groupModel.channel_key}, ${groupModel.channel_name}");
-                                      if (res["is_already_created"]) {
-                                        print("here in already created grouup");
-                                        buildShowDialog(
-                                            context,
-                                            "Error Message",
-                                            "You already have a group with this user");
-                                        //   Navigator.pop(context, true);
-                                        // Navigator.pop(context, true);
-                                      } else {
-                                    groupListProvider.addGroup(groupModel);
-                                        groupListProvider.subscribeChannel(
-                                            groupModel.channel_key,
-                                            groupModel.channel_name);
-                                      groupListProvider.subscribePresence(
-                                            groupModel.channel_key,
-                                            groupModel.channel_name,
-                                            true,
-                                            true);
-                                              publishMessage(
-                                                            key,
-                                                            channelname,
-                                                            sendmessage) {
-                                                          print(
-                                                              "The key:$key....$channelname...$sendmessage");
-                                                          emitter.publish(
-                                                              key,
-                                                              channelname,
-                                                              sendmessage,0);
-                                                        }
-                                                        if (strArr.last ==
-                                                              "CreateGroupChat") {
-                                                            strArr.remove(
-                                                                "CreateGroupChat");
-                                                          } 
-                                                          widget.mainProvider
-                                                              .chatScreen(
-                                                                  index: 0);
-                                                        
-                                                        selectedContacts
-                                                            .clear();
-                                                        groupListProvider
-                                                            .handleCreateChatState();
- 
-                                        // Navigator.pop(context, true);
-                                        // Navigator.pop(context, true);
-                                      }
-                                    
 
+                                      if (res["status"] == 200) {
+                                        GroupModel groupModel =
+                                            GroupModel.fromJson(res["group"]);
+                                        // print(
+                                        //     "this is response of createGroup ${groupModel.channel_key}, ${groupModel.channel_name}");
+                                        if (res["is_already_created"]) {
+                                          print(
+                                              "here in already created grouup");
+                                          buildShowDialog(
+                                              context,
+                                              "Error Message",
+                                              "You already have a group with this user");
+                                          //   Navigator.pop(context, true);
+                                          // Navigator.pop(context, true);
+                                        } else {
+                                          List<String> refIDList = [];
+                                          for (int i = 0;
+                                              i < selectedContacts.length;
+                                              i++) {
+                                            refIDList.add(
+                                                selectedContacts[i].ref_id!);
+                                          }
+                                          GroupModel groupModel =
+                                              GroupModel.fromJson(res["group"]);
+                                          var tempdata = {
+                                            "from":
+                                                authProvider.getUser!.ref_id,
+                                            "data": {
+                                              "action":
+                                                  "new", //new, modify, delete
+                                              "groupModel": groupModel
+                                            },
+                                            "to": refIDList
+                                          };
+                                          emitter.publishNotification(tempdata);
+                                          groupListProvider
+                                              .addGroup(groupModel);
+                                          groupListProvider.subscribeChannel(
+                                              groupModel.channel_key,
+                                              groupModel.channel_name);
+                                          groupListProvider.subscribePresence(
+                                              groupModel.channel_key,
+                                              groupModel.channel_name,
+                                              true,
+                                              true);
+                                          publishMessage(
+                                              key, channelname, sendmessage) {
+                                            print(
+                                                "The key:$key....$channelname...$sendmessage");
+                                            emitter.publish(key, channelname,
+                                                sendmessage, 0);
+                                          }
+
+                                          if (strArr.last ==
+                                              "CreateGroupChat") {
+                                            strArr.remove("CreateGroupChat");
+                                          }
+                                          widget.mainProvider
+                                              .chatScreen(index: 0);
+
+                                          selectedContacts.clear();
+                                        }
+                                      } else {}
                                     }
                                   : selectedContacts.length > 1
                                       ? selectedContacts.length <= 4

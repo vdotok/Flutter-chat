@@ -889,10 +889,10 @@ packages:
     dependency: "direct main"
     description:
       name: vdotok_connect
-      sha256: e5d2d1dfb3ccc0f440687d3a7cb0ba6554f0d7ead627ab777b3ece97db209f01
+      sha256: "2f36cae14e21007041dc3f1eff0805d562e8249ca64be0b513c27848920ef474"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.9"
+    version: "0.0.10"
   vector_math:
     dependency: transitive
     description:

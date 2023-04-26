@@ -68,14 +68,15 @@ class GroupListProvider with ChangeNotifier {
 
     notifyListeners();
   }
-updateGroupStatus(){
-   _groupListStatus = ListStatus.Scussess;
-   notifyListeners();
-}
+
+  updateGroupStatus() {
+    _groupListStatus = ListStatus.Scussess;
+    notifyListeners();
+  }
+
   getGroupList(authToken) async {
     var currentData = await getAPI("AllGroups", authToken);
-    print(
-        "Current group data: ${currentData}");
+    print("Current group data: ${currentData}");
     // print(
     //     "this is model list data ########## ${GroupListModel.fromJson(currentData)}");
 
@@ -83,13 +84,12 @@ updateGroupStatus(){
       _groupListStatus = ListStatus.Failure;
       _errorMsg = currentData['message'];
       notifyListeners();
-    } 
-   else {
-  //     if(currentData["groups"]==null){
-  //        _groupListStatus = ListStatus.Scussess;
-  //       notifyListeners();
-  //     }
-  //  else {
+    } else {
+      //     if(currentData["groups"]==null){
+      //        _groupListStatus = ListStatus.Scussess;
+      //       notifyListeners();
+      //     }
+      //  else {
       _groupList = GroupListModel.fromJson(currentData);
       if (_groupList.groups!.length == 0) {
         _groupListStatus = ListStatus.Scussess;
@@ -107,7 +107,8 @@ updateGroupStatus(){
         }
         // _readmodelList = [];
         notifyListeners();
-      }}
+      }
+    }
     //}
   }
 
@@ -121,6 +122,25 @@ updateGroupStatus(){
 
   addGroup(GroupModel groupModel) {
     _groupList.groups!.insert(0, groupModel);
+    notifyListeners();
+  }
+
+  delete(groupModel) {
+    print("this is before delete group list ${_groupList.groups}");
+    var index = _groupList.groups!.indexWhere(
+        (element) => element!.channel_key == groupModel["channel_key"]);
+    _groupList.groups!.removeAt(index);
+    print("this is delete group list ${_groupList.groups}");
+    notifyListeners();
+  }
+
+  modify(GroupModel updatedGroup) {
+    //  print("updatedGroup ${updatedGroup}")
+    var index = _groupList.groups!.indexWhere((element) =>
+        element!.channel_key == updatedGroup.channel_key);
+    print("indeeeeeeexxxxxxx $index");
+    _groupList.groups![index] = updatedGroup;
+
     notifyListeners();
   }
 
@@ -208,7 +228,7 @@ updateGroupStatus(){
     notifyListeners();
   }
 
- deleteGroup(group_id, authtoken) async {
+  Future<dynamic> deleteGroup(group_id, authtoken) async {
     print("group id is $group_id");
     Map<String, dynamic> jsonData = {"group_id": group_id};
     var currentData = await callAPI(jsonData, "DeleteGroup", authtoken);
@@ -220,6 +240,7 @@ updateGroupStatus(){
       _deleteGroupStatus = DeleteGroupStatus.Failure;
       _errorMsg = currentData['message'];
       notifyListeners();
+      return currentData;
     } else {
       //_groupListStatus = ListStatus.Scussess;
       _deleteGroupStatus = DeleteGroupStatus.Loading;
@@ -228,14 +249,15 @@ updateGroupStatus(){
       _status = currentData["status"];
       // _deleteGroupStatus = DeleteGroupStatus.Loading;
 
-      getGroupList(authtoken);
-   
+      var response = getGroupList(authtoken);
+
       notifyListeners();
+      return currentData;
     }
-  //  return currentData;
+    //  return currentData;
   }
 
-  editGroupName(grouptitle, group_id, authtoken) async {
+  Future<dynamic> editGroupName(grouptitle, group_id, authtoken) async {
     print("group id is $group_id");
     Map<String, dynamic> jsonData = {
       "group_title": grouptitle,
@@ -250,17 +272,18 @@ updateGroupStatus(){
       _editGroupNameStatus = EditGroupNameStatus.Failure;
       _errorMsg = currentData['message'];
       notifyListeners();
+      return currentData;
     } else {
       //_groupListStatus = ListStatus.Scussess;
       _editGroupNameStatus = EditGroupNameStatus.Loading;
       _editGroupNameStatus = EditGroupNameStatus.Success;
       _successMsg = currentData["message"];
       _status = currentData["status"];
-      // _deleteGroupStatus = DeleteGroupStatus.Loading;
 
       getGroupList(authtoken);
 
       notifyListeners();
+      return currentData;
     }
   }
 
@@ -309,7 +332,6 @@ updateGroupStatus(){
           msg['content'] = url;
         }
       }
-    
 
       _groupList.groups![index]!.chatList!.add(ChatModel.fromJson(msg));
     }
@@ -369,12 +391,10 @@ updateGroupStatus(){
         }
         _groupList.groups![groupindex]!.chatList![msgindex]!.status = status;
         notifyListeners();
-       
       } else {
         print("i am in personal chat");
         var msgindex =
             _groupList.groups![groupindex]!.chatList!.indexWhere((element) {
-              
           print("this is id ${json.decode(msg)["messageId"].toString()}");
           // print("participant index is $participantIndex");
           print("element is ${element!.id}");
@@ -383,8 +403,9 @@ updateGroupStatus(){
         print("this is msg index $msgindex");
         // print(
         //     "this is status ${_groupList.groups[groupindex].chatList[msgindex].status}");
-        if(msgindex!=-1)
-      {  _groupList.groups![groupindex]!.chatList![msgindex]!.status = status;}
+        if (msgindex != -1) {
+          _groupList.groups![groupindex]!.chatList![msgindex]!.status = status;
+        }
 
         notifyListeners();
       }

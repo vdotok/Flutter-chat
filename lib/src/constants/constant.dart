@@ -109,9 +109,9 @@ class MessageType {
 }
 
 class NotificationType {
-  static const String createGroup = "CreateGroup";
-  static const String deleteGroup = "DeleteGroup";
-  static const String renameGroup = "RenameGroup";
+  static const String newGroup = "new";
+  static const String deleteGroup = "delete";
+  static const String modifyGroup = "modify";
 }
 //Google API key for auto places
 //copied from internet

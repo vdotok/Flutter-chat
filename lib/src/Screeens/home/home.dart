@@ -1,26 +1,21 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
-// import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:http/http.dart' as http;
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:vdkFlutterChat/src/Screeens/ContactListScreen/ContactListIndex.dart';
 import 'package:vdkFlutterChat/src/Screeens/CreateGroupScreen/CreateGroupChatIndex.dart';
-import 'package:vdkFlutterChat/src/Screeens/CreateGroupScreen/CreateGroupPopUp.dart';
 import 'package:vdkFlutterChat/src/Screeens/GroupListScreen/groupListScreen.dart';
-import 'package:vdkFlutterChat/src/Screeens/groupChatScreen/ChatScreen.dart';
 import 'package:vdkFlutterChat/src/Screeens/groupChatScreen/ChatScreenIndex.dart';
 import 'package:vdkFlutterChat/src/core/config/config.dart';
 import 'package:vdkFlutterChat/src/core/providers/contact_provider.dart';
 import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
 import 'package:vdotok_connect/vdotok_connect.dart';
 import '../../../main.dart';
+import '../../core/models/GroupModel.dart';
+import '../ContactListScreen/ContactListScreen.dart';
 import '../home/CustomAppBar.dart';
 import '../splash/splash.dart';
 import '../../constants/constant.dart';
@@ -66,9 +61,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     emitter.connect(
         clientId: authProvider.getUser!.user_id.toString(),
         reconnectivity: true,
-        refID: authProvider.getUser!.ref_id,
-        authorization_token: authProvider.getUser!.authorization_token,
-        project_id: project_id,
+        refId: authProvider.getUser!.ref_id,
+        authorizationToken: authProvider.getUser!.authorization_token,
+        projectId: project_id,
         host: authProvider.host,
         port: authProvider.port);
     print("host ${authProvider.host}");
@@ -94,9 +89,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
             emitter.connect(
                 clientId: authProvider.getUser!.user_id.toString(),
                 reconnectivity: true,
-                refID: authProvider.getUser!.ref_id,
-                authorization_token: authProvider.getUser!.authorization_token,
-                project_id: project_id,
+                refId: authProvider.getUser!.ref_id,
+                authorizationToken: authProvider.getUser!.authorization_token,
+                projectId: project_id,
                 host: authProvider.host,
                 port: authProvider.port
                 //response: sharedPref.read("authUser");
@@ -150,7 +145,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       groupListProvider.handlePresence(json.decode(res));
     };
 
-    emitter.onsubscribe = (value) {
+    emitter.onSubscribe = (value) {
       print(("subscription homee $value"));
       if (value ==
           groupListProvider.groupList.groups!.last!.channel_key +
@@ -163,10 +158,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     emitter.onMessage = (msg) async {
       print("this is msg on receive $msg");
       var message = json.decode(msg);
-      // print("this is msg on receive ${message["content"].toString()}");
-
-      // print(
-      //     "message after receiving ${utf8.decode(message["content"].toString().codeUnits)}");
+      if (msg.contains("type")) {
+        print("yes containnssssss");
+      }
       switch (message["type"]) {
         case MessageType.text:
           {
@@ -213,10 +207,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
             if (authProvider.getUser!.ref_id != message["from"]) {
               if (message["content"] == "1") {
                 groupListProvider.updateTypingStatus(msg);
-              }
-              else{
-                
-              }
+              } else {}
             }
           }
           break;
@@ -377,41 +368,36 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           break;
         default:
           {
-            switch (message["notification"]) {
-              case NotificationType.createGroup:
+            switch (message["data"]["action"]) {
+              case NotificationType.newGroup:
                 {
                   print("notificationssssss create group");
-                  groupListProvider
-                      .getGroupList(authProvider.getUser!.auth_token);
-
-                  //refreshList();
-                  //     groupListProvider
-                  //                                           .handleCreateChatState();
-                  // groupListProvider.updateGroupStatus();
+                  GroupModel groupModel =
+                      GroupModel.fromJson(message["data"]["groupModel"]);
+                  groupListProvider.addGroup(groupModel);
+                  groupListProvider.subscribeChannel(
+                      groupModel.channel_key, groupModel.channel_name);
+                  groupListProvider.subscribePresence(groupModel.channel_key,
+                      groupModel.channel_name, true, true);
+                  _mainProvider.homeScreen();
                 }
                 break;
               case NotificationType.deleteGroup:
                 {
-                  print("notificationssssss delete group");
-                  groupListProvider
-                      .getGroupList(authProvider.getUser!.auth_token);
+                  print("notificationssssss delete group $message");
+              
+                  groupListProvider.delete(message["data"]["groupModel"]);
+                 
                   _mainProvider.homeScreen();
-                  //   print("this is grouplistsss ${groupListProvider.groupListStatus}");
-
-                  //     groupListProvider
-                  //                                           .handleCreateChatState();
-                  // groupListProvider.updateGroupStatus();
                 }
                 break;
-              case NotificationType.renameGroup:
+              case NotificationType.modifyGroup:
                 {
-                  print("notificationssssss rename group");
-                  groupListProvider
-                      .getGroupList(authProvider.getUser!.auth_token);
-
-                  //     groupListProvider
-                  //                                           .handleCreateChatState();
-                  // groupListProvider.updateGroupStatus();
+                  print("notificationssssss rename group ${message["data"]["groupModel"]}");
+                       GroupModel groupModel =
+                      GroupModel.fromJson(message["data"]["groupModel"]["group"]);
+                groupListProvider.modify(groupModel);
+                _mainProvider.homeScreen();
                 }
 
                 break;
@@ -615,9 +601,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       emitter.connect(
           clientId: authProvider.getUser!.user_id.toString(),
           reconnectivity: true,
-          refID: authProvider.getUser!.ref_id,
-          authorization_token: authProvider.getUser!.authorization_token,
-          project_id: project_id,
+          refId: authProvider.getUser!.ref_id,
+          authorizationToken: authProvider.getUser!.authorization_token,
+          projectId: project_id,
           host: authProvider.host,
           port: authProvider.port
           //response: sharedPref.read("authUser");
@@ -667,9 +653,9 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
             emitter.connect(
                 clientId: authProvider.getUser!.user_id.toString(),
                 reconnectivity: true,
-                refID: authProvider.getUser!.ref_id,
-                authorization_token: authProvider.getUser!.authorization_token,
-                project_id: project_id,
+                refId: authProvider.getUser!.ref_id,
+                authorizationToken: authProvider.getUser!.authorization_token,
+                projectId: project_id,
                 host: authProvider.host,
                 port: authProvider.port
                 //response: sharedPref.read("authUser");
