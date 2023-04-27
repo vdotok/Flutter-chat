@@ -394,10 +394,11 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               case NotificationType.modifyGroup:
                 {
                   print("notificationssssss rename group ${message["data"]["groupModel"]}");
-                       GroupModel groupModel =
+                      GroupModel groupModel =
                       GroupModel.fromJson(message["data"]["groupModel"]["group"]);
-                groupListProvider.modify(groupModel);
-                _mainProvider.homeScreen();
+                      groupListProvider.modify(groupModel);
+                      _mainProvider.homeScreen();
+                
                 }
 
                 break;
