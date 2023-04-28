@@ -66,5 +66,7 @@
 	<true/>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>aps-environment</key>
+	<string>development</string>
 </dict>
 </plist>
