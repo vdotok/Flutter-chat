@@ -100,88 +100,10 @@ class _ChatScreenState extends State<ChatScreen> {
   bool downloading = false;
   var progress = "0";
   bool isDownloaded = false;
-  // file name that you desire to keep
-
-  //  _valuableProgress(context) async {
-  //   ProgressDialog pd = ProgressDialog(context: context);
-
-  //   pd.show(
-  //     max: 100,
-  //     msg: 'File Downloading...',
-
-  //     /// Assign the type of progress bar.
-  //     progressType: ProgressType.valuable,
-  //   );
-  //   for (int i = 0; i <= 100; i++) {
-  //     pd.update(value: i);
-  //     i++;
-  //     await Future.delayed(Duration(milliseconds: 100));
-  //   }
-  // }
-// Future <Uint8List>downloader( uri,DownloadingProgress downloadingProgress){
-//   final compelter = Completer<Uint8List>();
-//     final client = http.Client();
-//     final request = http.Request('GET', Uri.parse(uri));
-//     final response = client.send(request);
-//     int downloadBytes = 0;
-//     List<List<int>> chunksList = [];
-//     response.asStream().listen((http.StreamedResponse streamedResponse) {
-//       streamedResponse.stream.listen((chunk) {
-//         final contentLength = streamedResponse.contentLength ?? 0;
-//         final percentage = (downloadBytes / contentLength) * 100;
-//         downloadingProgress(contentLength, downloadBytes, percentage);
-//         chunksList.add(chunk);
-//         downloadBytes += chunk.length;
-//       }, onDone: () {
-//         final contentLength = streamedResponse.contentLength ?? 0;
-//         final percentage = (downloadBytes / contentLength) * 100;
-//         downloadingProgress(contentLength, downloadBytes, percentage);
-
-//         int start=0;
-//         final bytes =Uint8List(contentLength);
-//         for (var chunk in chunksList){
-//           bytes.setRange(start, start+chunk.length, chunk);
-//           start +=chunk.length;
-//         }compelter.complete(bytes);
-
-//       },
-//       onError: (error){
-//          compelter.completeError(error);
-//       }
-//       );
-//     });
-//     print(compelter.future);
-
-//     return compelter.future;
-
-// }
-
+  
   var downloadProgress = 0.0;
 
-  // _normalProgress(context) async {
-  //   /// Create progress dialog
-  //   ProgressDialog pd = ProgressDialog(context: context);
 
-  //   /// Set options
-  //   /// Max and msg required
-  //   pd.show(
-  //     max: 100,
-  //     msg: 'File Downloading...',
-  //     progressBgColor: Colors.transparent,
-  //     cancel: Cancel(
-  //       cancelClicked: () {
-  //         /// ex: cancel the download
-  //       },
-  //     ),
-  //   );
-  //   for (int i = 0; i <= downloadProgress.floor(); i++) {
-  //     /// You don't need to update state, just pass the value.
-  //     /// Only value required
-  //     pd.update(value: i);
-  //     i++;
-  //     await Future.delayed(Duration(milliseconds: 100));
-  //   }
-  // }
 
   Future<void> downloadFile(uri) async {
     print('this is uri==== $uri ');
@@ -209,68 +131,7 @@ class _ChatScreenState extends State<ChatScreen> {
     File file = File(filePath);
     file.writeAsBytesSync(response.bodyBytes);
      Navigator.pop(context);
-    // Dio dio = Dio();
-    // dio.download(
-    //   uri,
-    //   savePath,
-    //   onReceiveProgress: (rcv, total) {
-    //     print(
-    //         'received: ${rcv.toStringAsFixed(0)} out of total: ${total.toStringAsFixed(0)}');
-    //     setState(() {
-    //       progress = ((rcv / total) * 100).toStringAsFixed(0);
-    //     });
-    //     if (progress == '100') {
-    //       setState(() {
-    //         isDownloaded = true;
-    //       });
-    //     } else if (double.parse(progress) < 100) {}
-    //   },
-    //   deleteOnError: true,
-    // ).then((_) {
-    // setState(() {
-    //   if (progress == '100') {
-    //     isDownloaded = true;
-    //   }
-    //   downloading = false;
-    // });
-    // Navigator.pop(context);
-    // // });
-    // } else {
-
-    //   // Dio dio = Dio();
-    //   print('dio initializedd==$savePath=');
-    //   final response = await http.get(Uri.parse(uri));
-    //   print('ressssponse === $response');
-    //   print('response===byteess=${response.bodyBytes}');
-    //   String filePath = '$savePath/$filename';
-    //   File file = File(filePath);
-    //   file.writeAsBytesSync(response.bodyBytes);
-    //   Navigator.pop(context);
-    //   // dio.download(
-    //   //   uri,
-    //   //   savePath,
-    //   //   onReceiveProgress: (rcv, total) {
-    //   //     print(
-    //   //         'received: ${rcv.toStringAsFixed(0)} out of total: ${total.toStringAsFixed(0)}');
-    //   //     setState(() {
-    //   //       progress = ((rcv / total) * 100).toStringAsFixed(0);
-    //   //     });
-    //   //     if (progress == '100') {
-    //   //       setState(() {
-    //   //         isDownloaded = true;
-    //   //       });
-    //   //     } else if (double.parse(progress) < 100) {}
-    //   //   },
-    //   //   deleteOnError: true,
-    //   // ).then((_) {
-    //   // setState(() {
-    //   //   if (progress == '100') {
-    //   //     isDownloaded = true;
-    //   //   }
-    //   //   downloading = false;
-    //   // });
-    //   // });
-    // }
+   
   }
 
   //gets the applicationDirectory and path for the to-be downloaded file
@@ -284,40 +145,12 @@ class _ChatScreenState extends State<ChatScreen> {
     return path;
   }
 
-  // Future<String?> _getSavedDir() async {
-  //   Directory directory = await getTemporaryDirectory();
-  //   String appDocPath = directory.path;
-  //   print("this is appdocpath $appDocPath $directory");
-  //   return appDocPath;
-  // }
+
   Future<String> getDocumentDirectoryPath() async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
   }
-  //gets the applicationDirectory and path for the to-be downloaded file
-  // which will be used to save the file to that path in the downloadFile method
-//   Future<String> getFilePath(uniqueFileName) async {
-//     String path = '';
-//     // Directory? dir = await getExternalStorageDirectory();
-//     // path = '${dir!.path}/$uniqueFileName';
-//     // print("pathhhhhh $path");
 
-// // var externalDir;
-//     if (Platform.isIOS) {
-//       // Platform is imported from 'dart:io' package
-//       Directory? dir = await getApplicationDocumentsDirectory();
-//       path = '${dir!.path}/$uniqueFileName';
-//       print("pathhhhhh $path");
-//       return path;
-//     } else if (Platform.isAndroid) {
-//       Directory? dir = await getExternalStorageDirectory();
-//       path = '${dir!.path}/$uniqueFileName';
-//       print("pathhhhhh $path");
-//       return path;
-//     }
-//     print("this is path of dir $path");
-//     return path;
-//   }
 
   Future<String?> _getSavedDir() async {
     Directory directory = await getTemporaryDirectory();
@@ -497,13 +330,7 @@ class _ChatScreenState extends State<ChatScreen> {
       print("this is upload image data  $apiData1");
       var currentpic = await loginPostPic(apiData1);
       print("this is current pic $currentpic");
-      // Uint8List bytes = await pickedFile.readAsBytes();
-      // print("bytes are $bytes");
-      // if (bytes.length > 6000000) {
-      //   buildShowDialog(
-      //       context, "Error Message", "File size should be less than 6 MB!!");
-      //   return;
-      // }
+      
       Map<String, dynamic> filePacket = {
         "id": generateMd5(
             _groupListProvider.groupList.groups![index]!.channel_key),

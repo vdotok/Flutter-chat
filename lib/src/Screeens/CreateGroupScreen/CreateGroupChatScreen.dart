@@ -277,6 +277,7 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                                         GroupListProvider>.value(
                                                       value: groupListProvider,
                                                       child: CreateGroupPopUp(
+                                                        
                                                         handlePress:
                                                             widget.handlePress,
                                                         editGroupName: false,
