@@ -48,9 +48,9 @@ PODS:
   - path_provider_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - SDWebImage (5.15.6):
-    - SDWebImage/Core (= 5.15.6)
-  - SDWebImage/Core (5.15.6)
+  - SDWebImage (5.15.8):
+    - SDWebImage/Core (= 5.15.8)
+  - SDWebImage/Core (5.15.8)
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -69,8 +69,8 @@ DEPENDENCIES:
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - open_file (from `.symlinks/plugins/open_file/ios`)
-  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/ios`)
-  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/ios`)
+  - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - vdotok_connect (from `.symlinks/plugins/vdotok_connect/ios`)
   - video_player_avfoundation (from `.symlinks/plugins/video_player_avfoundation/ios`)
 
@@ -98,9 +98,9 @@ EXTERNAL SOURCES:
   open_file:
     :path: ".symlinks/plugins/open_file/ios"
   path_provider_foundation:
-    :path: ".symlinks/plugins/path_provider_foundation/ios"
+    :path: ".symlinks/plugins/path_provider_foundation/darwin"
   shared_preferences_foundation:
-    :path: ".symlinks/plugins/shared_preferences_foundation/ios"
+    :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   vdotok_connect:
     :path: ".symlinks/plugins/vdotok_connect/ios"
   video_player_avfoundation:
@@ -117,7 +117,7 @@ SPEC CHECKSUMS:
   image_picker_ios: b786a5dcf033a8336a657191401bfdf12017dabb
   open_file: 02eb5cb6b21264bd3a696876f5afbfb7ca4f4b7d
   path_provider_foundation: 37748e03f12783f9de2cb2c4eadfaa25fe6d4852
-  SDWebImage: d47d81bea8a77187896b620dc79c3c528e8906b9
+  SDWebImage: cb032eba469c54e0000e78bcb0a13cdde0a52798
   shared_preferences_foundation: 297b3ebca31b34ec92be11acd7fb0ba932c822ca
   SwiftyGif: 93a1cc87bf3a51916001cf8f3d63835fb64c819f
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196

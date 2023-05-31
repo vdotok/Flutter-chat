@@ -322,20 +322,22 @@ class _GroupListScreenState extends State<GroupListScreen> {
                         backgroundColor: greyColor2,
                       ),
                     ]),
-                    child: InkWell(
-                      onTap: () {
-                        listIndex = index;
-                        widget.groupListProvider.setCountZero(index);
-                        // Navigator.pushNamed(context, "/chatScreen",
-                        //     arguments: {
-                        //       "index": index,
-                        //       "publishMessage": publishMessage,
-                        //       "groupListProvider": groupListProvider
-                        //     });
+                    // child: 
+                    // InkWell(
 
-                        handleSeenStatus(index);
-                        widget.mainProvider!.chatScreen(index: index);
-                      },
+                    //   onTap: () {
+                    //     listIndex = index;
+                    //     widget.groupListProvider.setCountZero(index);
+                    //     // Navigator.pushNamed(context, "/chatScreen",
+                    //     //     arguments: {
+                    //     //       "index": index,
+                    //     //       "publishMessage": publishMessage,
+                    //     //       "groupListProvider": groupListProvider
+                    //     //     });
+
+                    //     handleSeenStatus(index);
+                    //     widget.mainProvider!.chatScreen(index: index);
+                    //   },
                       child: Container(
                         // width: 375,
                         // height: 80,
@@ -522,166 +524,8 @@ class _GroupListScreenState extends State<GroupListScreen> {
                                         ],
                                       ),
                                     ),
-                                    //             Container(
-                                    //               height: 24,
-                                    //               width: 24,
-                                    //               margin: EdgeInsets.only(right: 29),
+                                  
 
-                                    // //                                         child: Column(children:
-                                    // // [
-
-                                    //               child: PopupMenuButton(
-                                    //                   offset: Offset(8, 30),
-                                    //                   shape: RoundedRectangleBorder(
-                                    //                       borderRadius: BorderRadius.all(
-                                    //                           Radius.circular(20.0))),
-                                    //                   icon: const Icon(
-                                    //                     Icons.more_horiz,
-                                    //                     size: 24,
-                                    //                     color: horizontalDotIconColor,
-                                    //                   ),
-                                    //                   itemBuilder: (BuildContext context) => [
-                                    //                         PopupMenuItem(
-                                    //                           enabled: (widget
-                                    //                                           .groupListProvider
-                                    //                                           .groupList
-                                    //                                           .groups![index]!
-                                    //                                           .participants!
-                                    //                                           .length ==
-                                    //                                       1 ||
-                                    //                                   widget
-                                    //                                           .groupListProvider
-                                    //                                           .groupList
-                                    //                                           .groups![index]!
-                                    //                                           .participants!
-                                    //                                           .length ==
-                                    //                                       2)
-                                    //                               ? false
-                                    //                               : true,
-                                    //                           padding: EdgeInsets.only(
-                                    //                               right: 12, left: 12),
-                                    //                           value: 1,
-
-                                    //                           child: Container(
-                                    //                             padding: EdgeInsets.only(
-                                    //                                 top: 14,
-                                    //                                 left: 16,
-                                    //                                 right: 70),
-                                    //                             width: 200,
-                                    //                             height: 44,
-                                    //                             decoration: BoxDecoration(
-                                    //                                 color: backgroundChatColor,
-                                    //                                 borderRadius:
-                                    //                                     BorderRadius.circular(
-                                    //                                         8)),
-                                    //                             //  color:popupGreyColor,
-                                    //                             child: Text(
-                                    //                               "Edit Group Name",
-                                    //                               //textAlign: TextAlign.center,
-                                    //                               style: TextStyle(
-                                    //                                 //decoration: TextDecoration.underline,
-                                    //                                 fontSize: 12,
-                                    //                                 fontWeight: FontWeight.w600,
-                                    //                                 fontFamily: font_Family,
-                                    //                                 fontStyle: FontStyle.normal,
-                                    //                                 color: personNameColor,
-                                    //                               ),
-                                    //                             ),
-                                    //                           ),
-                                    //                           //)
-                                    //                         ),
-                                    //                         //SizedBox(height: 8,),
-
-                                    //                         PopupMenuItem(
-                                    //                             padding: EdgeInsets.only(
-                                    //                                 right: 12, left: 12),
-                                    //                             value: 2,
-                                    //                             child: Column(
-                                    //                               children: [
-                                    //                                 SizedBox(
-                                    //                                   height: 8,
-                                    //                                 ),
-                                    //                                 Container(
-                                    //                                   padding: EdgeInsets.only(
-                                    //                                     top: 14,
-                                    //                                     left: 16,
-                                    //                                   ),
-                                    //                                   width: 200,
-                                    //                                   height: 44,
-                                    //                                   decoration: BoxDecoration(
-                                    //                                       color:
-                                    //                                           backgroundChatColor,
-                                    //                                       borderRadius:
-                                    //                                           BorderRadius
-                                    //                                               .circular(8)),
-                                    //                                   //  color:popupGreyColor,
-                                    //                                   child: Text(
-                                    //                                     "Delete",
-                                    //                                     style: TextStyle(
-                                    //                                       //decoration: TextDecoration.underline,
-                                    //                                       fontSize: font_size,
-                                    //                                       fontWeight:
-                                    //                                           FontWeight.w600,
-                                    //                                       fontFamily:
-                                    //                                           font_Family,
-                                    //                                       fontStyle:
-                                    //                                           FontStyle.normal,
-                                    //                                       color:
-                                    //                                           popupDeleteButtonColor,
-                                    //                                     ),
-                                    //                                   ),
-                                    //                                 )
-                                    //                               ],
-                                    //                             )),
-                                    //                       ],
-                                    //                   onSelected: (menu) {
-                                    //                     //                                                                    var content =
-                                    //                     //     listProvider.groupList.groups[index].chatList.last.content;
-                                    //                     // //.toString().codeUnits;
-                                    //                     // var decode = utf8.decode(content.toString().codeUnits);
-                                    //                     // print("Decode is $decode");
-                                    //                     // print(
-                                    //                     //     " this is content of receiving mesgs${listProvider.groupList.groups[index].chatList.last.content}");
-                                    //                     if (menu == 1) {
-                                    //                       showDialog(
-                                    //                           context: context,
-                                    //                           builder: (BuildContext context) {
-                                    //                             return ListenableProvider<
-                                    //                                     GroupListProvider>.value(
-                                    //                                 value: widget
-                                    //                                     .groupListProvider,
-                                    //                                 child: CreateGroupPopUp(
-                                    //                                   editGroupName: true,
-                                    //                                   groupid: widget
-                                    //                                       .groupListProvider
-                                    //                                       .groupList
-                                    //                                       .groups![index]!
-                                    //                                       .id,
-                                    //                                   controllerText: widget
-                                    //                                       .groupListProvider
-                                    //                                       .groupList
-                                    //                                       .groups![index]!
-                                    //                                       .group_title,
-                                    //                                   groupNameController:
-                                    //                                       _groupNameController,
-                                    //                                   publishMessage:
-                                    //                                       widget.publishMesg,
-                                    //                                   authProvider:
-                                    //                                       widget.authProvider,
-                                    //                                   selectedContacts: [],
-                                    //                                 ));
-                                    //                           });
-                                    //                       print("i am after here");
-                                    //                     } else if (menu == 2) {
-                                    //                       _showDialog(
-                                    //                           widget.groupListProvider.groupList
-                                    //                               .groups![index]!.id,
-                                    //                           widget.groupListProvider.groupList
-                                    //                               .groups![index]);
-                                    //                     }
-                                    //                   }),
-                                    // //]),
-                                    //             ),
                                   ],
                                 )),
                             SizedBox(height: 5),
@@ -809,9 +653,14 @@ class _GroupListScreenState extends State<GroupListScreen> {
                           ],
                         ),
                         //),
-                      ),
+                     // ),
                     ),
                   );
+                
+                
+                
+                
+                
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return Padding(

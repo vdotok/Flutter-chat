@@ -6,7 +6,7 @@ description: Demonstrates how to use the vdotok_connect plugin.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: '>=3.0.1 <4.0.0'
 
 dependencies:
   flutter:
@@ -28,12 +28,10 @@ dependencies:
   json_annotation: ^4.5.0
   provider: ^5.0.0
   device_info: ^2.0.0
-  flutter_icons: ^1.1.0
   image_picker: ^0.8.5+3
   path: ^1.8.0
   path_provider: ^2.0.1
   audioplayers: "0.20.1"
-  data_connection_checker: ^0.3.4
   email_validator: ^2.0.1
   flutter_svg: ^0.22.0
   intl: ^0.17.0
