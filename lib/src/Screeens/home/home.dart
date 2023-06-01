@@ -229,26 +229,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     print(
                         "this is messag content ${message["content"].toString()}");
 
-                    //                         final List<int> codeUnits = message["content"].codeUnits;
-                    // final Uint8List unit8List = Uint8List.fromList(codeUnits);
-                    // print("unit8list $unit8List");
-                    //                   //     var response = await http.get(Uri.parse(message["content"].toString()));
-                    //                   //  print("ths is parse responseeeeeeeee ${response.bodyBytes}");
-                    //                   var extension = message["fileExtension"];
-                    //                   message["fileExtension"].toString().contains(".")
-                    //                       ? message["fileExtension"]
-                    //                       : '.' + message["fileExtension"];
-                    //                   print("this is tempData ${extension}");
-                    //                  final tempDir = await getTemporaryDirectory();
-
-                    //                   File file = await File(
-                    //                           '${tempDir.path}/vdktok${(new DateTime.now()).millisecondsSinceEpoch.toString().trim()}$extension')
-                    //                       .create();
-                    //                       print("this is filllleee ${file}");
-                    //                   file.writeAsBytesSync(unit8List);
-
-                    //                   receiptMsg["content"] = file;
-                    // message["id"] = message["messageId"];
+                   
                   } else {
                     print('inelseofFirst');
                     final url = await JsManager.instance!.connect(
@@ -263,14 +244,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     }
                     groupListProvider.recevieMsg(receiptMsg);
                   }
-                  // Map<String, dynamic> tempData = {
-                  //   "date": ((DateTime.now()).millisecondsSinceEpoch).round(),
-                  //   "from": authProvider.getUser!.ref_id,
-                  //   "key": message["key"],
-                  //   "messageId": message["messageId"],
-                  //   "receiptType": ReceiptType.seen,
-                  //   "to": message["topic"]
-                  // };
+                  
                   Map<String, dynamic> tempData = {
                     "date": ((DateTime.now()).millisecondsSinceEpoch).round(),
                     "from": authProvider.getUser!.ref_id,
