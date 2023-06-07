@@ -20,6 +20,7 @@ class CreateGroupChatScreen extends StatefulWidget {
   final ContactProvider contactProvider;
   final MainProvider mainProvider;
   final GroupListProvider? groupListProvider;
+  final AuthProvider? authProvider;
   final refreshList;
   final handlePress;
   const CreateGroupChatScreen(
@@ -28,7 +29,7 @@ class CreateGroupChatScreen extends StatefulWidget {
       required this.mainProvider,
       required this.groupListProvider,
       this.refreshList,
-      this.handlePress})
+      this.handlePress, this.authProvider})
       : super(key: key);
   @override
   _CreateGroupChatScreenState createState() => _CreateGroupChatScreenState();
@@ -135,6 +136,11 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
               emitter: emitter,
               presentCheck: false);
         else {
+           var userIndex= widget.contactProvider.contactList.users!.indexWhere((element) =>  element!.ref_id ==
+                                          authProvider.getUser!.ref_id );
+                                          print("This is the userindex $userIndex");
+                                          if(userIndex!=-1)
+                                           { widget.contactProvider.contactList.users!.removeAt(userIndex);}
           return GestureDetector(
             onTap: () {
               FocusScopeNode currentFous = FocusScope.of(context);
@@ -231,7 +237,7 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                             "data": {
                                               "action":
                                                   "new", //new, modify, delete
-                                              "groupModel": groupModel
+                                              "groupModel": res
                                             },
                                             "to": refIDList
                                           };
@@ -395,7 +401,9 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
                                               .users![index]
                                           : _filteredList![index];
 
-                                  return Column(
+                                  return 
+                                        //    widget.authProvider!.getUser!.ref_id== element!.ref_id?Container():
+                                  Column(
                                     children: [
                                       ListTile(
                                         onTap: () {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vdkFlutterChat/src/core/providers/auth.dart';
 import 'package:vdkFlutterChat/src/core/providers/groupListProvider.dart';
 import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
 import '../CreateGroupScreen/CreateGroupChatScreen.dart';
@@ -9,6 +10,7 @@ class CreateGroupChatIndex extends StatefulWidget {
   final ContactProvider contactProvider;
   final MainProvider mainProvider;
   final GroupListProvider? groupListProvider;
+  final AuthProvider? authProvider;
   final refreshList;
   final handlePress;
   const CreateGroupChatIndex(
@@ -17,7 +19,7 @@ class CreateGroupChatIndex extends StatefulWidget {
       required this.mainProvider,
       this.groupListProvider,
       this.refreshList,
-      this.handlePress})
+      this.handlePress, this.authProvider})
       : super(key: key);
 
   @override
@@ -34,6 +36,7 @@ class _CreateGroupChatIndexState extends State<CreateGroupChatIndex> {
           ),
         ],
         child: CreateGroupChatScreen(
+          authProvider: widget.authProvider,
             contactProvider: widget.contactProvider,
             refreshList: widget.refreshList,
             handlePress: widget.handlePress,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:vdkFlutterChat/src/core/providers/auth.dart';
 import 'package:vdkFlutterChat/src/core/providers/groupListProvider.dart';
 import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
 import '../ContactListScreen/ContactListScreen.dart';
@@ -9,6 +10,7 @@ class ContactListIndex extends StatefulWidget {
   final ContactProvider contactProvider;
   final MainProvider mainProvider;
   final GroupListProvider groupListProvider;
+  final AuthProvider authProvider;
   final refreshList;
   final handlePress;
   const ContactListIndex(
@@ -17,7 +19,7 @@ class ContactListIndex extends StatefulWidget {
       required this.mainProvider,
       required this.groupListProvider,
       this.refreshList,
-      this.handlePress})
+      this.handlePress, required this.authProvider})
       : super(key: key);
 
   @override
@@ -30,6 +32,7 @@ class _ContactListIndexState extends State<ContactListIndex> {
     return ChangeNotifierProvider(
         create: (context) => ContactProvider(),
         child: ContactListScreen(
+          authProvider: widget.authProvider,
             contactProvider: widget.contactProvider,
             refreshList: widget.refreshList,
             handlePress: widget.handlePress,

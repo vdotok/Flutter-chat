@@ -158,6 +158,7 @@ class _GroupListScreenState extends State<GroupListScreen> {
         contactProvider: widget.contactProvider,
         ischatscreen: false,
         groupListProvider: widget.groupListProvider,
+        authProvider: widget.authProvider,
         title: "Chat Rooms",
         handlePress: widget.handlePress,
         lead: false,

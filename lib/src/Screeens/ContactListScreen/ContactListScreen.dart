@@ -20,6 +20,7 @@ class ContactListScreen extends StatefulWidget {
   final ContactProvider contactProvider;
 
   final MainProvider mainProvider;
+  final AuthProvider authProvider;
   final GroupListProvider groupListProvider;
   final refreshList;
   final handlePress;
@@ -29,7 +30,7 @@ class ContactListScreen extends StatefulWidget {
       required this.mainProvider,
       required this.groupListProvider,
       this.refreshList,
-      this.handlePress})
+      this.handlePress, required this.authProvider})
       : super(key: key);
 
   @override
@@ -37,7 +38,7 @@ class ContactListScreen extends StatefulWidget {
 }
 
 class _ContactListScreenState extends State<ContactListScreen> {
-  //ContactProvider contactProvider;
+ // ContactProvider? contactProvider;
   late GroupListProvider groupListProvider;
   late AuthProvider authProvider;
   int count = 0;
@@ -54,7 +55,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
   //bool isLoading = false;
   @override
   void initState() {
-    //contactProvider = Provider.of<ContactProvider>(context, listen: false);
+   // contactProvider = Provider.of<ContactProvider>(context, listen: false);
     groupListProvider = Provider.of<GroupListProvider>(context, listen: false);
     authProvider = Provider.of<AuthProvider>(context, listen: false);
     //contactProvider.getContacts(authProvider.getUser.auth_token);
@@ -113,17 +114,30 @@ class _ContactListScreenState extends State<ContactListScreen> {
   Widget build(BuildContext context) {
     return Consumer2<ContactProvider, AuthProvider>(
         builder: (context, contactListProvider, authProvider, child) {
+  
       if (widget.contactProvider.contactState == ContactStates.Loading)
         return SplashScreen();
       else if (widget.contactProvider.contactState == ContactStates.Success) {
+        print("this is refid ${authProvider.getUser!.ref_id}");
+        
         if (widget.contactProvider.contactList.users!.length == 0)
-          return NoChatScreen(
+         { return NoChatScreen(
             emitter: emitter,
             groupListProvider: groupListProvider,
             presentCheck: false,
-          );
+          );}
         else
-          return GestureDetector(
+
+      {    
+        print("this is current user refid ${authProvider.getUser
+        !.ref_id}");
+        
+         var userIndex= widget.contactProvider.contactList.users!.indexWhere((element) =>  element!.ref_id ==
+                                          authProvider.getUser!.ref_id );
+                                          print("This is the userindex $userIndex");
+                                          if(userIndex!=-1)
+                                           { widget.contactProvider.contactList.users!.removeAt(userIndex);}
+        return GestureDetector(
               onTap: () {
                 FocusScopeNode currentFous = FocusScope.of(context);
                 if (!currentFous.hasPrimaryFocus) {
@@ -134,6 +148,8 @@ class _ContactListScreenState extends State<ContactListScreen> {
                 appBar: CustomAppBar(
                     mainProvider: widget.mainProvider,
                     lead: true,
+                     
+                       contactProvider: widget.contactProvider,
                     ischatscreen: false,
                     title: "New Chat",
                     succeedingIcon: '',
@@ -219,6 +235,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                   //     .handlePress(HomeStatus.CreateGroupChat);
                                   strArr.remove("CreateIndividualGroup");
                                 }
+                               // widget.contactProvider.getContacts(widget.authProvider.getUser!.auth_token);
                               },
                               child: SizedBox(
                                 width: 236,
@@ -266,14 +283,18 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                 shrinkWrap: true,
                                 //  padding: const EdgeInsets.only(top: 5),
                                 itemCount: _searchController.text.isEmpty
-                                    ? widget.contactProvider.contactList.users!
+                                    ? 
+                                  
+                                    widget.contactProvider.contactList.users!
                                         .length
                                     : _filteredList!.length,
                                 itemBuilder: (BuildContext context, int index) {
+                                
                                   Contact? test = _searchController.text.isEmpty
                                       ? widget.contactProvider.contactList
                                           .users![index]
                                       : _filteredList![index];
+                                      // widget.authProvider.getUser!.ref_id==test!.ref_id?
                                   var groupIndex = groupListProvider
                                       .groupList.groups!
                                       .indexWhere((element) =>
@@ -281,8 +302,11 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                           authProvider.getUser!.full_name +
                                               test!.full_name);
 
-                                  return Column(
+                                  return 
+                                //  widget.authProvider.getUser!.ref_id==test!.ref_id?Container():
+                                  Column(
                                     children: [
+
                                       ListTile(
                                         // onTap: () {
                                         //   if (_selectedContacts.indexWhere(
@@ -310,6 +334,8 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                               'assets/User.svg'),
                                         ),
                                         title: Text(
+
+                                          
                                           "${test!.full_name}",
                                           style: TextStyle(
                                             color: contactNameColor,
@@ -373,7 +399,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
                                                               "action":
                                                                   "new", //new, modify, delete
                                                               "groupModel":
-                                                                groupModel
+                                                                res
                                                             },
                                                             "to": refIDList
 
@@ -516,6 +542,8 @@ class _ContactListScreenState extends State<ContactListScreen> {
                   ],
                 )),
               ));
+     
+     }
       } else {
         return Scaffold(
           backgroundColor: chatRoomBackgroundColor,

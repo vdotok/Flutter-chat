@@ -71,7 +71,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
       print('this is response on connect $res');
       if (res) {
         groupListProvider.getGroupList(authProvider.getUser!.auth_token);
-        contactProvider.getContacts(authProvider.getUser!.auth_token);
+        // contactProvider.getContacts(authProvider.getUser!.auth_token);
 
         print("Connected Successfully $res");
         setState(() {
@@ -228,8 +228,6 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   if (!kIsWeb) {
                     print(
                         "this is messag content ${message["content"].toString()}");
-
-                   
                   } else {
                     print('inelseofFirst');
                     final url = await JsManager.instance!.connect(
@@ -244,7 +242,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                     }
                     groupListProvider.recevieMsg(receiptMsg);
                   }
-                  
+
                   Map<String, dynamic> tempData = {
                     "date": ((DateTime.now()).millisecondsSinceEpoch).round(),
                     "from": authProvider.getUser!.ref_id,
@@ -342,49 +340,57 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           break;
         default:
           {
-            switch (message["data"]["action"]) {
-              case NotificationType.newGroup:
-                {
-                  print("notificationssssss create group");
-                  GroupModel groupModel =
-                      GroupModel.fromJson(message["data"]["groupModel"]);
-                  groupListProvider.addGroup(groupModel);
-                  groupListProvider.subscribeChannel(
-                      groupModel.channel_key, groupModel.channel_name);
-                  groupListProvider.subscribePresence(groupModel.channel_key,
-                      groupModel.channel_name, true, true);
-                  _mainProvider.homeScreen();
-                }
-                break;
-              case NotificationType.deleteGroup:
-                {
-                  print("notificationssssss delete group $message");
-              
-                  groupListProvider.delete(message["data"]["groupModel"]);
-                 
-                  _mainProvider.homeScreen();
-                }
-                break;
-              case NotificationType.modifyGroup:
-                {
-                  print("notificationssssss rename group ${message["data"]["groupModel"]}");
-                      GroupModel groupModel =
-                      GroupModel.fromJson(message["data"]["groupModel"]["group"]);
-                      groupListProvider.modify(groupModel);
-                      _mainProvider.homeScreen();
-                
-                }
+            if (message["receiptType"] == ReceiptType.seen) {
+              print("this is messggddddg $msg");
+              groupListProvider.changeMsgStatus(msg, ReceiptType.seen);
+            } else {
+              switch (message["data"]["action"]) {
+                case NotificationType.newGroup:
+                  {
+                    print("notificationssssss create group");
+                    GroupModel groupModel = GroupModel.fromJson(
+                        message["data"]["groupModel"]["group"]);
+                    groupListProvider.addGroup(groupModel);
+                    groupListProvider.subscribeChannel(
+                        groupModel.channel_key, groupModel.channel_name);
+                    groupListProvider.subscribePresence(groupModel.channel_key,
+                        groupModel.channel_name, true, true);
+                    _mainProvider.homeScreen();
+                  }
+                  break;
+                case NotificationType.deleteGroup:
+                  {
+                    print("notificationssssss delete group $message");
 
-                break;
-              default:
-                {
-                  if (message["receiptType"] == ReceiptType.seen)
-                    print("this is messggddddg $msg");
-                  groupListProvider.changeMsgStatus(msg, ReceiptType.seen);
-                }
-                break;
+                    groupListProvider
+                        .delete(message["data"]["groupModel"]["group"]);
+
+                    _mainProvider.homeScreen();
+                  }
+                  break;
+                case NotificationType.modifyGroup:
+                  {
+                    print(
+                        "notificationssssss rename group ${message["data"]["groupModel"]}");
+                    GroupModel groupModel = GroupModel.fromJson(
+                        message["data"]["groupModel"]["group"]);
+                    groupListProvider.modify(groupModel);
+                    _mainProvider.homeScreen();
+                  }
+
+                  break;
+                default:
+                  {
+                    print("i am in second switch default");
+                    // if (message["receiptType"] == ReceiptType.seen)
+                    //   print("this is messggddddg $msg");
+                    // groupListProvider.changeMsgStatus(msg, ReceiptType.seen);
+                  }
+                  break;
+              }
             }
           }
+
           break;
       }
     };
@@ -601,11 +607,13 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
           //When the Screen is Laoding//
           if (listProvider.groupListStatus == ListStatus.Loading)
             return SplashScreen();
-          else if (contactProvider.contactState == ContactStates.Loading)
-            return SplashScreen();
+          // else if (contactProvider.contactState == ContactStates.Loading)
+          //   return SplashScreen();
           //In case of success//
-          else if (listProvider.groupListStatus == ListStatus.Scussess &&
-              contactProvider.contactState == ContactStates.Success) {
+          else if (listProvider.groupListStatus == ListStatus.Scussess
+              // &&
+              //     contactProvider.contactState == ContactStates.Success
+              ) {
             if (_mainProvider.homeStatus == HomeStatus.Home) {
               //Screen when there is no group or chat in Chat Room//
               if (listProvider.groupList.groups!.length == 0) {
@@ -624,6 +632,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                   groupListProvider: groupListProvider,
                   emitter: emitter,
                   refreshList: refreshList,
+                  contactProvider: contactProvider,
                   authProvider: authProvider,
                   presentCheck: true,
                 );
@@ -671,6 +680,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               print("this is strarray6 $strArr");
               print("this is create group screen");
               return CreateGroupChatIndex(
+                authProvider: authProvider,
                   groupListProvider: groupListProvider,
                   refreshList: refreshList,
                   mainProvider: _mainProvider,
@@ -685,6 +695,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               print("this is strarray4 $strArr");
               print("this is create group screen");
               return ContactListIndex(
+                authProvider: authProvider,
                 refreshList: refreshList,
                 handlePress: handleCreateGroup,
                 contactProvider: contactProvider,
@@ -702,8 +713,10 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               appBar: CustomAppBar(
                 groupListProvider: groupListProvider,
                 title: "Chat Rooms",
+                authProvider: authProvider,
                 mainProvider: _mainProvider,
                 handlePress: handleCreateGroup,
+                contactProvider: contactProvider,
                 lead: false,
                 succeedingIcon: 'assets/plus.svg',
                 ischatscreen: false,

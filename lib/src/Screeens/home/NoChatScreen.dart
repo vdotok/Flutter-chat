@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
 import 'package:vdotok_connect/vdotok_connect.dart';
 import '../../core/providers/auth.dart';
+import '../../core/providers/contact_provider.dart';
 import '../../core/providers/groupListProvider.dart';
 import '../../constants/constant.dart';
 import 'CustomAppBar.dart';
@@ -23,11 +24,12 @@ class NoChatScreen extends StatelessWidget {
       this.isConnect,
       this.state,
       this.mainProvider,
-      this.handlePress})
+      this.handlePress, this.contactProvider})
       : super(key: key);
 
   final GroupListProvider? groupListProvider;
   final AuthProvider? authProvider;
+  final ContactProvider? contactProvider;
   final Emitter emitter;
   final refreshList;
 
@@ -41,6 +43,8 @@ class NoChatScreen extends StatelessWidget {
           mainProvider: mainProvider,
           groupListProvider: groupListProvider,
           title: "Chat Rooms",
+          authProvider: authProvider,
+          contactProvider: contactProvider,
           lead: false,
           succeedingIcon: 'assets/plus.svg',
           ischatscreen: false,
@@ -108,6 +112,7 @@ class NoChatScreen extends StatelessWidget {
                               child: TextButton(
                                 onPressed: () {
                                   mainProvider?.createIndividualGroupScreen();
+                                  contactProvider!.getContacts(authProvider!.getUser!.auth_token);
                                 },
                                 child: Text(
                                   "New Chat",

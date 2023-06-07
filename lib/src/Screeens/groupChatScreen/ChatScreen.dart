@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:vdkFlutterChat/src/Screeens/home/home.dart';
 import 'package:vdkFlutterChat/src/core/providers/contact_provider.dart';
@@ -128,6 +129,7 @@ class _ChatScreenState extends State<ChatScreen> {
     print('ressssponse === $response');
     print('response===byteess=${response.bodyBytes}');
     String filePath = '$savePath/$filename';
+    print("this is fillllleeee $filePath");
     File file = File(filePath);
     file.writeAsBytesSync(response.bodyBytes);
      Navigator.pop(context);
@@ -137,12 +139,24 @@ class _ChatScreenState extends State<ChatScreen> {
   //gets the applicationDirectory and path for the to-be downloaded file
   // which will be used to save the file to that path in the downloadFile method
   Future<String> getFilePath() async {
-    String path = '';
-    Directory? dir = await getExternalStorageDirectory();
-    // path = '${dir!.path}/$uniqueFileName';
-    path = dir!.path;
-    print("pathhhhhh $path");
-    return path;
+     var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      // If not we will ask for permission first
+      await Permission.storage.request();
+    }
+    Directory _directory = Directory("FlutterChat");
+     _directory = Directory("/storage/emulated/0/Download");
+     final exPath = _directory.path;
+    print("Saved Path: $exPath");
+    await Directory(exPath).create(recursive: true);
+    return exPath;
+
+    // String path = '';
+    // Directory? dir = await getExternalStorageDirectory();
+    // // path = '${dir!.path}/$uniqueFileName';
+    // path = dir!.path;
+    // print("pathhhhhh $path");
+    // return path;
   }
 
 
@@ -2367,5 +2381,52 @@ class _ChatScreenState extends State<ChatScreen> {
         ],
       ),
     );
+  }
+
+
+
+}
+
+
+
+class FileStorage {
+  static Future<String> getExternalDocumentPath() async {
+    // To check whether permission is given for this app or not.
+    var status = await Permission.storage.status;
+    if (!status.isGranted) {
+      // If not we will ask for permission first
+      await Permission.storage.request();
+    }
+    Directory _directory = Directory("");
+    if (Platform.isAndroid) {
+       // Redirects it to download folder in android
+      _directory = Directory("/storage/emulated/0/Download");
+    } else {
+      _directory = await getApplicationDocumentsDirectory();
+    }
+  
+    final exPath = _directory.path;
+    print("Saved Path: $exPath");
+    await Directory(exPath).create(recursive: true);
+    return exPath;
+  }
+  
+  static Future<String> get _localPath async {
+    // final directory = await getApplicationDocumentsDirectory();
+    // return directory.path;
+    // To get the external path from device of download folder
+    final String directory = await getExternalDocumentPath();
+    return directory;
+  }
+  
+static Future<File> writeCounter(String bytes,String name) async {
+  final path = await _localPath;
+    // Create a file for the path of
+      // device and file name with extension
+    File file= File('$path/$name');;
+    print("Save file");
+      
+      // Write the data in the file you have created
+    return file.writeAsString(bytes);
   }
 }

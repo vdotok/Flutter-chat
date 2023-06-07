@@ -236,7 +236,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                       fontSize: 14,
                                     ),
                                   )
-                                : Text(
+                                : Text( 
                                     "${widget.groupListProvider!.groupList.groups![widget.index]!.typingstatus} is typing...",
                                     style: TextStyle(
                                       color: userTypingColor,
@@ -307,14 +307,8 @@ class _CustomAppBarState extends State<CustomAppBar> {
                                 print("khjhg");
                                 widget.handlePress(
                                     HomeStatus.CreateIndividualGroup);
-
-                                //   widget.handlePress(
-                                //       ListStatus.CreateIndividualGroup);
-                                //   widget.mainProvider
-                                //       .inActiveCallCreateIndividualGroup(
-                                //     startCall: widget.funct,
-                                //   );
-                                // }
+ widget.contactProvider!.getContacts(widget.authProvider!.getUser!.auth_token);
+                              
                               }
                             : () {},
                       ),

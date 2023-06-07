@@ -63,14 +63,20 @@ class GroupListProvider with ChangeNotifier {
     if (_createChatStatusStatus == CreateChatStatus.New) {
       print("this is loading ");
       _createChatStatusStatus = CreateChatStatus.Loading;
-    } else
+    } else {
       _createChatStatusStatus = CreateChatStatus.New;
+    }
 
     notifyListeners();
   }
 
   updateGroupStatus() {
     _groupListStatus = ListStatus.Scussess;
+    notifyListeners();
+  }
+
+  newChat() {
+    _createChatStatusStatus = CreateChatStatus.New;
     notifyListeners();
   }
 
@@ -136,8 +142,8 @@ class GroupListProvider with ChangeNotifier {
 
   modify(GroupModel updatedGroup) {
     //  print("updatedGroup ${updatedGroup}")
-    var index = _groupList.groups!.indexWhere((element) =>
-        element!.channel_key == updatedGroup.channel_key);
+    var index = _groupList.groups!.indexWhere(
+        (element) => element!.channel_key == updatedGroup.channel_key);
     print("indeeeeeeexxxxxxx $index");
     _groupList.groups![index] = updatedGroup;
 
@@ -346,7 +352,11 @@ class GroupListProvider with ChangeNotifier {
     var participantIndex = _groupList.groups![groupindex]!.participants!
         .indexWhere((element) =>
             element!.ref_id == json.decode(msg)["from"].toString());
-    var msgindex =
+if(_groupList.groups![groupindex]!.chatList ==null){
+
+}
+      
+  else { var msgindex =
         _groupList.groups![groupindex]!.chatList!.indexWhere((element) {
       return element!.id == json.decode(msg)["messageId"].toString();
       //return element.id == json.decode(msg)["messageId"].toString();
@@ -409,7 +419,7 @@ class GroupListProvider with ChangeNotifier {
 
         notifyListeners();
       }
-    }
+    }}
   }
 
   changeMsgStatusToDelivered(msg, status) {

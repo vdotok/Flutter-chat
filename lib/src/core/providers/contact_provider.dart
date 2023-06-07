@@ -20,6 +20,8 @@ class ContactProvider with ChangeNotifier {
   String get errorMsg => _errorMsg;
 
   getContacts(String authToken) async {
+    _contactStates = ContactStates.Loading;
+    notifyListeners();
     var dataRequest = {
       "search_field": "email",
       "search_value": "",

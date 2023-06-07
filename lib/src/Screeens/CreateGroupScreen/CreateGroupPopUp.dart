@@ -269,7 +269,7 @@ class _CreateGroupPopUpState extends State<CreateGroupPopUp> {
                                                 "data": {
                                                   "action":
                                                       "new", //new, modify, delete
-                                                  "groupModel": groupModel
+                                                  "groupModel": res
                                                 },
                                                 "to": refIDList
                                               };
@@ -300,7 +300,9 @@ class _CreateGroupPopUpState extends State<CreateGroupPopUp> {
                                                   .handleCreateChatState();
                                               Navigator.pop(context);
                                               selectedContacts.clear();
-                                            } else {}
+                                            } else {
+                                              grouplistp.newChat();
+                                            }
                                           }
                                         }
                                       }
