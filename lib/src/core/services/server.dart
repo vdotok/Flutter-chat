@@ -7,7 +7,7 @@ import '../../core/config/config.dart';
 
 // The function take will take the user request and verfies it with the api. in this case it will authenticate the user
 Future<dynamic> callAPI(datarequest, myurl, authToken) async {
-  final url = URL + version + myurl;
+  final url = URL + myurl;
   print("The my url: $myurl");
   print("this is api call $datarequest $url  $authToken");
   try {
@@ -37,7 +37,7 @@ Future<dynamic> callAPI(datarequest, myurl, authToken) async {
 }
 
 Future<dynamic> getAPI(myurl, authToken) async {
-  final url = URL + version + myurl;
+  final url = URL + myurl;
   print('this is url $url');
   //print("auth token is ")
   try {
