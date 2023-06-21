@@ -1,3 +1,3 @@
-const tenant_url = "https://q-tenant.vdotok.dev/API/v0/";
+const tenant_url = "";
 
-const String project_id = "86NXL9G";
+const String project_id = "";
