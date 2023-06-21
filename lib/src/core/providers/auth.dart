@@ -144,20 +144,21 @@ class AuthProvider with ChangeNotifier {
       sharedPref.save("project_id", projectId);
       sharedPref.save("tenant_url", tenantUrl);
       _loggedInStatus = Status.LoggedIn;
-      notifyListeners();
       _user = User.fromJson(response);
+      notifyListeners();
     }
   }
 
   logout() {
     SharedPref sharedPref = SharedPref();
     sharedPref.remove("authUser");
-    _loggedInStatus = Status.LoggedOut;
-    _user = null;
     sharedPref.remove("project_id");
     sharedPref.remove("tenant_url");
-    _projectId = '';
-    _tenantUrl = '';
+    sharedPref.remove("deviceId");
+    _loggedInStatus = Status.LoggedOut;
+    _projectId;
+    _tenantUrl;
+    _user;
     notifyListeners();
   }
 

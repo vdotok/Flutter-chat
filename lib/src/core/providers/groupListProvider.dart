@@ -348,78 +348,83 @@ class GroupListProvider with ChangeNotifier {
     print("this is receipt type $msg");
     var groupindex = _groupList.groups!.indexWhere((element) =>
         element!.channel_key == json.decode(msg)["key"].toString());
-
+    print('===> ${groupindex}');
     var participantIndex = _groupList.groups![groupindex]!.participants!
         .indexWhere((element) =>
             element!.ref_id == json.decode(msg)["from"].toString());
-if(_groupList.groups![groupindex]!.chatList ==null){
+    print('===> ${participantIndex}');
+    if (_groupList.groups![groupindex]!.chatList == null) {
+    } else {
+      var msgindex =
+          _groupList.groups![groupindex]!.chatList!.indexWhere((element) {
+        return element!.id == json.decode(msg)["messageId"].toString();
+        //return element.id == json.decode(msg)["messageId"].toString();
+      });
+      // var chatIndex= _groupList.groups[groupindex].chatList[0].;
 
-}
-      
-  else { var msgindex =
-        _groupList.groups![groupindex]!.chatList!.indexWhere((element) {
-      return element!.id == json.decode(msg)["messageId"].toString();
-      //return element.id == json.decode(msg)["messageId"].toString();
-    });
-    // var chatIndex= _groupList.groups[groupindex].chatList[0].;
-
-    // if(_groupList.groups[groupindex].chatList[participantIndex].
-    print("this is msg --- $participantIndex");
-    if (groupindex != -1) {
-      if (_groupList.groups![groupindex]!.participants!.length > 2) {
-        print(
-            "this is msg idddddddd ${json.decode(msg)["messageId"].toString()}");
-        // print("this is LISTTTTTTTT $_readmodelList");
-        // if (_messageIDD.contains(json.decode(msg)["messageId"].toString())) {
-        print("here oooooooo");
-        int i = 0;
-        while (_groupList.groups![groupindex]!.chatList![i]!.id !=
-            json.decode(msg)["messageId"].toString()) {
-          i++;
-        }
-        if (_groupList.groups![groupindex]!.chatList![i]!.id ==
-            json.decode(msg)["messageId"].toString()) {
+      // if(_groupList.groups[groupindex].chatList[participantIndex].
+      print("this is msg --- $participantIndex");
+      if (groupindex != -1) {
+        if (_groupList.groups![groupindex]!.participants!.length > 2) {
           print(
-              "thos osdsdjfk counter ${_groupList.groups![groupindex]!.chatList![i]!.readCount}");
-          if (_groupList.groups![groupindex]!.chatList![i]!.participantsRead ==
-              null) {
-            print("this is nukkk kklkvl");
-            _groupList.groups![groupindex]!.chatList![i]!.participantsRead = [];
-            _groupList.groups![groupindex]!.chatList![i]!.readCount = 0;
+              "this is msg idddddddd ${json.decode(msg)["messageId"].toString()}");
+          // print("this is LISTTTTTTTT $_readmodelList");
+          // if (_messageIDD.contains(json.decode(msg)["messageId"].toString())) {
+          print("here oooooooo");
+          int i = 0;
+          while (_groupList.groups![groupindex]!.chatList![i]!.id !=
+              json.decode(msg)["messageId"].toString()) {
+            i++;
           }
-          if (_groupList.groups![groupindex]!.chatList![i]!.participantsRead!
-              .contains(participantIndex)) {
-          } else {
-            _groupList.groups![groupindex]!.chatList![i]!.participantsRead!
-                .add(participantIndex);
-            _groupList.groups![groupindex]!.chatList![i]!.readCount++;
+          if (_groupList.groups![groupindex]!.chatList![i]!.id ==
+              json.decode(msg)["messageId"].toString()) {
             print(
                 "thos osdsdjfk counter ${_groupList.groups![groupindex]!.chatList![i]!.readCount}");
             print(
-                "thos osdsdjfk counter ${_groupList.groups![groupindex]!.chatList![i]!.participantsRead}");
+                'participants Read --- ${_groupList.groups![groupindex]!.chatList![i]!.participantsRead}');
+            if (_groupList
+                    .groups![groupindex]!.chatList![i]!.participantsRead ==
+                null) {
+              print("this is nukkk kklkvl");
+              _groupList.groups![groupindex]!.chatList![i]!.participantsRead =
+                  [];
+              _groupList.groups![groupindex]!.chatList![i]!.readCount = 0;
+            }
+            if (_groupList.groups![groupindex]!.chatList![i]!.participantsRead!
+                .contains(participantIndex)) {
+            } else {
+              _groupList.groups![groupindex]!.chatList![i]!.participantsRead!
+                  .add(participantIndex);
+              _groupList.groups![groupindex]!.chatList![i]!.readCount++;
+              print(
+                  "thos osdsdjfk counter ${_groupList.groups![groupindex]!.chatList![i]!.readCount}");
+              print(
+                  "thos osdsdjfk counter ${_groupList.groups![groupindex]!.chatList![i]!.participantsRead}");
+            }
           }
-        }
-        _groupList.groups![groupindex]!.chatList![msgindex]!.status = status;
-        notifyListeners();
-      } else {
-        print("i am in personal chat");
-        var msgindex =
-            _groupList.groups![groupindex]!.chatList!.indexWhere((element) {
-          print("this is id ${json.decode(msg)["messageId"].toString()}");
-          // print("participant index is $participantIndex");
-          print("element is ${element!.id}");
-          return element.id == json.decode(msg)["messageId"].toString();
-        });
-        print("this is msg index $msgindex");
-        // print(
-        //     "this is status ${_groupList.groups[groupindex].chatList[msgindex].status}");
-        if (msgindex != -1) {
           _groupList.groups![groupindex]!.chatList![msgindex]!.status = status;
-        }
+          notifyListeners();
+        } else {
+          print("i am in personal chat");
+          var msgindex =
+              _groupList.groups![groupindex]!.chatList!.indexWhere((element) {
+            print("this is id ${json.decode(msg)["messageId"].toString()}");
+            // print("participant index is $participantIndex");
+            print("element is ${element!.id}");
+            return element.id == json.decode(msg)["messageId"].toString();
+          });
+          print("this is msg index $msgindex");
+          // print(
+          //     "this is status ${_groupList.groups[groupindex].chatList[msgindex].status}");
+          if (msgindex != -1) {
+            _groupList.groups![groupindex]!.chatList![msgindex]!.status =
+                status;
+          }
 
-        notifyListeners();
+          notifyListeners();
+        }
       }
-    }}
+    }
   }
 
   changeMsgStatusToDelivered(msg, status) {
