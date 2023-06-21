@@ -27,6 +27,7 @@ import '../../Screeens/home/NoChatScreen.dart';
 Emitter emitter = Emitter.instance..checkConnectivity();
 bool isInternetConnect = true;
 List<String> strArr = [];
+var snackBar;
 
 class Home extends StatefulWidget {
   @override
@@ -58,12 +59,13 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
     groupListProvider = Provider.of<GroupListProvider>(context, listen: false);
     contactProvider = Provider.of<ContactProvider>(context, listen: false);
     _mainProvider = Provider.of<MainProvider>(context, listen: false);
+    print('projectiddd on home ${AuthProvider.projectId}');
     emitter.connect(
         clientId: authProvider.getUser!.user_id.toString(),
         reconnectivity: true,
         refId: authProvider.getUser!.ref_id,
         authorizationToken: authProvider.getUser!.authorization_token,
-        projectId: project_id,
+        projectId: AuthProvider.projectId,
         host: authProvider.host,
         port: authProvider.port);
     print("host ${authProvider.host}");
@@ -91,7 +93,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
                 reconnectivity: true,
                 refId: authProvider.getUser!.ref_id,
                 authorizationToken: authProvider.getUser!.authorization_token,
-                projectId: project_id,
+                projectId: AuthProvider.projectId,
                 host: authProvider.host,
                 port: authProvider.port
                 //response: sharedPref.read("authUser");
@@ -680,7 +682,7 @@ class _HomeState extends State<Home> with WidgetsBindingObserver {
               print("this is strarray6 $strArr");
               print("this is create group screen");
               return CreateGroupChatIndex(
-                authProvider: authProvider,
+                  authProvider: authProvider,
                   groupListProvider: groupListProvider,
                   refreshList: refreshList,
                   mainProvider: _mainProvider,

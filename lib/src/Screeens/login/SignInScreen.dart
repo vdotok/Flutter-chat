@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:vdkFlutterChat/src/Screeens/home/home.dart';
+import 'package:vdkFlutterChat/src/core/config/config.dart';
+import 'package:vdkFlutterChat/src/qrcode/qrcode.dart';
 import '../../common/ReusableButton.dart';
 import '../../common/loadingButton.dart';
 import '../../core/providers/auth.dart';
@@ -22,24 +25,94 @@ class _SignInScreenState extends State<SignInScreen> {
   bool _autoValidate = false;
 
   handlePress() async {
-    if (_loginformkey.currentState!.validate()) {
-      AuthProvider auth = Provider.of<AuthProvider>(context, listen: false);
-      await auth.login(_emailController.text, _passwordController.text);
-
-      if (auth.getUser!.auth_token == null) {
+    if (_emailController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty) {
+      print("ydghds ${tenant_url} ${project_id}");
+      if (tenant_url == "" || project_id == "") {
+        if (url == "" || project == "") {
+          snackBar = SnackBar(
+            content:
+                Text("Please scan/manually add configurations in config file."),
+            duration: Duration(seconds: 2),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        } else {
+          if (_loginformkey.currentState!.validate()) {
+            AuthProvider auth =
+                Provider.of<AuthProvider>(context, listen: false);
+            auth.login(_emailController.text, _passwordController.text);
+            if (auth.getUser!.auth_token == null) {
+              setState(() {
+                _autoValidate = true;
+              });
+            }
+            // _loginBloc
+            //     .add(LoginEvent(_emailController.text, _passwordController.text));
+          } else {
+            setState(() {
+              _autoValidate = true;
+            });
+          }
+        }
+      } else {
+        if (_loginformkey.currentState!.validate()) {
+          AuthProvider auth = Provider.of<AuthProvider>(context, listen: false);
+          auth.login(_emailController.text, _passwordController.text);
+          if (auth.getUser!.auth_token == null) {
+            setState(() {
+              _autoValidate = true;
+            });
+          }
+          // _loginBloc
+          //     .add(LoginEvent(_emailController.text, _passwordController.text));
+        } else {
+          setState(() {
+            _autoValidate = true;
+          });
+        }
+      }
+    } else {
+      if (_loginformkey.currentState!.validate()) {
+        AuthProvider auth = Provider.of<AuthProvider>(context, listen: false);
+        auth.login(_emailController.text, _passwordController.text);
+        if (auth.getUser!.auth_token == null) {
+          setState(() {
+            _autoValidate = true;
+          });
+        }
+        // _loginBloc
+        //     .add(LoginEvent(_emailController.text, _passwordController.text));
+      } else {
         setState(() {
           _autoValidate = true;
         });
       }
-
-      // _loginBloc
-      //     .add(LoginEvent(_emailController.text, _passwordController.text));
-    } else {
-      setState(() {
-        _autoValidate = true;
-      });
     }
+
+    // _authBloc.add(LoadingEvent());
+    // Navigator.of(context).pushNamed("/register");
+    // _loginBloc.add(LoginLoadingEvent());
   }
+
+  // handlePress() async {
+  //   if (_loginformkey.currentState!.validate()) {
+  //     AuthProvider auth = Provider.of<AuthProvider>(context, listen: false);
+  //     await auth.login(_emailController.text, _passwordController.text);
+
+  //     if (auth.getUser!.auth_token == null) {
+  //       setState(() {
+  //         _autoValidate = true;
+  //       });
+  //     }
+
+  //     // _loginBloc
+  //     //     .add(LoginEvent(_emailController.text, _passwordController.text));
+  //   } else {
+  //     setState(() {
+  //       _autoValidate = true;
+  //     });
+  //   }
+  // }
 
   handleButton() {
     Navigator.pushNamed(context, "/register");
@@ -112,7 +185,21 @@ class _SignInScreenState extends State<SignInScreen> {
                             Container(
                               child: Column(
                                 children: [
-                                  SizedBox(height: 32),
+                                  SizedBox(height: 12),
+                                  Align(
+                                    alignment: Alignment.topLeft,
+                                    child: IconButton(
+                                      iconSize: 30,
+                                      icon: const Icon(Icons.qr_code_2_sharp),
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (context) {
+                                          return QRViewExample();
+                                        }));
+                                      },
+                                    ),
+                                  ),
                                   CustomText(text: "Sign In"),
                                   SizedBox(height: 34),
                                   // CustomTextField(

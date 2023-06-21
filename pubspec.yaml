@@ -44,6 +44,7 @@ dependencies:
   dio: ^4.0.6
   fluttertoast: ^8.1.1
   flutter_slidable: ^2.0.0
+  qr_code_scanner: ^1.0.1
 
 
   

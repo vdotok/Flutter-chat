@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:vdkFlutterChat/src/Screeens/home/home.dart';
+import 'package:vdkFlutterChat/src/core/config/config.dart';
+import 'package:vdkFlutterChat/src/qrcode/qrcode.dart';
 import '../../common/loadingButton.dart';
 import '../../core/providers/auth.dart';
 import '../../common/customtextbutton.dart';
@@ -27,25 +30,100 @@ class _SignUpScreenState extends State<SignUpScreen> {
   Size? size;
 
   handlePress() async {
-    if (_registerformkey.currentState!.validate()) {
-      AuthProvider auth = Provider.of<AuthProvider>(context, listen: false);
-      bool res = await auth.register(
-        _nameController.text,
-        _passwordController.text,
-        _emailController.text,
-      );
-      if (auth.getUser!.auth_token == null) {
+    print('onSignup function---');
+    if (_nameController.text.isNotEmpty &&
+        _emailController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty) {
+      print('dddd');
+      if (tenant_url == "" || project_id == "") {
+        if (url == "" || project == "") {
+          snackBar = SnackBar(
+            content: Text(
+                "Please scan or manually add projectId and Url in config file"),
+            duration: Duration(seconds: 2),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        } else {
+          if (_registerformkey.currentState!.validate()) {
+            AuthProvider auth =
+                Provider.of<AuthProvider>(context, listen: false);
+            bool res = await auth.register(_emailController.text,
+                _nameController.text, _passwordController.text);
+            if (auth.getUser!.auth_token == null) {
+              setState(() {
+                _autoValidate = true;
+              });
+            }
+            if (res) {
+              Navigator.pop(context);
+            }
+          } else {
+            setState(() {
+              _autoValidate = true;
+            });
+          }
+        }
+      } else {
+        if (_registerformkey.currentState!.validate()) {
+          AuthProvider auth = Provider.of<AuthProvider>(context, listen: false);
+          bool res = await auth.register(_emailController.text,
+              _nameController.text, _passwordController.text);
+          if (auth.getUser!.auth_token == null) {
+            setState(() {
+              _autoValidate = true;
+            });
+          }
+          if (res) {
+            Navigator.pop(context);
+          }
+        } else {
+          setState(() {
+            _autoValidate = true;
+          });
+        }
+      }
+    } else {
+      if (_registerformkey.currentState!.validate()) {
+        AuthProvider auth = Provider.of<AuthProvider>(context, listen: false);
+        bool res = await auth.register(_emailController.text,
+            _nameController.text, _passwordController.text);
+        if (auth.getUser!.auth_token == null) {
+          setState(() {
+            _autoValidate = true;
+          });
+        }
+        if (res) {
+          Navigator.pop(context);
+        }
+        ;
+      } else {
         setState(() {
           _autoValidate = true;
         });
       }
-      if (res) Navigator.pop(context);
-    } else {
-      setState(() {
-        _autoValidate = true;
-      });
     }
   }
+
+  // handlePress() async {
+  //   if (_registerformkey.currentState!.validate()) {
+  //     AuthProvider auth = Provider.of<AuthProvider>(context, listen: false);
+  //     bool res = await auth.register(
+  //       _nameController.text,
+  //       _passwordController.text,
+  //       _emailController.text,
+  //     );
+  //     if (auth.getUser!.auth_token == null) {
+  //       setState(() {
+  //         _autoValidate = true;
+  //       });
+  //     }
+  //     if (res) Navigator.pop(context);
+  //   } else {
+  //     setState(() {
+  //       _autoValidate = true;
+  //     });
+  //   }
+  // }
 
   handleButton() {
     Navigator.pop(context);
@@ -107,7 +185,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                   Container(
                                     child: Column(
                                       children: [
-                                        SizedBox(height: 32),
+                                        SizedBox(height: 15),
+                                        Align(
+                                          alignment: Alignment.topLeft,
+                                          child: IconButton(
+                                            iconSize: 30,
+                                            icon: const Icon(
+                                                Icons.qr_code_2_sharp),
+                                            onPressed: () {
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) {
+                                                return QRViewExample();
+                                              }));
+                                            },
+                                          ),
+                                        ),
                                         CustomText(
                                             text: "Sign Up to your account"),
                                         SizedBox(height: 34),

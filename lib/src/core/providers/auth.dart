@@ -5,6 +5,7 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:vdkFlutterChat/src/core/config/config.dart';
+import 'package:vdkFlutterChat/src/qrcode/qrcode.dart';
 import '../models/user.dart';
 import '../services/server.dart';
 import '../../shared_preference/shared_preference.dart';
@@ -38,6 +39,10 @@ class AuthProvider with ChangeNotifier {
 
   late String _registerErrorMsg;
   String get registerErrorMsg => _registerErrorMsg;
+  static String _projectId = "";
+  static String get projectId => _projectId;
+  static String _tenantUrl = "";
+  static String get tenantUrl => _tenantUrl;
 
   late String _host;
   String get host => _host;
@@ -45,7 +50,11 @@ class AuthProvider with ChangeNotifier {
   late String _port;
   String get port => _port;
 
-  Future<bool> register(String username, password, email) async {
+  Future<bool> register(
+    email,
+    String username,
+    password,
+  ) async {
     _registeredInStatus = Status.Loading;
     notifyListeners();
 
@@ -70,6 +79,8 @@ class AuthProvider with ChangeNotifier {
         // iOS 13.1, iPhone 11 Pro Max iPhone
       }
     }
+    _projectId = project == "" ? project_id : project;
+    _tenantUrl = url == "" ? tenant_url : url;
     Map<String, dynamic> jsonData = {
       "full_name": username,
       "password": password,
@@ -82,7 +93,7 @@ class AuthProvider with ChangeNotifier {
       "device_model": model,
       "device_os_ver": version,
       "app_version": "1.1.5",
-      "project_id": project_id
+      "project_id": _projectId,
     };
 
     final response = await callAPI(jsonData, "SignUp", null);
@@ -97,6 +108,8 @@ class AuthProvider with ChangeNotifier {
       _port = response["messaging_server_map"]["port"];
       SharedPref sharedPref = SharedPref();
       sharedPref.save("authUser", response);
+      sharedPref.save("project_id", projectId);
+      sharedPref.save("tenant_url", tenantUrl);
       _registeredInStatus = Status.Registered;
       _loggedInStatus = Status.LoggedIn;
       _user = User.fromJson(response);
@@ -112,9 +125,10 @@ class AuthProvider with ChangeNotifier {
     Map<String, dynamic> jsonData = {
       "email": email,
       "password": password,
-      "project_id": project_id
+      "project_id": _projectId,
     };
-
+    _projectId = project == "" ? project_id : project;
+    _tenantUrl = url == "" ? tenant_url : url;
     final response = await callAPI(jsonData, "Login", null);
     print("this is response of login api $response");
     if (response['status'] != 200) {
@@ -127,6 +141,8 @@ class AuthProvider with ChangeNotifier {
       print("this is host ${_host}");
       SharedPref sharedPref = SharedPref();
       sharedPref.save("authUser", response);
+      sharedPref.save("project_id", projectId);
+      sharedPref.save("tenant_url", tenantUrl);
       _loggedInStatus = Status.LoggedIn;
       notifyListeners();
       _user = User.fromJson(response);
@@ -138,11 +154,17 @@ class AuthProvider with ChangeNotifier {
     sharedPref.remove("authUser");
     _loggedInStatus = Status.LoggedOut;
     _user = null;
+    sharedPref.remove("project_id");
+    sharedPref.remove("tenant_url");
+    _projectId = '';
+    _tenantUrl = '';
     notifyListeners();
   }
 
   isUserLogedIn() async {
     final authUser = await _sharedPref.read("authUser");
+    final projId = await _sharedPref.read("project_id");
+    final tenantURL = await _sharedPref.read("tenant_url");
     // print(
     //     "this is authUser ${jsonDecode(authUser)["messaging_server_map"]["host"]}");
     //print("this is authUser port ${jsonDecode(authUser)}");
@@ -153,6 +175,8 @@ class AuthProvider with ChangeNotifier {
       _loggedInStatus = Status.LoggedIn;
       _host = jsonDecode(authUser)["messaging_server_map"]["host"];
       _port = jsonDecode(authUser)["messaging_server_map"]["port"];
+      _projectId = jsonDecode(projId.toString());
+      _tenantUrl = jsonDecode(tenantURL.toString());
       print("host is $_host $_port");
       _user = User.fromJson(jsonDecode(authUser));
       notifyListeners();
