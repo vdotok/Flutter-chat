@@ -149,7 +149,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
                     mainProvider: widget.mainProvider,
                     lead: true,
                      
-                       contactProvider: widget.contactProvider,
+                      contactProvider: widget.contactProvider,
                     ischatscreen: false,
                     title: "New Chat",
                     succeedingIcon: '',
@@ -548,6 +548,7 @@ class _ContactListScreenState extends State<ContactListScreen> {
         return Scaffold(
           backgroundColor: chatRoomBackgroundColor,
           appBar: CustomAppBar(
+            mainProvider: widget.mainProvider,
             groupListProvider: groupListProvider,
             title: "New Chat",
             lead: true,

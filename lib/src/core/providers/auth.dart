@@ -93,7 +93,7 @@ class AuthProvider with ChangeNotifier {
       "device_model": model,
       "device_os_ver": version,
       "app_version": "1.1.5",
-      "project_id": _projectId,
+      "project_id": project == "" ? project_id : project,
     };
 
     final response = await callAPI(jsonData, "SignUp", null);
@@ -125,7 +125,7 @@ class AuthProvider with ChangeNotifier {
     Map<String, dynamic> jsonData = {
       "email": email,
       "password": password,
-      "project_id": _projectId,
+      "project_id": project == "" ? project_id : project,
     };
     _projectId = project == "" ? project_id : project;
     _tenantUrl = url == "" ? tenant_url : url;

@@ -479,6 +479,7 @@ class _CreateGroupChatScreenState extends State<CreateGroupChatScreen> {
         return Scaffold(
           backgroundColor: chatRoomBackgroundColor,
           appBar: CustomAppBar(
+            mainProvider: widget.mainProvider,
             groupListProvider: groupListProvider,
             title: "New Chat",
             lead: true,

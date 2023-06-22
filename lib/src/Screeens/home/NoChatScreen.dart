@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
+import 'package:vdkFlutterChat/src/qrcode/qrcode.dart';
 import 'package:vdotok_connect/vdotok_connect.dart';
 import '../../core/providers/auth.dart';
 import '../../core/providers/contact_provider.dart';
@@ -8,7 +9,7 @@ import '../../core/providers/groupListProvider.dart';
 import '../../constants/constant.dart';
 import 'CustomAppBar.dart';
 
-class NoChatScreen extends StatelessWidget {
+class NoChatScreen extends StatefulWidget {
   bool presentCheck;
   final bool? isConnect;
   final bool? state;
@@ -34,23 +35,28 @@ class NoChatScreen extends StatelessWidget {
   final refreshList;
 
   @override
+  State<NoChatScreen> createState() => _NoChatScreenState();
+}
+
+class _NoChatScreenState extends State<NoChatScreen> {
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
         backgroundColor: chatRoomBackgroundColor,
         appBar: CustomAppBar(
-          handlePress: handlePress,
-          mainProvider: mainProvider,
-          groupListProvider: groupListProvider,
+          handlePress: widget.handlePress,
+          mainProvider: widget.mainProvider,
+          groupListProvider: widget.groupListProvider,
           title: "Chat Rooms",
-          authProvider: authProvider,
-          contactProvider: contactProvider,
+          authProvider: widget.authProvider,
+          contactProvider: widget.contactProvider,
           lead: false,
           succeedingIcon: 'assets/plus.svg',
           ischatscreen: false,
         ),
         body: RefreshIndicator(
-          onRefresh: refreshList,
+          onRefresh: widget.refreshList,
           child: SingleChildScrollView(
             child: Column(
               children: [
@@ -85,7 +91,7 @@ class NoChatScreen extends StatelessWidget {
                         fontSize: 14,
                       ),
                     )),
-                presentCheck == true
+                widget.presentCheck == true
                     ? SizedBox(height: 22)
                     : SizedBox(
                         height: 10,
@@ -98,7 +104,7 @@ class NoChatScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      presentCheck == true
+                      widget.presentCheck == true
                           ? Container(
                               width: 196,
                               height: 56,
@@ -111,8 +117,8 @@ class NoChatScreen extends StatelessWidget {
                               ),
                               child: TextButton(
                                 onPressed: () {
-                                  mainProvider?.createIndividualGroupScreen();
-                                  contactProvider!.getContacts(authProvider!.getUser!.auth_token);
+                                  widget.mainProvider?.createIndividualGroupScreen();
+                                  widget.contactProvider!.getContacts(widget.authProvider!.getUser!.auth_token);
                                 },
                                 child: Text(
                                   "New Chat",
@@ -148,7 +154,7 @@ class NoChatScreen extends StatelessWidget {
                       ),
                       child: Center(
                           child: TextButton(
-                        onPressed: refreshList,
+                        onPressed: widget.refreshList,
                         child: Text(
                           "Refresh",
                           style: TextStyle(
@@ -169,8 +175,13 @@ class NoChatScreen extends StatelessWidget {
                         width: 105,
                         child: TextButton(
                           onPressed: () {
-                            authProvider!.logout();
-                            emitter.disconnect();
+                            widget.authProvider!.logout();
+                            widget.emitter.disconnect();
+                            setState(() {
+                              url= "";
+                              project="";
+                            });
+                            
                           },
                           child: Text(
                             "LOG OUT",
@@ -188,14 +199,14 @@ class NoChatScreen extends StatelessWidget {
                       width: 10,
                       decoration: BoxDecoration(
                           color:
-                              isConnect! && state! ? Colors.green : Colors.red,
+                              widget.isConnect! && widget.state! ? Colors.green : Colors.red,
                           shape: BoxShape.circle),
                     ),
                   ],
                 ),
                 Container(
                     // padding: const EdgeInsets.only(bottom: 60),
-                    child: Text(authProvider!.getUser!.full_name))
+                    child: Text(widget.authProvider!.getUser!.full_name))
               ],
             ),
           ),

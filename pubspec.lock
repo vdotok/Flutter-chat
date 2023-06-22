@@ -921,10 +921,10 @@ packages:
     dependency: "direct main"
     description:
       name: vdotok_connect
-      sha256: "2f36cae14e21007041dc3f1eff0805d562e8249ca64be0b513c27848920ef474"
+      sha256: "82898a272c3e110dfe5401794f864332fba5fb1eb0dbae8ab778a91cbda6a2e7"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.10"
+    version: "0.0.11"
   vector_math:
     dependency: transitive
     description:

@@ -16,6 +16,7 @@ import 'src/core/providers/groupListProvider.dart';
 GlobalKey<ScaffoldMessengerState>? rootScaffoldMessengerKey;
 
 class MyHttpOverrides extends HttpOverrides {
+ 
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)

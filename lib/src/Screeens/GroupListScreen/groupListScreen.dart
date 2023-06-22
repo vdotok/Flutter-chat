@@ -12,6 +12,7 @@ import 'package:vdkFlutterChat/src/core/providers/groupListProvider.dart';
 import 'package:vdkFlutterChat/src/core/providers/main_provider.dart';
 
 import '../../core/models/GroupModel.dart';
+import '../../qrcode/qrcode.dart';
 
 int listIndex = 0;
 TextEditingController _groupNameController = TextEditingController();
@@ -234,8 +235,8 @@ class _GroupListScreenState extends State<GroupListScreen> {
                       // SizedBox(width: 10,),
                       SlidableAction(
                         onPressed: (context) {
-                          print("length of participants ${widget.groupListProvider.groupList.groups![index]!
-                                  .participants!.length}");
+                          print(
+                              "length of participants ${widget.groupListProvider.groupList.groups![index]!.participants!.length}");
                           if (widget.groupListProvider.groupList.groups![index]!
                                   .auto_created ==
                               0) {
@@ -284,12 +285,9 @@ class _GroupListScreenState extends State<GroupListScreen> {
                                 .groupListProvider.groupList.groups![index]!.id,
                             widget.authProvider.getUser!.auth_token,
                           );
-                     
 
                           if (widget.groupListProvider.deleteGroupStatus ==
                               DeleteGroupStatus.Success) {
-                          
-
                             showSnakbar(widget.groupListProvider.successMsg);
 
                             List<String> refIDList = [];
@@ -303,7 +301,6 @@ class _GroupListScreenState extends State<GroupListScreen> {
                               }
                             });
 
-                           
                             var tempdata = {
                               "from": widget.authProvider.getUser!.ref_id,
                               "data": {
@@ -323,7 +320,7 @@ class _GroupListScreenState extends State<GroupListScreen> {
                         backgroundColor: greyColor2,
                       ),
                     ]),
-                    // child: 
+                    // child:
                     // InkWell(
 
                     //   onTap: () {
@@ -339,329 +336,323 @@ class _GroupListScreenState extends State<GroupListScreen> {
                     //     handleSeenStatus(index);
                     //     widget.mainProvider!.chatScreen(index: index);
                     //   },
-                      child: Container(
-                        // width: 375,
-                        // height: 80,
-                        child: Column(
-                          children: [
-                            SizedBox(height: 22),
-                            InkWell(
-                                onTap: () {
-                                  listIndex = index;
-                                  widget.groupListProvider.setCountZero(index);
-                                  // Navigator.pushNamed(context, "/chatScreen",
-                                  //     arguments: {
-                                  //       "index": index,
-                                  //       "publishMessage": publishMessage,
-                                  //       "groupListProvider": groupListProvider
-                                  //     });
+                    child: Container(
+                      // width: 375,
+                      // height: 80,
+                      child: Column(
+                        children: [
+                          SizedBox(height: 22),
+                          InkWell(
+                              onTap: () {
+                                listIndex = index;
+                                widget.groupListProvider.setCountZero(index);
+                                // Navigator.pushNamed(context, "/chatScreen",
+                                //     arguments: {
+                                //       "index": index,
+                                //       "publishMessage": publishMessage,
+                                //       "groupListProvider": groupListProvider
+                                //     });
 
-                                  handleSeenStatus(index);
-                                  widget.mainProvider!.chatScreen(index: index);
-                                },
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          //The Group Title Shows Here
-                                          Flexible(
-                                            child: Container(
-                                              padding:
-                                                  EdgeInsets.only(left: 20),
-                                              child: widget
-                                                          .groupListProvider
-                                                          .groupList
-                                                          .groups![index]!
-                                                          .participants!
-                                                          .length ==
-                                                      1
-                                                  ? Text(
-                                                      //personal chat
-                                                      "${widget.groupListProvider.groupList.groups![index]!.participants![0]!.full_name}",
-                                                      //  maxLines: 2,
+                                handleSeenStatus(index);
+                                widget.mainProvider!.chatScreen(index: index);
+                              },
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        //The Group Title Shows Here
+                                        Flexible(
+                                          child: Container(
+                                            padding: EdgeInsets.only(left: 20),
+                                            child: widget
+                                                        .groupListProvider
+                                                        .groupList
+                                                        .groups![index]!
+                                                        .participants!
+                                                        .length ==
+                                                    1
+                                                ? Text(
+                                                    //personal chat
+                                                    "${widget.groupListProvider.groupList.groups![index]!.participants![0]!.full_name}",
+                                                    //  maxLines: 2,
 
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: TextStyle(
-                                                        color: personNameColor,
-                                                        fontSize: 20,
-                                                        fontFamily:
-                                                            primaryFontFamily,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                      ),
-                                                    )
-                                                  : widget
-                                                              .groupListProvider
-                                                              .groupList
-                                                              .groups![index]!
-                                                              .participants!
-                                                              .length ==
-                                                          2
-                                                      ? Text(
-                                                          "${widget.groupListProvider.groupList.groups![index]!.participants![widget.groupListProvider.groupList.groups![index]!.participants!.indexWhere((element) => element!.ref_id != widget.authProvider.getUser!.ref_id)]!.full_name}",
-                                                          //maxLines: 2,
-
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style: TextStyle(
-                                                            color:
-                                                                personNameColor,
-                                                            fontSize: 20,
-                                                            fontFamily:
-                                                                primaryFontFamily,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          ))
-                                                      : Text(
-                                                          //group chat
-                                                          "${widget.groupListProvider.groupList.groups![index]!.group_title}",
-                                                          //  maxLines: 2,
-
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          style: TextStyle(
-                                                            color:
-                                                                personNameColor,
-                                                            fontSize: 20,
-                                                            fontFamily:
-                                                                primaryFontFamily,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                          )),
-                                            ),
-                                          ),
-                                          SizedBox(width: 3),
-
-                                          //The Notification Counter for Each Group//
-                                          widget
-                                                          .groupListProvider
-                                                          .groupList
-                                                          .groups![index]!
-                                                          .counter ==
-                                                      null ||
-                                                  widget
-                                                          .groupListProvider
-                                                          .groupList
-                                                          .groups![index]!
-                                                          .counter ==
-                                                      0
-                                              ? Text("")
-                                              :
-                                              // Container(
-
-                                              //    child:
-
-                                              Padding(
-                                                  padding: EdgeInsets.only(
-                                                      bottom: 8),
-                                                  child: Container(
-                                                    width: (widget
-                                                                    .groupListProvider
-                                                                    .groupList
-                                                                    .groups![
-                                                                        index]!
-                                                                    .counter
-                                                                    .toString()
-                                                                    .length ==
-                                                                1 ||
-                                                            widget
-                                                                    .groupListProvider
-                                                                    .groupList
-                                                                    .groups![
-                                                                        index]!
-                                                                    .counter
-                                                                    .toString()
-                                                                    .length ==
-                                                                2)
-                                                        ? 20
-                                                        : 25,
-                                                    height: (widget
-                                                                    .groupListProvider
-                                                                    .groupList
-                                                                    .groups![
-                                                                        index]!
-                                                                    .counter
-                                                                    .toString()
-                                                                    .length ==
-                                                                1 ||
-                                                            widget
-                                                                    .groupListProvider
-                                                                    .groupList
-                                                                    .groups![
-                                                                        index]!
-                                                                    .counter
-                                                                    .toString()
-                                                                    .length ==
-                                                                2)
-                                                        ? 20
-                                                        : 25,
-                                                    decoration: BoxDecoration(
-                                                      color: personOfflineColor,
-                                                      shape: BoxShape.circle,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      color: personNameColor,
+                                                      fontSize: 20,
+                                                      fontFamily:
+                                                          primaryFontFamily,
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                     ),
-                                                    child: Center(
-                                                      child: Text(
-                                                        "${widget.groupListProvider.groupList.groups![index]!.counter}",
-                                                        maxLines: 1,
-                                                        textAlign:
-                                                            TextAlign.center,
+                                                  )
+                                                : widget
+                                                            .groupListProvider
+                                                            .groupList
+                                                            .groups![index]!
+                                                            .participants!
+                                                            .length ==
+                                                        2
+                                                    ? Text(
+                                                        "${widget.groupListProvider.groupList.groups![index]!.participants![widget.groupListProvider.groupList.groups![index]!.participants!.indexWhere((element) => element!.ref_id != widget.authProvider.getUser!.ref_id)]!.full_name}",
+                                                        //maxLines: 2,
+
                                                         overflow: TextOverflow
                                                             .ellipsis,
                                                         style: TextStyle(
                                                           color:
-                                                              counterTextColor,
-                                                          fontSize: 12,
-                                                          fontFamily: "Inter",
+                                                              personNameColor,
+                                                          fontSize: 20,
+                                                          fontFamily:
+                                                              primaryFontFamily,
                                                           fontWeight:
-                                                              FontWeight.w800,
-                                                        ),
-                                                      ),
-                                                      //),
-                                                    ),
-                                                  ),
-                                                ),
-                                        ],
-                                      ),
-                                    ),
-                                  
+                                                              FontWeight.w500,
+                                                        ))
+                                                    : Text(
+                                                        //group chat
+                                                        "${widget.groupListProvider.groupList.groups![index]!.group_title}",
+                                                        //  maxLines: 2,
 
-                                  ],
-                                )),
-                            SizedBox(height: 5),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Container(
-                                      width: 235,
-                                      padding: EdgeInsets.only(left: 20),
-                                      child: widget.groupListProvider.groupList
-                                                  .groups![index]!.chatList ==
-                                              null
-                                          ? Text("",
-                                              style: TextStyle(
-                                                color: messageStatusColor,
-                                                fontSize: 14,
-                                              ))
-                                          : (widget
-                                                              .groupListProvider
-                                                              .groupList
-                                                              .groups![index]!
-                                                              .counter ==
-                                                          null ||
-                                                      widget
-                                                              .groupListProvider
-                                                              .groupList
-                                                              .groups![index]!
-                                                              .counter ==
-                                                          0) &&
-                                                  widget
-                                                          .groupListProvider
-                                                          .groupList
-                                                          .groups![index]!
-                                                          .chatList!
-                                                          .last!
-                                                          .type !=
-                                                      0
-                                              ? Text(
-                                                  widget
-                                                              .groupListProvider
-                                                              .groupList
-                                                              .groups![index]!
-                                                              .chatList!
-                                                              .last!
-                                                              .type ==
-                                                          "text"
-                                                      ? (widget
-                                                                  .groupListProvider
-                                                                  .groupList
-                                                                  .groups![index]!
-                                                                  .chatList!
-                                                                  .last!
-                                                                  .from ==
-                                                              widget.authProvider.getUser!.ref_id)
-                                                          //(listProvider.groupList.groups[index].chatList.last.content
-                                                          // (listProvider.groupList.groups[index].chatList[listProvider.groupList.groups[index].participants.indexWhere((element) => element.ref_id != authProvider.getUser.ref_id)].content)
-                                                          //  listProvider.groupList.groups[index].participants[listProvider.groupList.groups[index].participants.indexWhere((element) => element.ref_id != authProvider.getUser.ref_id)].full_name?
-                                                          //?
-                                                          ? "${widget.groupListProvider.groupList.groups![index]!.chatList!.last!.content}"
-                                                          : "${widget.groupListProvider.groupList.groups![index]!.chatList!.last!.content}"
-                                                      // :
-                                                      : "",
-                                                  maxLines: 1,
-                                                  overflow: TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                    color: messageStatusColor,
-                                                    fontSize: 14,
-                                                  ))
-                                              : widget.groupListProvider.groupList.groups![index]!.chatList!.last!.type == 0
-                                                  ? Text("Image",
-                                                      style: TextStyle(
-                                                        color:
-                                                            messageStatusColor,
-                                                        fontSize: 14,
-                                                      ))
-                                                  : Text("Misread Messages",
-                                                      style: TextStyle(
-                                                        color:
-                                                            messageStatusColor,
-                                                        fontSize: 14,
-                                                      ))),
-                                ),
-                                Container(
-                                  // height: 15,
-                                  // width: 51,
-                                  margin: EdgeInsets.only(right: 24),
-                                  child: widget.groupListProvider.groupList
-                                                  .groups![index]!.counter ==
-                                              null ||
-                                          widget.groupListProvider.groupList
-                                                  .groups![index]!.counter ==
-                                              0
-                                      ? Text(
-                                          _presenceStatus,
-                                          textAlign: TextAlign.end,
-                                          style: TextStyle(
-                                            color: _presenceStatus != "offline"
-                                                ? chatRoomColor
-                                                : personOfflineColor,
-                                            fontSize: 10,
-                                          ),
-                                        )
-                                      : Text(
-                                          _presenceStatus,
-                                          textAlign: TextAlign.end,
-                                          style: TextStyle(
-                                            color: _presenceStatus != "offline"
-                                                ? chatRoomColor
-                                                : personOfflineColor,
-                                            fontSize: 10,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: TextStyle(
+                                                          color:
+                                                              personNameColor,
+                                                          fontSize: 20,
+                                                          fontFamily:
+                                                              primaryFontFamily,
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                        )),
                                           ),
                                         ),
-                                )
-                              ],
-                            ),
-                            // SizedBox(height: 3),
-                            // SizedBox(
-                            //   height: 2,
-                            //   width: 367,
-                            //   child: Divider(
-                            //     color: listdividerColor,
-                            //     thickness: 1.0,
-                            //   ),
-                            // ),
-                          ],
-                        ),
-                        //),
-                     // ),
+                                        SizedBox(width: 3),
+
+                                        //The Notification Counter for Each Group//
+                                        widget
+                                                        .groupListProvider
+                                                        .groupList
+                                                        .groups![index]!
+                                                        .counter ==
+                                                    null ||
+                                                widget
+                                                        .groupListProvider
+                                                        .groupList
+                                                        .groups![index]!
+                                                        .counter ==
+                                                    0
+                                            ? Text("")
+                                            :
+                                            // Container(
+
+                                            //    child:
+
+                                            Padding(
+                                                padding:
+                                                    EdgeInsets.only(bottom: 8),
+                                                child: Container(
+                                                  width: (widget
+                                                                  .groupListProvider
+                                                                  .groupList
+                                                                  .groups![
+                                                                      index]!
+                                                                  .counter
+                                                                  .toString()
+                                                                  .length ==
+                                                              1 ||
+                                                          widget
+                                                                  .groupListProvider
+                                                                  .groupList
+                                                                  .groups![
+                                                                      index]!
+                                                                  .counter
+                                                                  .toString()
+                                                                  .length ==
+                                                              2)
+                                                      ? 20
+                                                      : 25,
+                                                  height: (widget
+                                                                  .groupListProvider
+                                                                  .groupList
+                                                                  .groups![
+                                                                      index]!
+                                                                  .counter
+                                                                  .toString()
+                                                                  .length ==
+                                                              1 ||
+                                                          widget
+                                                                  .groupListProvider
+                                                                  .groupList
+                                                                  .groups![
+                                                                      index]!
+                                                                  .counter
+                                                                  .toString()
+                                                                  .length ==
+                                                              2)
+                                                      ? 20
+                                                      : 25,
+                                                  decoration: BoxDecoration(
+                                                    color: personOfflineColor,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: Center(
+                                                    child: Text(
+                                                      "${widget.groupListProvider.groupList.groups![index]!.counter}",
+                                                      maxLines: 1,
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                        color: counterTextColor,
+                                                        fontSize: 12,
+                                                        fontFamily: "Inter",
+                                                        fontWeight:
+                                                            FontWeight.w800,
+                                                      ),
+                                                    ),
+                                                    //),
+                                                  ),
+                                                ),
+                                              ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              )),
+                          SizedBox(height: 5),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                    width: 235,
+                                    padding: EdgeInsets.only(left: 20),
+                                    child: widget.groupListProvider.groupList
+                                                .groups![index]!.chatList ==
+                                            null
+                                        ? Text("",
+                                            style: TextStyle(
+                                              color: messageStatusColor,
+                                              fontSize: 14,
+                                            ))
+                                        : (widget.groupListProvider.groupList.groups![index]!.counter == null ||
+                                                    widget
+                                                            .groupListProvider
+                                                            .groupList
+                                                            .groups![index]!
+                                                            .counter ==
+                                                        0) &&
+                                                widget
+                                                        .groupListProvider
+                                                        .groupList
+                                                        .groups![index]!
+                                                        .chatList!
+                                                        .last!
+                                                        .type !=
+                                                    0
+                                            ? Text(
+                                                widget
+                                                            .groupListProvider
+                                                            .groupList
+                                                            .groups![index]!
+                                                            .chatList!
+                                                            .last!
+                                                            .type ==
+                                                        "text"
+                                                    ? (widget
+                                                                .groupListProvider
+                                                                .groupList
+                                                                .groups![index]!
+                                                                .chatList!
+                                                                .last!
+                                                                .from ==
+                                                            widget
+                                                                .authProvider
+                                                                .getUser!
+                                                                .ref_id)
+                                                        //(listProvider.groupList.groups[index].chatList.last.content
+                                                        // (listProvider.groupList.groups[index].chatList[listProvider.groupList.groups[index].participants.indexWhere((element) => element.ref_id != authProvider.getUser.ref_id)].content)
+                                                        //  listProvider.groupList.groups[index].participants[listProvider.groupList.groups[index].participants.indexWhere((element) => element.ref_id != authProvider.getUser.ref_id)].full_name?
+                                                        //?
+                                                        ? "${widget.groupListProvider.groupList.groups![index]!.chatList!.last!.content}"
+                                                        : "${widget.groupListProvider.groupList.groups![index]!.chatList!.last!.content}"
+                                                    // :
+                                                    : "",
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(
+                                                  color: messageStatusColor,
+                                                  fontSize: 14,
+                                                ))
+                                            : widget
+                                                        .groupListProvider
+                                                        .groupList
+                                                        .groups![index]!
+                                                        .chatList!
+                                                        .last!
+                                                        .type ==
+                                                    0
+                                                ? Text("Image",
+                                                    style: TextStyle(
+                                                      color: messageStatusColor,
+                                                      fontSize: 14,
+                                                    ))
+                                                : Text("Misread Messages",
+                                                    style: TextStyle(
+                                                      color: messageStatusColor,
+                                                      fontSize: 14,
+                                                    ))),
+                              ),
+                              Container(
+                                // height: 15,
+                                // width: 51,
+                                margin: EdgeInsets.only(right: 24),
+                                child: widget.groupListProvider.groupList
+                                                .groups![index]!.counter ==
+                                            null ||
+                                        widget.groupListProvider.groupList
+                                                .groups![index]!.counter ==
+                                            0
+                                    ? Text(
+                                        _presenceStatus,
+                                        textAlign: TextAlign.end,
+                                        style: TextStyle(
+                                          color: _presenceStatus != "offline"
+                                              ? chatRoomColor
+                                              : personOfflineColor,
+                                          fontSize: 10,
+                                        ),
+                                      )
+                                    : Text(
+                                        _presenceStatus,
+                                        textAlign: TextAlign.end,
+                                        style: TextStyle(
+                                          color: _presenceStatus != "offline"
+                                              ? chatRoomColor
+                                              : personOfflineColor,
+                                          fontSize: 10,
+                                        ),
+                                      ),
+                              )
+                            ],
+                          ),
+                          // SizedBox(height: 3),
+                          // SizedBox(
+                          //   height: 2,
+                          //   width: 367,
+                          //   child: Divider(
+                          //     color: listdividerColor,
+                          //     thickness: 1.0,
+                          //   ),
+                          // ),
+                        ],
+                      ),
+                      //),
+                      // ),
                     ),
                   );
-                
-                
-                
-                
-                
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return Padding(
@@ -686,6 +677,10 @@ class _GroupListScreenState extends State<GroupListScreen> {
                               onPressed: () {
                                 widget.authProvider.logout();
                                 emitter.disconnect();
+                                setState(() {
+                                  project = "";
+                                  url = "";
+                                });
                               },
                               child: Text(
                                 "LOG OUT",
