@@ -71,7 +71,7 @@ Future<dynamic> getAPI(myurl, authToken) async {
 }
 
 Future<dynamic> loginPostPic(datarequest) async {
-  final urlpic = "https://q-tenant.vdotok.dev/s3upload/";
+  final urlpic = AuthProvider.tenantUrl + "s3upload/";
   try {
     print("in dioooooooooo ${datarequest['auth_token']}");
     var dio = new Dio();

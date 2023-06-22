@@ -300,7 +300,7 @@ class _GroupListScreenState extends State<GroupListScreen> {
                                 refIDList.add(element.ref_id);
                               }
                             });
-
+ 
                             var tempdata = {
                               "from": widget.authProvider.getUser!.ref_id,
                               "data": {
