@@ -101,10 +101,8 @@ class _ChatScreenState extends State<ChatScreen> {
   bool downloading = false;
   var progress = "0";
   bool isDownloaded = false;
-  
+
   var downloadProgress = 0.0;
-
-
 
   Future<void> downloadFile(uri) async {
     print('this is uri==== $uri ');
@@ -132,21 +130,20 @@ class _ChatScreenState extends State<ChatScreen> {
     print("this is fillllleeee $filePath");
     File file = File(filePath);
     file.writeAsBytesSync(response.bodyBytes);
-     Navigator.pop(context);
-   
+    Navigator.pop(context);
   }
 
   //gets the applicationDirectory and path for the to-be downloaded file
   // which will be used to save the file to that path in the downloadFile method
   Future<String> getFilePath() async {
-     var status = await Permission.storage.status;
+    var status = await Permission.storage.status;
     if (!status.isGranted) {
       // If not we will ask for permission first
       await Permission.storage.request();
     }
     Directory _directory = Directory("FlutterChat");
-     _directory = Directory("/storage/emulated/0/Download");
-     final exPath = _directory.path;
+    _directory = Directory("/storage/emulated/0/Download");
+    final exPath = _directory.path;
     print("Saved Path: $exPath");
     await Directory(exPath).create(recursive: true);
     return exPath;
@@ -159,12 +156,10 @@ class _ChatScreenState extends State<ChatScreen> {
     // return path;
   }
 
-
   Future<String> getDocumentDirectoryPath() async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
   }
-
 
   Future<String?> _getSavedDir() async {
     Directory directory = await getTemporaryDirectory();
@@ -344,7 +339,7 @@ class _ChatScreenState extends State<ChatScreen> {
       print("this is upload image data  $apiData1");
       var currentpic = await loginPostPic(apiData1);
       print("this is current pic $currentpic");
-      
+
       Map<String, dynamic> filePacket = {
         "id": generateMd5(
             _groupListProvider.groupList.groups![index]!.channel_key),
@@ -779,7 +774,6 @@ class _ChatScreenState extends State<ChatScreen> {
                                       //                   .jumpTo(controller
                                       //                       .position
                                       //                       .maxScrollExtent+200));
-
                                       return Column(
                                         children: [
                                           groupListProvider
@@ -803,9 +797,6 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               ),
             ),
-          
-          
-          
           );
         }));
   }
@@ -1597,7 +1588,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 child: Text(
                                   DateFormat().add_jm().format(
                                       DateTime.fromMillisecondsSinceEpoch(
-                                         groupListProvider
+                                          groupListProvider
                                               .groupList
                                               .groups![index]!
                                               .chatList![chatindex]!
@@ -2382,12 +2373,7 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
     );
   }
-
-
-
 }
-
-
 
 class FileStorage {
   static Future<String> getExternalDocumentPath() async {
@@ -2399,18 +2385,18 @@ class FileStorage {
     }
     Directory _directory = Directory("");
     if (Platform.isAndroid) {
-       // Redirects it to download folder in android
+      // Redirects it to download folder in android
       _directory = Directory("/storage/emulated/0/Download");
     } else {
       _directory = await getApplicationDocumentsDirectory();
     }
-  
+
     final exPath = _directory.path;
     print("Saved Path: $exPath");
     await Directory(exPath).create(recursive: true);
     return exPath;
   }
-  
+
   static Future<String> get _localPath async {
     // final directory = await getApplicationDocumentsDirectory();
     // return directory.path;
@@ -2418,15 +2404,16 @@ class FileStorage {
     final String directory = await getExternalDocumentPath();
     return directory;
   }
-  
-static Future<File> writeCounter(String bytes,String name) async {
-  final path = await _localPath;
+
+  static Future<File> writeCounter(String bytes, String name) async {
+    final path = await _localPath;
     // Create a file for the path of
-      // device and file name with extension
-    File file= File('$path/$name');;
+    // device and file name with extension
+    File file = File('$path/$name');
+    ;
     print("Save file");
-      
-      // Write the data in the file you have created
+
+    // Write the data in the file you have created
     return file.writeAsString(bytes);
   }
 }

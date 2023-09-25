@@ -352,6 +352,7 @@ class GroupListProvider with ChangeNotifier {
     var participantIndex = _groupList.groups![groupindex]!.participants!
         .indexWhere((element) =>
             element!.ref_id == json.decode(msg)["from"].toString());
+    print('participants--${_groupList.groups![groupindex]!.participants}');
     print('===> ${participantIndex}');
     if (_groupList.groups![groupindex]!.chatList == null) {
     } else {
